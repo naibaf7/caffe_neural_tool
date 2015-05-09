@@ -1,0 +1,401 @@
+/*
+ * image_preprocessor.cpp
+ *
+ *  Created on: Apr 3, 2015
+ *      Author: Fabian Tschopp
+ */
+
+#include "image_processor.hpp"
+#include "neural_utils.hpp"
+
+#include <omp.h>
+#include <iostream>
+
+namespace caffe_neural {
+
+ImageProcessor::ImageProcessor(int image_size, int patch_size, int nr_labels)
+    : image_size_(image_size),
+      patch_size_(patch_size),
+      nr_labels_(nr_labels) {
+
+}
+
+std::vector<cv::Mat>& ImageProcessor::raw_images() {
+  return raw_images_;
+}
+
+std::vector<cv::Mat>& ImageProcessor::label_images() {
+  return label_images_;
+}
+
+std::vector<int>& ImageProcessor::image_number() {
+  return image_number_;
+}
+
+void ImageProcessor::SetCropParams(int image_crop, int label_crop) {
+  image_crop_ = image_crop;
+  label_crop_ = label_crop;
+}
+
+void ImageProcessor::SetNormalizationParams(bool apply) {
+  apply_normalization_ = apply;
+}
+
+void ImageProcessor::ClearImages() {
+  raw_images_.clear();
+  label_images_.clear();
+  image_number_.clear();
+}
+
+void ImageProcessor::SubmitImage(cv::Mat raw, int img_id,
+                                 std::vector<cv::Mat> labels, float label_div) {
+
+  std::vector<cv::Mat> rawsplit;
+  cv::split(raw, rawsplit);
+
+  if (apply_clahe_) {
+    for (unsigned int i = 0; i < rawsplit.size(); ++i) {
+      cv::Mat dst;
+      clahe_->apply(rawsplit[i], dst);
+      rawsplit[i] = dst;
+    }
+  }
+
+  cv::Mat src;
+  cv::merge(rawsplit, src);
+  src.convertTo(src, CV_32FC(3), 1.0 / 255.0);
+
+  if (apply_normalization_) {
+    cv::Mat dst;
+    cv::normalize(src, dst, -1.0, 1.0, cv::NORM_MINMAX);
+    src = dst;
+  }
+
+  if (apply_border_reflect_) {
+    cv::Mat dst;
+    cv::copyMakeBorder(src, dst, border_size_, border_size_, border_size_,
+                       border_size_, IPL_BORDER_REFLECT, cv::Scalar::all(0.0));
+    src = dst;
+  }
+
+  raw_images_.push_back(src);
+  image_number_.push_back(img_id);
+
+  if (labels.size() > 0) {
+    cv::Mat dst_label(labels[0].rows, labels[0].cols, CV_32FC(1));
+    dst_label.setTo(cv::Scalar(0.0));
+
+    for (unsigned int i = 0; i < labels.size(); ++i) {
+      for (int y = 0; y < labels[0].rows; ++y) {
+        for (int x = 0; x < labels[0].cols; ++x) {
+          if (label_div == 0.0) {
+            // Multiple images with 1 label defined per image
+            int ks = labels[i].at<cv::Vec<unsigned char, 1>>(y, x)[0];
+            if (ks > 0) {
+              (dst_label.at<cv::Vec<float, 1>>(y, x))[0] = i;
+            }
+          } else {
+            // Single image with many labels defined per image
+            int ks = std::ceil(
+                (float) (labels[0].at<cv::Vec<unsigned char, 1>>(y, x)[0])
+                    / label_div);
+            (dst_label.at<float>(y, x)) = ks;
+          }
+        }
+      }
+    }
+    label_images_.push_back(dst_label);
+  }
+}
+
+void ImageProcessor::Init() {
+  int off_size = (image_size_ - patch_size_);
+  offset_selector_ = GetRandomUniform<double>(
+      0, label_images_.size() * off_size * off_size);
+
+  if (apply_label_hist_eq_) {
+
+    std::vector<long> label_count(nr_labels_);
+    std::vector<double> label_freq(nr_labels_);
+
+    long total_count = 0;
+    for (unsigned int k = 0; k < label_images_.size(); ++k) {
+      cv::Mat label_image = label_images_[k];
+      for (int y = 0; y < image_size_; ++y) {
+        for (int x = 0; x < image_size_; ++x) {
+          // Label counting should be biased towards the borders, as less batches cover those parts
+          long mult = std::min(std::min(x, image_size_ - x), patch_size_)
+              * std::min(std::min(y, image_size_ - y), patch_size_);
+          label_count[label_image.at<float>(y, x)] += mult;
+          total_count += mult;
+        }
+      }
+    }
+
+    for (int l = 0; l < nr_labels_; ++l) {
+      label_freq[l] = (double) (label_count[l]) / (double) (total_count);
+      std::cout << "Label " << l << ": " << label_freq[l] << std::endl;
+    }
+
+    if (apply_label_patch_prior_) {
+
+      std::vector<double> weighted_label_count(nr_labels_);
+
+      label_running_probability_.resize(
+          label_images_.size() * off_size * off_size);
+
+      for (unsigned int k = 0; k < label_images_.size(); ++k) {
+        cv::Mat label_image = label_images_[k];
+#pragma omp parallel for
+        for (int y = 0; y < off_size; ++y) {
+          for (int x = 0; x < off_size; ++x) {
+            std::vector<long> patch_label_count(patch_size_, patch_size_);
+            for (int py = y; py < y + patch_size_; ++py) {
+              for (int px = x; px < x + patch_size_; ++px) {
+                patch_label_count[label_image.at<float>(py, px)]++;
+              }
+            }
+            double patch_weight = 0;
+            for (int l = 0; l < nr_labels_; ++l) {
+              patch_weight += (((double) (patch_label_count[l]))
+                  / ((double) (patch_size_ * patch_size_))) / (label_freq[l]);
+            }
+            for (int l = 0; l < nr_labels_; ++l) {
+              weighted_label_count[l] += patch_weight * patch_label_count[l];
+            }
+            label_running_probability_[k * off_size * off_size + y * off_size
+                + x] = patch_weight;
+          }
+        }
+      }
+
+      for (unsigned int k = 1; k < label_running_probability_.size(); ++k) {
+        label_running_probability_[k] += label_running_probability_[k - 1];
+      }
+
+      double freq_divisor = 0;
+      for (int l = 0; l < nr_labels_; ++l) {
+        freq_divisor += weighted_label_count[l];
+      }
+      for (int l = 0; l < nr_labels_; ++l) {
+        label_freq[l] = weighted_label_count[l] / freq_divisor;
+        std::cout << "Label " << l << ": " << label_freq[l] << std::endl;
+      }
+
+      offset_selector_ = GetRandomUniform<double>(
+          0, label_running_probability_[label_running_probability_.size() - 1]);
+    }
+
+    if (apply_label_pixel_mask_) {
+
+      double boost_divisor = 0;
+
+      for (int l = 0; l < nr_labels_; ++l) {
+        label_freq[l] *= 1.0/label_boost_[l];
+        boost_divisor += label_freq[l];
+      }
+
+      for (int l = 0; l < nr_labels_; ++l) {
+        label_freq[l] *= 1.0/boost_divisor;
+      }
+
+      label_mask_probability_.resize(nr_labels_);
+      float mask_divisor = 0;
+      for (int l = 0; l < nr_labels_; ++l) {
+        label_mask_probability_[l] = 1.0 / label_freq[l];
+        mask_divisor = std::max(mask_divisor, label_mask_probability_[l]);
+      }
+      for (int l = 0; l < nr_labels_; ++l) {
+        label_mask_probability_[l] /= mask_divisor;
+        std::cout << "Label " << l << ", mask probability: "
+                  << label_mask_probability_[l] << std::endl;
+      }
+    }
+  }
+}
+
+void ImageProcessor::SetBlurParams(bool apply, float mean, float std,
+                                   int blur_size) {
+  apply_blur_ = apply;
+  blur_mean_ = mean;
+  blur_std_ = std;
+  blur_size_ = blur_size;
+  blur_random_selector_ = GetRandomNormal<float>(mean, std);
+}
+
+void ImageProcessor::SetBorderParams(bool apply, int border_size) {
+  apply_border_reflect_ = apply;
+  border_size_ = border_size;
+}
+
+void ImageProcessor::SetClaheParams(bool apply, float clip_limit) {
+  apply_clahe_ = apply;
+  clahe_ = cv::createCLAHE();
+  clahe_->setClipLimit(clip_limit);
+}
+
+void ImageProcessor::SetRotationParams(bool apply) {
+  apply_rotation_ = apply;
+  rotation_rand_ = GetRandomOffset(0, 3);
+}
+void ImageProcessor::SetPatchMirrorParams(bool apply) {
+  apply_patch_mirroring_ = apply;
+  patch_mirror_rand_ = GetRandomOffset(0, 2);
+}
+
+void ImageProcessor::SetLabelHistEqParams(bool apply, bool patch_prior,
+                                          bool mask_prob,
+                                          std::vector<float> label_boost) {
+  apply_label_hist_eq_ = apply;
+  apply_label_patch_prior_ = patch_prior;
+  apply_label_pixel_mask_ = mask_prob;
+  label_mask_prob_rand_.resize(omp_get_max_threads());
+  for (int i = 0; i < omp_get_max_threads(); ++i) {
+    label_mask_prob_rand_[i] = GetRandomUniform<float>(0.0, 1.0);
+  }
+  label_boost_ = label_boost;
+}
+
+long ImageProcessor::BinarySearchPatch(double offset) {
+  long mid, left = 0;
+  long right = label_running_probability_.size();
+  while (left < right) {
+    mid = left + (right - left) / 2;
+    if (offset > label_running_probability_[mid]) {
+      left = mid + 1;
+    } else if (offset < label_running_probability_[mid]) {
+      right = mid;
+    } else {
+      return left;
+    }
+  }
+  return left;
+}
+
+ProcessImageProcessor::ProcessImageProcessor(int image_size, int patch_size,
+                                             int nr_labels)
+    : ImageProcessor(image_size, patch_size, nr_labels) {
+}
+
+TrainImageProcessor::TrainImageProcessor(int image_size, int patch_size,
+                                         int nr_labels)
+    : ImageProcessor(image_size, patch_size, nr_labels) {
+
+}
+
+std::vector<cv::Mat> TrainImageProcessor::DrawPatchRandom() {
+
+  double offset = offset_selector_();
+
+  long abs_id = 0;
+
+  if (apply_label_hist_eq_ && apply_label_patch_prior_) {
+    abs_id = BinarySearchPatch(offset);
+  } else {
+    abs_id = (long) offset;
+  }
+
+  int off_size = (image_size_ - patch_size_);
+
+  int img_id = abs_id / (off_size * off_size);
+  int yoff = (abs_id - (img_id * off_size * off_size)) / off_size;
+  int xoff = abs_id - ((img_id * off_size * off_size) + (yoff * off_size));
+
+  cv::Mat &full_image = raw_images_[img_id];
+  cv::Mat &full_label = label_images_[img_id];
+
+  int actual_patch_size = patch_size_ + 2 * border_size_;
+  int actual_label_size = patch_size_;
+
+  cv::Rect roi_patch(xoff, yoff, actual_patch_size, actual_patch_size);
+  cv::Rect roi_label(xoff, yoff, actual_label_size, actual_label_size);
+
+  // Deep copy so that the original image in storage doesn't get messed up
+  cv::Mat patch = full_image(roi_patch).clone();
+  cv::Mat label = full_label(roi_label).clone();
+
+  if (apply_patch_mirroring_) {
+    int flipcode = patch_mirror_rand_() - 1;
+    cv::Mat mirror_patch;
+    cv::Mat mirror_label;
+    cv::flip(patch, mirror_patch, flipcode);
+    cv::flip(label, mirror_label, flipcode);
+    patch = mirror_patch;
+    label = mirror_label;
+  }
+
+  if (apply_rotation_) {
+
+    cv::Mat rotate_patch;
+    cv::Mat rotate_label;
+    cv::Mat tmp_patch;
+    cv::Mat tmp_label;
+
+    switch (rotation_rand_()) {
+      case 0:
+        rotate_patch = patch;
+        rotate_label = label;
+        break;
+      case 1:
+        tmp_patch = patch.t();
+        tmp_label = label.t();
+        cv::flip(tmp_patch, rotate_patch, 1);
+        cv::flip(tmp_label, rotate_label, 1);
+        break;
+      case 2:
+        cv::flip(patch, rotate_patch, -1);
+        cv::flip(label, rotate_label, -1);
+        break;
+      case 3:
+        tmp_patch = patch.t();
+        tmp_label = label.t();
+        cv::flip(tmp_patch, rotate_patch, 0);
+        cv::flip(tmp_label, rotate_label, 0);
+        break;
+    }
+
+    patch = rotate_patch;
+    label = rotate_label;
+
+  }
+
+  cv::Rect roi_rot_patch(0, 0, actual_patch_size - image_crop_,
+                         actual_patch_size - image_crop_);
+
+  cv::Rect roi_rot_label(0, 0, actual_label_size - label_crop_,
+                         actual_label_size - label_crop_);
+
+  patch = patch(roi_rot_patch);
+  label = label(roi_rot_label);
+
+  if (apply_blur_) {
+    cv::Size ksize(blur_size_, blur_size_);
+    float sigma = blur_random_selector_();
+    cv::GaussianBlur(patch, patch, ksize, sigma);
+  }
+
+  if (apply_label_hist_eq_ && apply_label_pixel_mask_) {
+#pragma omp parallel
+    {
+      std::function<float()> &randprob =
+          label_mask_prob_rand_[omp_get_thread_num()];
+#pragma omp for
+      for (int y = 0; y < patch_size_; ++y) {
+        for (int x = 0; x < patch_size_; ++x) {
+          label.at<float>(y, x) =
+              label_mask_probability_[label.at<float>(y, x)] >= randprob() ?
+                  label.at<float>(y, x) : -1.0;
+        }
+      }
+    }
+  }
+
+  std::vector<cv::Mat> patch_label;
+
+  patch_label.push_back(patch);
+  patch_label.push_back(label);
+
+  return patch_label;
+}
+
+}

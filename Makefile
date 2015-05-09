@@ -9,8 +9,11 @@ CXXFLAGS = -Wall -std=c++11 -DUSE_GREENTEA -DVIENNACL_WITH_OPENCL
 CXXDBG = -O0 -g
 CXXRUN = -O3
 
-# File dependencies
-FILES = neural_utils.cpp image_processor.cpp tiffio_wrapper.cpp
+# File dependencies and folders
+PROTO = proto
+SRC = src
+BUILD = build
+FILES = $(SRC)/*.cpp
 
 # Find a valid OpenCL library
 ifdef OPENCL_INC
@@ -58,16 +61,19 @@ LIBRARY = 	-Wl,--whole-archive -l:$(CAFFE_PATH)/build/lib/libcaffe.a -Wl,--no-wh
 			
 			
 # Compiler targets
-all: caffe_neural caffe_neural_dbg
+all: caffe_neural_tool caffe_neural_tool_dbg
+
+proto:
+	protoc $(PROTO)/proto.txt
 
 # Run target
-caffe_neural: caffe_neural.cpp $(FILES)
-	$(CXX) $(CXXFLAGS) $(CXXRUN) $(INCLUDE) -o caffe_neural caffe_neural.cpp $(FILES) $(LIBRARY)
+caffe_neural_tool: proto $(FILES)
+	$(CXX) $(CXXFLAGS) $(CXXRUN) $(INCLUDE) -o $(BUILD)/caffe_neural $(FILES) $(LIBRARY)
 	
 # Debug target
-caffe_neural_dbg: caffe_neural.cpp $(FILES)
-	$(CXX) $(CXXFLAGS) $(CXXDBG) $(INCLUDE) -o caffe_neural_dbg caffe_neural.cpp $(FILES) $(LIBRARY)
+caffe_neural_tool_dbg: proto $(FILES)
+	$(CXX) $(CXXFLAGS) $(CXXDBG) $(INCLUDE) -o $(BUILD)/caffe_neural_tool_dbg $(FILES) $(LIBRARY)
 	
 # Clean target
 clean:
-	rm -r caffe_neural caffe_neural_dbg
+	rm -r $(BUILD)/*
