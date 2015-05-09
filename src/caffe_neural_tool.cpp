@@ -1,5 +1,5 @@
 /*
- * caffe_neural.cpp
+ * caffe_neural_tool.cpp
  *
  *  Created on: Feb 26, 2015
  *      Author: Fabian Tschopp

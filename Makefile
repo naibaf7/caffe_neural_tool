@@ -42,7 +42,8 @@ ifdef AMDAPPSDKROOT
 endif
 
 # Includes
-INCLUDE = -I$(CAFFE_PATH)/include \
+INCLUDE = 	-Iinclude \
+			-I$(CAFFE_PATH)/include \
 			-I$(CAFFE_PATH)/caffe \
 			-I$(CAFFE_PATH)/caffe/src \
 			$(CLLINC) \
@@ -61,19 +62,23 @@ LIBRARY = 	-Wl,--whole-archive -l:$(CAFFE_PATH)/build/lib/libcaffe.a -Wl,--no-wh
 			
 			
 # Compiler targets
-all: caffe_neural_tool caffe_neural_tool_dbg
+all: aux proto caffe_neural_tool caffe_neural_tool_dbg
 
-proto:
+proto: $(PROTO)/proto.txt
 	protoc $(PROTO)/proto.txt
 
 # Run target
-caffe_neural_tool: proto $(FILES)
+caffe_neural_tool: aux proto $(FILES)
 	$(CXX) $(CXXFLAGS) $(CXXRUN) $(INCLUDE) -o $(BUILD)/caffe_neural $(FILES) $(LIBRARY)
 	
 # Debug target
-caffe_neural_tool_dbg: proto $(FILES)
+caffe_neural_tool_dbg: aux proto $(FILES)
 	$(CXX) $(CXXFLAGS) $(CXXDBG) $(INCLUDE) -o $(BUILD)/caffe_neural_tool_dbg $(FILES) $(LIBRARY)
-	
+
+# Aux target
+aux:
+	mkdir -p build
+
 # Clean target
 clean:
 	rm -r $(BUILD)/*
