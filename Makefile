@@ -55,7 +55,7 @@ LIBRARY = 	-Wl,--whole-archive -l:$(CAFFE_PATH)/build/lib/libcaffe.a -Wl,--no-wh
 			-lopencv_core -lopencv_highgui -lopencv_imgproc \
 			-lpthread -lprotobuf -lglog -lgflags -lopenblas \
 			-lleveldb -lhdf5_hl -lhdf5 -lsnappy -llmdb -ltiff\
-			-lboost_system -lboost_thread \
+			-lboost_system -lboost_thread -lboost_program_options\
 			-fopenmp \
 			-lviennacl -lclBLAS -lOpenCL -lrt $(CLLIBS) \
 			-L$(CUDA_PATH)/lib64/ -lcudart -lcublas -lcurand

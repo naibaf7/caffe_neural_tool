@@ -25,6 +25,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <boost/program_options.hpp>
 
 #include "image_processor.hpp"
 #include "neural_utils.hpp"
@@ -49,36 +50,36 @@ using namespace caffe_neural;
 #define TESTING
 
 #define PROTO_SOLVER "../project_data/net_sk_2out/neuraltissue_solver.prototxt"
- #define PROTO_NET "../project_data/net_sk_2out/neuraltissue_process.prototxt"
- #define MODEL_WEIGHTS "../project_data/net_sk_2out/neuraltissue_iter_62000.caffemodel"
- #define SOLVER_STATE "../project_data/net_sk_2out/neuraltissue_iter_62000.solverstate"
+#define PROTO_NET "../project_data/net_sk_2out/neuraltissue_process.prototxt"
+#define MODEL_WEIGHTS "../project_data/net_sk_2out/neuraltissue_iter_30000.caffemodel"
+#define SOLVER_STATE "../project_data/net_sk_2out/neuraltissue_iter_30000.solverstate"
 
- #define INPUT_IMAGES "../project_data/dataset_03/input/"
- #define INPUT_PREFIX "test-volume"
- #define INPUT_START_INDEX 0
- #define INPUT_COUNT 1
- #define INPUT_DIGITS 2
- #define INPUT_FORMAT ".tif"
- #define OUTPUT_LABELS "../project_data/dataset_03/output/"
- #define OUTPUT_FORMAT ".tif"
+#define INPUT_IMAGES "../project_data/dataset_03/input/"
+#define INPUT_PREFIX "test-volume"
+#define INPUT_START_INDEX 0
+#define INPUT_COUNT 1
+#define INPUT_DIGITS 2
+#define INPUT_FORMAT ".tif"
+#define OUTPUT_LABELS "../project_data/dataset_03/output/"
+#define OUTPUT_FORMAT ".tif"
 
- #define TRAIN_SET_SIZE 1
- #define TRAIN_FOLDER "../project_data/dataset_03/train/"
- #define TRAIN_LABEL_PREFIX "labels/train-labels"
- #define TRAIN_RAW_PREFIX "raw/train-volume"
- #define TRAIN_LABEL_DIGITS 2
- #define TRAIN_RAW_DIGITS 2
- #define TRAIN_LABEL_FORMAT ".tif"
- #define TRAIN_RAW_FORMAT ".tif"
+#define TRAIN_SET_SIZE 1
+#define TRAIN_FOLDER "../project_data/dataset_03/train/"
+#define TRAIN_LABEL_PREFIX "labels/train-labels"
+#define TRAIN_RAW_PREFIX "raw/train-volume"
+#define TRAIN_LABEL_DIGITS 2
+#define TRAIN_RAW_DIGITS 2
+#define TRAIN_LABEL_FORMAT ".tif"
+#define TRAIN_RAW_FORMAT ".tif"
 
- #define BATCH_SIZE 1
- #define NR_CHANNELS 3
- #define NR_LABELS 2
- #define PATCH_SIZE_TRAIN 64
- #define PATCH_SIZE_PROCESS 128
- #define PADDING_SIZE 102
- #define TRAIN_IMAGE_SIZE 512
- #define PROCESS_IMAGE_SIZE 512
+#define BATCH_SIZE 1
+#define NR_CHANNELS 3
+#define NR_LABELS 2
+#define PATCH_SIZE_TRAIN 64
+#define PATCH_SIZE_PROCESS 128
+#define PADDING_SIZE 102
+#define TRAIN_IMAGE_SIZE 512
+#define PROCESS_IMAGE_SIZE 512
 
 // For the dataset_01:
 /*#define PROTO_SOLVER "../project_data/net_sk_9out/neuraltissue_solver.prototxt"
@@ -115,38 +116,36 @@ using namespace caffe_neural;
 
 // For the dataset_02:
 /*#define PROTO_SOLVER "../project_data/net_sk_3out/neuraltissue_solver.prototxt"
-#define PROTO_NET "../project_data/net_sk_3out/neuraltissue_process.prototxt"
-#define MODEL_WEIGHTS "../project_data/net_sk_3out/neuraltissue_iter_10000.caffemodel"
-#define SOLVER_STATE "../project_data/net_sk_3out/neuraltissue_iter_10000.solverstate"
+ #define PROTO_NET "../project_data/net_sk_3out/neuraltissue_process.prototxt"
+ #define MODEL_WEIGHTS "../project_data/net_sk_3out/neuraltissue_iter_10000.caffemodel"
+ #define SOLVER_STATE "../project_data/net_sk_3out/neuraltissue_iter_10000.solverstate"
 
-#define INPUT_IMAGES "../project_data/dataset_02/input/"
-#define INPUT_PREFIX "crop."
-#define INPUT_START_INDEX 4352
-#define INPUT_COUNT 200
-#define INPUT_DIGITS 8
-#define INPUT_FORMAT ".png"
-#define OUTPUT_LABELS "../project_data/dataset_02/output_3/"
-#define OUTPUT_FORMAT ".png"
+ #define INPUT_IMAGES "../project_data/dataset_02/input/"
+ #define INPUT_PREFIX "crop."
+ #define INPUT_START_INDEX 4352
+ #define INPUT_COUNT 200
+ #define INPUT_DIGITS 8
+ #define INPUT_FORMAT ".png"
+ #define OUTPUT_LABELS "../project_data/dataset_02/output_3/"
+ #define OUTPUT_FORMAT ".png"
 
-#define TRAIN_SET_SIZE 20
-#define TRAIN_FOLDER "../project_data/dataset_02/train/"
-#define TRAIN_LABEL_PREFIX "labels/"
-#define TRAIN_RAW_PREFIX "raw/raw_"
-#define TRAIN_LABEL_DIGITS 3
-#define TRAIN_RAW_DIGITS 3
-#define TRAIN_LABEL_FORMAT ".tif"
-#define TRAIN_RAW_FORMAT ".tif"
+ #define TRAIN_SET_SIZE 20
+ #define TRAIN_FOLDER "../project_data/dataset_02/train/"
+ #define TRAIN_LABEL_PREFIX "labels/"
+ #define TRAIN_RAW_PREFIX "raw/raw_"
+ #define TRAIN_LABEL_DIGITS 3
+ #define TRAIN_RAW_DIGITS 3
+ #define TRAIN_LABEL_FORMAT ".tif"
+ #define TRAIN_RAW_FORMAT ".tif"
 
-#define BATCH_SIZE 1
-#define NR_CHANNELS 3
-#define NR_LABELS 3
-#define PATCH_SIZE_TRAIN 64
-#define PATCH_SIZE_PROCESS 128
-#define PADDING_SIZE 102
-#define TRAIN_IMAGE_SIZE 512
-#define PROCESS_IMAGE_SIZE 3072*/
-
-#define NUM_THREADS 8
+ #define BATCH_SIZE 1
+ #define NR_CHANNELS 3
+ #define NR_LABELS 3
+ #define PATCH_SIZE_TRAIN 64
+ #define PATCH_SIZE_PROCESS 128
+ #define PADDING_SIZE 102
+ #define TRAIN_IMAGE_SIZE 512
+ #define PROCESS_IMAGE_SIZE 3072*/
 
 #define OCVDBGW "OpenCV Debug Window"
 
@@ -224,40 +223,40 @@ int Train() {
           CV_LOAD_IMAGE_COLOR);
 
       /*cv::Mat label_image = cv::imread(
-          train_folder + train_label_prefix
+       train_folder + train_label_prefix
+       + ZeroPadNumber(i, train_label_digits) + train_label_format,
+       CV_LOAD_IMAGE_GRAYSCALE);
+
+       std::vector<cv::Mat> label_images;
+       label_images.push_back(label_image);*/
+
+      cv::Mat label_image_1 = cv::imread(
+          train_folder + train_label_prefix + "label_01/mitochondria_"
               + ZeroPadNumber(i, train_label_digits) + train_label_format,
           CV_LOAD_IMAGE_GRAYSCALE);
 
+      cv::Mat label_image_2 = cv::imread(
+          train_folder + train_label_prefix + "label_02/membrane_"
+              + ZeroPadNumber(i, train_label_digits) + train_label_format,
+          CV_LOAD_IMAGE_GRAYSCALE);
+
+      cv::Mat label_image_3(label_image_1.cols, label_image_2.cols, CV_8UC(1),
+                            255.0);
+      cv::subtract(label_image_3, label_image_1, label_image_3);
+      cv::subtract(label_image_3, label_image_2, label_image_3);
+      cv::subtract(label_image_2, label_image_1, label_image_2);
+
+      //cv::imshow(OCVDBGW, raw_image);
+      //cv::waitKey(0);
+      //cv::imshow(OCVDBGW, label_image_2);
+      //cv::waitKey(0);
+      //cv::imshow(OCVDBGW, label_image_3);
+      //cv::waitKey(0);
+
       std::vector<cv::Mat> label_images;
-      label_images.push_back(label_image);*/
-
-      cv::Mat label_image_1 = cv::imread(
-       train_folder + train_label_prefix + "label_01/mitochondria_"
-       + ZeroPadNumber(i, train_label_digits) + train_label_format,
-       CV_LOAD_IMAGE_GRAYSCALE);
-
-       cv::Mat label_image_2 = cv::imread(
-       train_folder + train_label_prefix + "label_02/membrane_"
-       + ZeroPadNumber(i, train_label_digits) + train_label_format,
-       CV_LOAD_IMAGE_GRAYSCALE);
-
-       cv::Mat label_image_3(label_image_1.cols, label_image_2.cols, CV_8UC(1),
-       255.0);
-       cv::subtract(label_image_3, label_image_1, label_image_3);
-       cv::subtract(label_image_3, label_image_2, label_image_3);
-       cv::subtract(label_image_2, label_image_1, label_image_2);
-
-       //cv::imshow(OCVDBGW, raw_image);
-       //cv::waitKey(0);
-       //cv::imshow(OCVDBGW, label_image_2);
-       //cv::waitKey(0);
-       //cv::imshow(OCVDBGW, label_image_3);
-       //cv::waitKey(0);
-
-       std::vector<cv::Mat> label_images;
-       label_images.push_back(label_image_1);
-       label_images.push_back(label_image_2);
-       label_images.push_back(label_image_3);
+      label_images.push_back(label_image_1);
+      label_images.push_back(label_image_2);
+      label_images.push_back(label_image_3);
 
       image_processor.SubmitImage(raw_image, i, label_images, 0.0);
     }
@@ -485,99 +484,54 @@ int Process() {
   return 0;
 }
 
-int DummyTest() {
-
-  Net<float> net("net/dummy_process.prototxt", caffe::TEST);
-
-  int padding_size = PADDING_SIZE;
-  int patch_size = PATCH_SIZE_PROCESS;
-
-  std::string input_images = INPUT_IMAGES;
-
-  cv::Mat image = cv::imread(input_images + "/00.tif", CV_LOAD_IMAGE_COLOR);
-  cv::Mat padimage;
-  cv::copyMakeBorder(image, padimage, padding_size / 2, padding_size / 2,
-                     padding_size / 2, padding_size / 2, IPL_BORDER_REFLECT,
-                     cv::Scalar::all(0.0));
-
-  cv::Rect roi(0, 0, padding_size + patch_size - 1,
-               padding_size + patch_size - 1);
-  cv::Mat crop = padimage(roi);
-
-  cv::Mat outimg(padding_size + patch_size - 1, padding_size + patch_size - 1,
-                 CV_32FC(3));
-
-  std::vector<cv::Mat> images;
-  std::vector<int> labels;
-
-  // Testing
-  for (int y = 0; y < padding_size + patch_size - 1; ++y) {
-    for (int x = 0; x < padding_size + patch_size - 1; ++x) {
-      int k = y / ((padding_size + patch_size) / 3);
-      (crop.at<cv::Vec<unsigned char, 3>>(y, x))[k] = 255;
-      (crop.at<cv::Vec<unsigned char, 3>>(y, x))[(k + 1) % 3] = 200;
-      (crop.at<cv::Vec<unsigned char, 3>>(y, x))[(k + 2) % 3] = 200;
-    }
-  }
-
-  cv::imshow(OCVDBGW, crop);
-  cv::waitKey();
-
-  images.push_back(crop);
-  labels.push_back(0);
-
-  boost::dynamic_pointer_cast<caffe::MemoryDataLayer<float>>(
-      (&net)->layers()[0])->AddMatVector(images, labels);
-
-  float loss = 0.0;
-  const vector<Blob<float>*>& result = net.ForwardPrefilled(&loss);
-
-  const float* cpuresult = result[1]->cpu_data();
-
-  std::cout << "Result size: " << result.size() << std::endl;
-
-#pragma omp parallel for
-  for (int y = 0; y < padding_size + patch_size - 1; ++y) {
-    for (int x = 0; x < padding_size + patch_size - 1; ++x) {
-      for (int k = 0; k < 3; ++k) {
-        (outimg.at<cv::Vec<float, 3>>(y, x))[k] = cpuresult[(k
-            * (padding_size + patch_size - 1) + y)
-            * (padding_size + patch_size - 1) + x];
-      }
-    }
-  }
-
-  std::vector<cv::Mat> channels(3);
-
-  cv::split(outimg, channels);
-  std::cout << "DONE" << std::endl;
-
-  for (int i = 0; i < 1; ++i) {
-
-  }
-
-  return 0;
-}
+namespace bopo = boost::program_options;
 
 int main(int argc, const char** argv) {
 
-  omp_set_num_threads(NUM_THREADS);
+  int device_id;
+  int thread_count;
 
-  cv::namedWindow(OCVDBGW, cv::WINDOW_AUTOSIZE);
+  bopo::options_description desc("Allowed options");
+  desc.add_options()      //
+  ("help", "help message")      //
+  ("devices", "show all available GPU devices")      //
+  ("gpu", bopo::value<int>(&device_id)->default_value(0),
+   "set GPU to use")  //
+  ("cpu", "use fallback CPU backend")  //
+  ("debug", "enable debugging messages")  //
+  ("graphic", "graphical debug output")  //
+  ("ompthreads",
+   bopo::value<int>(&thread_count)->default_value(omp_get_num_procs()),
+   "number of OpenMP threads to use)")  //
+  ("proto", "configuration prototxt file")  //
+   ;
 
-  Caffe::set_mode(Caffe::GPU);
+  bopo::variables_map varmap;
+  bopo::store(bopo::parse_command_line(argc, argv, desc), varmap);
+  bopo::notify(varmap);
 
-  Caffe::EnumerateDevices();
+  omp_set_num_threads(thread_count);
 
-  std::cout << "Select a device: " << std::endl;
+  if (varmap.count("help")) {
+    std::cout << desc << std::endl;
+    return 1;
+  }
 
-  int device_id = 0;
+  if (varmap.count("devices")) {
+    Caffe::EnumerateDevices();
+    return 1;
+  }
 
-  std::cin >> device_id;
+  if (varmap.count("graphic")) {
+    cv::namedWindow(OCVDBGW, cv::WINDOW_AUTOSIZE);
+  }
 
-  Caffe::SetDevice(device_id);
-
-  //DummyTest();
+  if (varmap.count("cpu")) {
+    Caffe::set_mode(Caffe::CPU);
+  } else {
+    Caffe::set_mode(Caffe::GPU);
+    Caffe::SetDevice(device_id);
+  }
 
 #ifndef TESTING
   Train();
@@ -586,4 +540,6 @@ int main(int argc, const char** argv) {
   //Train();
   Process();
 #endif
+
+  return 1;
 }
