@@ -69,7 +69,7 @@ proto: $(PROTO)/proto.txt
 
 # Run target
 caffe_neural_tool: aux proto $(FILES)
-	$(CXX) $(CXXFLAGS) $(CXXRUN) $(INCLUDE) -o $(BUILD)/caffe_neural $(FILES) $(LIBRARY)
+	$(CXX) $(CXXFLAGS) $(CXXRUN) $(INCLUDE) -o $(BUILD)/caffe_neural_tool $(FILES) $(LIBRARY)
 	
 # Debug target
 caffe_neural_tool_dbg: aux proto $(FILES)

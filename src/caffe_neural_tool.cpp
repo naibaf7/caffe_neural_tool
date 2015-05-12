@@ -46,73 +46,73 @@ using namespace caffe_neural;
 
 // For the dataset_03:
 
-#define MODE_3DTIFF true
+#define MODE_3DTIFF false
 #define TESTING
 
-#define PROTO_SOLVER "../project_data/net_sk_2out/neuraltissue_solver.prototxt"
-#define PROTO_NET "../project_data/net_sk_2out/neuraltissue_process.prototxt"
-#define MODEL_WEIGHTS "../project_data/net_sk_2out/neuraltissue_iter_30000.caffemodel"
-#define SOLVER_STATE "../project_data/net_sk_2out/neuraltissue_iter_30000.solverstate"
+/*#define PROTO_SOLVER "../project_data/net_sk_2out/neuraltissue_solver.prototxt"
+ #define PROTO_NET "../project_data/net_sk_2out/neuraltissue_process.prototxt"
+ #define MODEL_WEIGHTS "../project_data/net_sk_2out/neuraltissue_iter_30000.caffemodel"
+ #define SOLVER_STATE "../project_data/net_sk_2out/neuraltissue_iter_30000.solverstate"
 
-#define INPUT_IMAGES "../project_data/dataset_03/input/"
-#define INPUT_PREFIX "test-volume"
-#define INPUT_START_INDEX 0
-#define INPUT_COUNT 1
-#define INPUT_DIGITS 2
-#define INPUT_FORMAT ".tif"
-#define OUTPUT_LABELS "../project_data/dataset_03/output/"
-#define OUTPUT_FORMAT ".tif"
-
-#define TRAIN_SET_SIZE 1
-#define TRAIN_FOLDER "../project_data/dataset_03/train/"
-#define TRAIN_LABEL_PREFIX "labels/train-labels"
-#define TRAIN_RAW_PREFIX "raw/train-volume"
-#define TRAIN_LABEL_DIGITS 2
-#define TRAIN_RAW_DIGITS 2
-#define TRAIN_LABEL_FORMAT ".tif"
-#define TRAIN_RAW_FORMAT ".tif"
-
-#define BATCH_SIZE 1
-#define NR_CHANNELS 3
-#define NR_LABELS 2
-#define PATCH_SIZE_TRAIN 64
-#define PATCH_SIZE_PROCESS 128
-#define PADDING_SIZE 102
-#define TRAIN_IMAGE_SIZE 512
-#define PROCESS_IMAGE_SIZE 512
-
-// For the dataset_01:
-/*#define PROTO_SOLVER "../project_data/net_sk_9out/neuraltissue_solver.prototxt"
- #define PROTO_NET "../project_data/net_sk_9out/neuraltissue_process.prototxt"
- #define MODEL_WEIGHTS "../project_data/net_sk_9out/neuraltissue_iter_10000.caffemodel"
- #define SOLVER_STATE "../project_data/net_sk_9out/neuraltissue_iter_10000.solverstate"
-
- #define INPUT_IMAGES "../project_data/dataset_01/input/"
- #define INPUT_PREFIX ""
+ #define INPUT_IMAGES "../project_data/dataset_03/input/"
+ #define INPUT_PREFIX "test-volume"
  #define INPUT_START_INDEX 0
- #define INPUT_COUNT 20
+ #define INPUT_COUNT 1
  #define INPUT_DIGITS 2
  #define INPUT_FORMAT ".tif"
- #define OUTPUT_LABELS "../project_data/dataset_01/output/"
- #define OUTPUT_FORMAT ".png"
+ #define OUTPUT_LABELS "../project_data/dataset_03/output/"
+ #define OUTPUT_FORMAT ".tif"
 
- #define TRAIN_SET_SIZE 20
- #define TRAIN_FOLDER "../project_data/dataset_01/train/"
- #define TRAIN_LABEL_PREFIX "labels/labels"
- #define TRAIN_RAW_PREFIX "raw/"
- #define TRAIN_LABEL_DIGITS 8
+ #define TRAIN_SET_SIZE 1
+ #define TRAIN_FOLDER "../project_data/dataset_03/train/"
+ #define TRAIN_LABEL_PREFIX "labels/train-labels"
+ #define TRAIN_RAW_PREFIX "raw/train-volume"
+ #define TRAIN_LABEL_DIGITS 2
  #define TRAIN_RAW_DIGITS 2
- #define TRAIN_LABEL_FORMAT ".png"
+ #define TRAIN_LABEL_FORMAT ".tif"
  #define TRAIN_RAW_FORMAT ".tif"
 
  #define BATCH_SIZE 1
  #define NR_CHANNELS 3
- #define NR_LABELS 9
+ #define NR_LABELS 2
  #define PATCH_SIZE_TRAIN 64
  #define PATCH_SIZE_PROCESS 128
  #define PADDING_SIZE 102
- #define TRAIN_IMAGE_SIZE 1024
- #define PROCESS_IMAGE_SIZE 1024*/
+ #define TRAIN_IMAGE_SIZE 512
+ #define PROCESS_IMAGE_SIZE 512*/
+
+// For the dataset_01:
+#define PROTO_SOLVER "../project_data/net_sk_9out/neuraltissue_solver.prototxt"
+#define PROTO_NET "../project_data/net_sk_9out/neuraltissue_process.prototxt"
+#define MODEL_WEIGHTS "../project_data/net_sk_9out/neuraltissue_iter_30000.caffemodel"
+#define SOLVER_STATE "../project_data/net_sk_9out/neuraltissue_iter_30000.solverstate"
+
+#define INPUT_IMAGES "../project_data/dataset_01/input/"
+#define INPUT_PREFIX ""
+#define INPUT_START_INDEX 0
+#define INPUT_COUNT 20
+#define INPUT_DIGITS 2
+#define INPUT_FORMAT ".tif"
+#define OUTPUT_LABELS "../project_data/dataset_01/output/"
+#define OUTPUT_FORMAT ".png"
+
+#define TRAIN_SET_SIZE 20
+#define TRAIN_FOLDER "../project_data/dataset_01/train/"
+#define TRAIN_LABEL_PREFIX "labels/labels"
+#define TRAIN_RAW_PREFIX "raw/"
+#define TRAIN_LABEL_DIGITS 8
+#define TRAIN_RAW_DIGITS 2
+#define TRAIN_LABEL_FORMAT ".png"
+#define TRAIN_RAW_FORMAT ".tif"
+
+#define BATCH_SIZE 1
+#define NR_CHANNELS 3
+#define NR_LABELS 9
+#define PATCH_SIZE_TRAIN 64
+#define PATCH_SIZE_PROCESS 128
+#define PADDING_SIZE 102
+#define TRAIN_IMAGE_SIZE 1024
+#define PROCESS_IMAGE_SIZE 1024
 
 // For the dataset_02:
 /*#define PROTO_SOLVER "../project_data/net_sk_3out/neuraltissue_solver.prototxt"
@@ -441,7 +441,7 @@ int Process() {
           std::vector<cv::Mat> channels(nr_labels);
           cv::split(outimg, channels);
 
-          cv::imshow(OCVDBGW, channels[1]);
+          cv::imshow(OCVDBGW, channels[8]);
           cv::waitKey(1);
 #endif
 
@@ -495,8 +495,7 @@ int main(int argc, const char** argv) {
   desc.add_options()      //
   ("help", "help message")      //
   ("devices", "show all available GPU devices")      //
-  ("gpu", bopo::value<int>(&device_id)->default_value(0),
-   "set GPU to use")  //
+  ("gpu", bopo::value<int>(&device_id)->default_value(0), "set GPU to use")  //
   ("cpu", "use fallback CPU backend")  //
   ("debug", "enable debugging messages")  //
   ("graphic", "graphical debug output")  //
