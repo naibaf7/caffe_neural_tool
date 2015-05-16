@@ -1,0 +1,78 @@
+syntax = "proto2";
+
+package caffe_neural;
+
+message ToolParam {
+  repeated TrainParam train = 1;
+  repeated ProcessParam process = 2;
+}
+
+message TrainParam {
+  optional string solver = 1;
+  optional string solverstate = 2;
+  optional InputParam input = 3;
+}
+
+message ProcessParam {
+  optional string process_net = 1;
+  optional string caffemodel = 2;
+  optional InputParam input = 3;
+  optional OutputParam output = 4;
+}
+
+message InputParam {
+  optional int32 padding_size = 1;
+  optional int32 patch_size = 2;
+  optional int32 channels = 3;
+  optional int32 labels = 4;
+  optional int32 batch_size = 5;
+  optional PreprocessorParam preprocessor = 6;
+  // Folder with the raw images
+  optional string raw_images = 7;
+  // Folder with the label images
+  optional string label_images = 8;
+}
+
+
+message OutputParam {
+  // Result output folder
+  optional string output = 1;
+  // Force a 32bit floating point output (tif only)
+  optional bool fp32_out = 2 [default = false];
+  // Force output all labels even for 2 label classification
+  optional bool out_all_labels = 3 [default = false];
+  // Output image format
+  optional string format = 4 [default = "tif"];
+}
+
+message PreprocessorParam {
+  optional bool normalization = 1 [default = true];
+  optional PrepCropParam crop = 2;
+  optional PrepClaheParam clahe = 3;
+  optional bool rotation = 4 [default = false];
+  optional bool mirror = 5 [default = false];
+  optional PrepHistEqParam histeq = 6; 
+  optional PrepBlurParam blur = 7;
+}
+
+message PrepCropParam {
+  optional int32 imagecrop = 1;
+  optional int32 labelcrop = 2;
+}
+
+message PrepBlurParam {
+  optional float mean = 1 [default = 0.0];
+  optional float std = 2 [default = 0.1];
+  optional int32 ksize = 3 [default = 5];
+}
+
+message PrepClaheParam {
+  optional float clip = 1 [default = 4.0];
+}
+
+message PrepHistEqParam {
+  optional bool patch_prior = 1 [default = true];
+  optional bool masking = 2 [default = false];
+  repeated float label_boost = 3;
+  optional float border_boost = 4 [default = 1.0];
+}

@@ -26,10 +26,16 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <boost/program_options.hpp>
+#include "caffe_neural_tool.hpp"
 
 #include "image_processor.hpp"
 #include "neural_utils.hpp"
 #include "tiffio_wrapper.hpp"
+#include "filesystem_utils.hpp"
+
+#include <glog/logging.h>
+#include "google/protobuf/message.h"
+#include "caffetool.pb.h"
 
 using caffe::Blob;
 using caffe::Caffe;
@@ -42,235 +48,173 @@ using caffe::Datum;
 using caffe::Solver;
 using caffe::NetParameter;
 
+namespace bopo = boost::program_options;
+namespace gpb = google::protobuf;
+
 using namespace caffe_neural;
-
-// For the dataset_03:
-
-#define MODE_3DTIFF false
-#define TESTING
-
-/*#define PROTO_SOLVER "../project_data/net_sk_2out/neuraltissue_solver.prototxt"
- #define PROTO_NET "../project_data/net_sk_2out/neuraltissue_process.prototxt"
- #define MODEL_WEIGHTS "../project_data/net_sk_2out/neuraltissue_iter_30000.caffemodel"
- #define SOLVER_STATE "../project_data/net_sk_2out/neuraltissue_iter_30000.solverstate"
-
- #define INPUT_IMAGES "../project_data/dataset_03/input/"
- #define INPUT_PREFIX "test-volume"
- #define INPUT_START_INDEX 0
- #define INPUT_COUNT 1
- #define INPUT_DIGITS 2
- #define INPUT_FORMAT ".tif"
- #define OUTPUT_LABELS "../project_data/dataset_03/output/"
- #define OUTPUT_FORMAT ".tif"
-
- #define TRAIN_SET_SIZE 1
- #define TRAIN_FOLDER "../project_data/dataset_03/train/"
- #define TRAIN_LABEL_PREFIX "labels/train-labels"
- #define TRAIN_RAW_PREFIX "raw/train-volume"
- #define TRAIN_LABEL_DIGITS 2
- #define TRAIN_RAW_DIGITS 2
- #define TRAIN_LABEL_FORMAT ".tif"
- #define TRAIN_RAW_FORMAT ".tif"
-
- #define BATCH_SIZE 1
- #define NR_CHANNELS 3
- #define NR_LABELS 2
- #define PATCH_SIZE_TRAIN 64
- #define PATCH_SIZE_PROCESS 128
- #define PADDING_SIZE 102
- #define TRAIN_IMAGE_SIZE 512
- #define PROCESS_IMAGE_SIZE 512*/
-
-// For the dataset_01:
-#define PROTO_SOLVER "../project_data/net_sk_9out/neuraltissue_solver.prototxt"
-#define PROTO_NET "../project_data/net_sk_9out/neuraltissue_process.prototxt"
-#define MODEL_WEIGHTS "../project_data/net_sk_9out/neuraltissue_iter_30000.caffemodel"
-#define SOLVER_STATE "../project_data/net_sk_9out/neuraltissue_iter_30000.solverstate"
-
-#define INPUT_IMAGES "../project_data/dataset_01/input/"
-#define INPUT_PREFIX ""
-#define INPUT_START_INDEX 0
-#define INPUT_COUNT 20
-#define INPUT_DIGITS 2
-#define INPUT_FORMAT ".tif"
-#define OUTPUT_LABELS "../project_data/dataset_01/output/"
-#define OUTPUT_FORMAT ".png"
-
-#define TRAIN_SET_SIZE 20
-#define TRAIN_FOLDER "../project_data/dataset_01/train/"
-#define TRAIN_LABEL_PREFIX "labels/labels"
-#define TRAIN_RAW_PREFIX "raw/"
-#define TRAIN_LABEL_DIGITS 8
-#define TRAIN_RAW_DIGITS 2
-#define TRAIN_LABEL_FORMAT ".png"
-#define TRAIN_RAW_FORMAT ".tif"
-
-#define BATCH_SIZE 1
-#define NR_CHANNELS 3
-#define NR_LABELS 9
-#define PATCH_SIZE_TRAIN 64
-#define PATCH_SIZE_PROCESS 128
-#define PADDING_SIZE 102
-#define TRAIN_IMAGE_SIZE 1024
-#define PROCESS_IMAGE_SIZE 1024
-
-// For the dataset_02:
-/*#define PROTO_SOLVER "../project_data/net_sk_3out/neuraltissue_solver.prototxt"
- #define PROTO_NET "../project_data/net_sk_3out/neuraltissue_process.prototxt"
- #define MODEL_WEIGHTS "../project_data/net_sk_3out/neuraltissue_iter_10000.caffemodel"
- #define SOLVER_STATE "../project_data/net_sk_3out/neuraltissue_iter_10000.solverstate"
-
- #define INPUT_IMAGES "../project_data/dataset_02/input/"
- #define INPUT_PREFIX "crop."
- #define INPUT_START_INDEX 4352
- #define INPUT_COUNT 200
- #define INPUT_DIGITS 8
- #define INPUT_FORMAT ".png"
- #define OUTPUT_LABELS "../project_data/dataset_02/output_3/"
- #define OUTPUT_FORMAT ".png"
-
- #define TRAIN_SET_SIZE 20
- #define TRAIN_FOLDER "../project_data/dataset_02/train/"
- #define TRAIN_LABEL_PREFIX "labels/"
- #define TRAIN_RAW_PREFIX "raw/raw_"
- #define TRAIN_LABEL_DIGITS 3
- #define TRAIN_RAW_DIGITS 3
- #define TRAIN_LABEL_FORMAT ".tif"
- #define TRAIN_RAW_FORMAT ".tif"
-
- #define BATCH_SIZE 1
- #define NR_CHANNELS 3
- #define NR_LABELS 3
- #define PATCH_SIZE_TRAIN 64
- #define PATCH_SIZE_PROCESS 128
- #define PADDING_SIZE 102
- #define TRAIN_IMAGE_SIZE 512
- #define PROCESS_IMAGE_SIZE 3072*/
 
 #define OCVDBGW "OpenCV Debug Window"
 
-int Train() {
-  std::string proto_solver = PROTO_SOLVER;
-  std::string train_folder = TRAIN_FOLDER;
-  std::string train_raw_prefix = TRAIN_RAW_PREFIX;
-  std::string train_raw_format = TRAIN_RAW_FORMAT;
-  std::string train_label_prefix = TRAIN_LABEL_PREFIX;
-  std::string train_label_format = TRAIN_LABEL_FORMAT;
-  std::string solver_state = SOLVER_STATE;
+int Train(ToolParam &tool_param, CommonSettings &settings) {
 
-  int train_set_size = TRAIN_SET_SIZE;
+  if (tool_param.train_size() <= settings.param_index) {
+    LOG(FATAL)<< "Train parameter index does not exist.";
+  }
 
-  int train_raw_digits = TRAIN_RAW_DIGITS;
-  int train_label_digits = TRAIN_LABEL_DIGITS;
+  TrainParam train_param = tool_param.train(settings.param_index);
+  InputParam input_param = train_param.input();
 
-  int patch_size = PATCH_SIZE_TRAIN;
-  int padding_size = PADDING_SIZE;
-  int image_size = TRAIN_IMAGE_SIZE;
-  int nr_labels = NR_LABELS;
+  if(!(input_param.has_patch_size() && input_param.has_padding_size() && input_param.has_labels() && input_param.has_channels())) {
+    LOG(FATAL) << "Patch size, padding size, label count or channel count parameter missing.";
+  }
+  int patch_size = input_param.patch_size();
+  int padding_size = input_param.padding_size();
+  unsigned int nr_labels = input_param.labels();
+  unsigned int nr_channels = input_param.channels();
+
+  std::string proto_solver = "";
+  if(!train_param.has_solver()) {
+    LOG(FATAL) << "Solver prototxt file argument missing";
+  }
+
+  proto_solver = train_param.solver();
 
   caffe::SolverParameter solver_param;
   caffe::ReadProtoFromTextFileOrDie(proto_solver, &solver_param);
 
+  int testinterval = solver_param.has_test_interval()?solver_param.test_interval():-1;
+
   shared_ptr<caffe::Solver<float> > solver(
       caffe::GetSolver<float>(solver_param));
 
-  // Continue from previous solverstate
-  const char* solver_state_c = solver_state.c_str();
-  solver->Restore(solver_state_c);
+  if(train_param.has_solverstate()) {
+    // Continue from previous solverstate
+    const char* solver_state_c = train_param.solverstate().c_str();
+    solver->Restore(solver_state_c);
+  }
 
+  // Get handles to the test and train network of the Caffe solver
   boost::shared_ptr<caffe::Net<float>> train_net = solver->net();
+  boost::shared_ptr<caffe::Net<float>> test_net;
+  if(solver->test_nets().size() > 0) {
+    test_net = solver->test_nets()[0];
+  }
 
-  TrainImageProcessor image_processor(image_size, patch_size, nr_labels);
+  TrainImageProcessor image_processor(patch_size, nr_labels);
 
-  image_processor.SetBorderParams(true, padding_size / 2);
-  image_processor.SetRotationParams(true);
-  image_processor.SetPatchMirrorParams(true);
+  if(input_param.has_preprocessor()) {
 
-  std::vector<float> label_boost { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+    PreprocessorParam preprocessor_param = input_param.preprocessor();
 
-  //image_processor.SetLabelHistEqParams(true, true, true, label_boost);
-  image_processor.SetCropParams(1, 0);
-  image_processor.SetClaheParams(true, 4.0);
-  image_processor.SetBlurParams(true, 0, 0.1, 5);
-  image_processor.SetNormalizationParams(true);
+    image_processor.SetBorderParams(input_param.has_padding_size(), padding_size / 2);
+    image_processor.SetRotationParams(preprocessor_param.has_rotation() && preprocessor_param.rotation());
+    image_processor.SetPatchMirrorParams(preprocessor_param.has_mirror() && preprocessor_param.mirror());
+    image_processor.SetNormalizationParams(preprocessor_param.has_normalization() && preprocessor_param.normalization());
 
-  int ijsum = 0;
-  // Preload and preprocess all images
-  for (int i = 0; i < train_set_size; ++i) {
-    if (MODE_3DTIFF) {
-
-      std::vector<cv::Mat> raw_stack = LoadTiff(
-          train_folder + train_raw_prefix + ZeroPadNumber(i, train_raw_digits)
-              + train_raw_format,
-          3);
-
-      std::vector<cv::Mat> label_stack = LoadTiff(
-          train_folder + train_label_prefix
-              + ZeroPadNumber(i, train_label_digits) + train_label_format,
-          1);
-
-      for (unsigned int j = 0; j < raw_stack.size(); ++j) {
-        std::vector<cv::Mat> label_images;
-        label_images.push_back(label_stack[j]);
-        image_processor.SubmitImage(raw_stack[j], ijsum, label_images, 255.0);
-        ++ijsum;
+    if(preprocessor_param.has_histeq()) {
+      PrepHistEqParam histeq_param = preprocessor_param.histeq();
+      std::vector<float> label_boost(nr_labels, 1.0);
+      for(int i = 0; i < histeq_param.label_boost().size(); ++i) {
+        label_boost[i] = histeq_param.label_boost().Get(i);
       }
+      image_processor.SetLabelHistEqParams(true, histeq_param.has_patch_prior(), histeq_param.has_masking(), label_boost);
+    }
 
+    if(preprocessor_param.has_crop()) {
+      PrepCropParam crop_param = preprocessor_param.crop();
+      image_processor.SetCropParams(crop_param.has_imagecrop()?crop_param.imagecrop():0, crop_param.has_labelcrop()?crop_param.labelcrop():0);
+    }
+
+    if(preprocessor_param.has_clahe()) {
+      PrepClaheParam clahe_param = preprocessor_param.clahe();
+      image_processor.SetClaheParams(true, clahe_param.has_clip()?clahe_param.clip():4.0);
+    }
+
+    if(preprocessor_param.has_blur()) {
+      PrepBlurParam blur_param = preprocessor_param.blur();
+      image_processor.SetBlurParams(true, blur_param.has_mean()?blur_param.mean():0.0, blur_param.has_std()?blur_param.std():0.1, blur_param.has_ksize()?blur_param.ksize():5);
+    }
+
+  }
+
+  if(!(input_param.has_raw_images() && input_param.has_label_images())) {
+    LOG(FATAL) << "Raw images or label images folder missing.";
+  }
+
+  std::set<std::string> filetypes = CreateImageTypesSet();
+
+  int error;
+  std::vector<std::vector<bofs::path>> training_set = LoadTrainingSetItems(filetypes, input_param.raw_images(),input_param.label_images(),&error);
+
+  unsigned int ijsum = 0;
+  // Preload and preprocess all images
+  for (unsigned int i = 0; i < training_set.size(); ++i) {
+
+    std::vector<bofs::path> training_item = training_set[i];
+
+    std::vector<cv::Mat> raw_stack;
+    std::vector<std::vector<cv::Mat>> labels_stack(training_item.size() - 1);
+
+    std::string type = bofs::extension(training_item[0]);
+    std::transform(type.begin(), type.end(), type.begin(), ::tolower);
+
+    if(type == ".tif" || type == ".tiff") {
+      // TIFF and multipage TIFF mode
+      raw_stack = LoadTiff(training_item[0].string(), nr_channels);
     } else {
-      cv::Mat raw_image = cv::imread(
-          train_folder + train_raw_prefix + ZeroPadNumber(i, train_raw_digits)
-              + train_raw_format,
+      // All other image types
+      cv::Mat raw_image = cv::imread(training_item[0].string(), nr_channels == 1 ? CV_LOAD_IMAGE_GRAYSCALE :
           CV_LOAD_IMAGE_COLOR);
+      raw_stack.push_back(raw_image);
+    }
 
-      /*cv::Mat label_image = cv::imread(
-       train_folder + train_label_prefix
-       + ZeroPadNumber(i, train_label_digits) + train_label_format,
-       CV_LOAD_IMAGE_GRAYSCALE);
+    for(unsigned int k = 0; k < training_item.size() - 1; ++k) {
+      std::string type = bofs::extension(training_item[k+1]);
+      std::transform(type.begin(), type.end(), type.begin(), ::tolower);
+      if(type == ".tif" || type == ".tiff") {
+        std::vector<cv::Mat> label_stack = LoadTiff(training_item[k+1].string(), 1);
+        labels_stack[k] = label_stack;
+      }
+      else {
+        std::vector<cv::Mat> label_stack;
+        cv::Mat label_image = cv::imread(training_item[k+1].string(), CV_LOAD_IMAGE_GRAYSCALE);
+        label_stack.push_back(label_image);
+        labels_stack[k] = label_stack;
+      }
+    }
 
-       std::vector<cv::Mat> label_images;
-       label_images.push_back(label_image);*/
-
-      cv::Mat label_image_1 = cv::imread(
-          train_folder + train_label_prefix + "label_01/mitochondria_"
-              + ZeroPadNumber(i, train_label_digits) + train_label_format,
-          CV_LOAD_IMAGE_GRAYSCALE);
-
-      cv::Mat label_image_2 = cv::imread(
-          train_folder + train_label_prefix + "label_02/membrane_"
-              + ZeroPadNumber(i, train_label_digits) + train_label_format,
-          CV_LOAD_IMAGE_GRAYSCALE);
-
-      cv::Mat label_image_3(label_image_1.cols, label_image_2.cols, CV_8UC(1),
-                            255.0);
-      cv::subtract(label_image_3, label_image_1, label_image_3);
-      cv::subtract(label_image_3, label_image_2, label_image_3);
-      cv::subtract(label_image_2, label_image_1, label_image_2);
-
-      //cv::imshow(OCVDBGW, raw_image);
-      //cv::waitKey(0);
-      //cv::imshow(OCVDBGW, label_image_2);
-      //cv::waitKey(0);
-      //cv::imshow(OCVDBGW, label_image_3);
-      //cv::waitKey(0);
-
+    for (unsigned int j = 0; j < raw_stack.size(); ++j) {
       std::vector<cv::Mat> label_images;
-      label_images.push_back(label_image_1);
-      label_images.push_back(label_image_2);
-      label_images.push_back(label_image_3);
-
-      image_processor.SubmitImage(raw_image, i, label_images, 0.0);
+      for(unsigned int k = 0; k < labels_stack.size(); ++k) {
+        label_images.push_back(labels_stack[k][j]);
+      }
+      if(label_images.size() < nr_labels && nr_labels != 2) {
+        // Generate complement label
+        cv::Mat clabel(label_images[0].rows, label_images[0].cols, CV_8UC(1), 255.0);
+        for(unsigned int k = 0; k < label_images.size(); ++k) {
+          cv::subtract(clabel,label_images[k],clabel);
+        }
+        label_images.push_back(clabel);
+      }
+      image_processor.SubmitImage(raw_stack[j], ijsum, label_images);
+      ++ijsum;
     }
   }
 
+  LOG(INFO) << "GOT HERE -1!";
+
+
   image_processor.Init();
 
-#ifdef TESTING
+  LOG(INFO) << "GOT HERE 0!";
+
   std::vector<long> labelcounter(nr_labels + 1);
-#endif
 
   // Do the training
-  for (int i = 0; i < 30000; ++i) {
+  for (int i = 0; i < solver_param.has_max_iter()?solver_param.max_iter():0; ++i) {
     std::vector<cv::Mat> patch = image_processor.DrawPatchRandom();
+
+    LOG(INFO) << "GOT HERE 1!";
 
     std::vector<cv::Mat> images;
     std::vector<cv::Mat> labels;
@@ -278,40 +222,44 @@ int Train() {
     images.push_back(patch[0]);
     labels.push_back(patch[1]);
 
-#ifdef TESTING
+    // TODO: Only enable in debug or statistics mode
     for (int y = 0; y < patch_size; ++y) {
       for (int x = 0; x < patch_size; ++x) {
         labelcounter[patch[1].at<float>(y, x) + 1] += 1;
       }
     }
 
-    for (int k = 0; k < nr_labels + 1; ++k) {
-      std::cout << "Label: " << k << ", " << labelcounter[k] << std::endl;
+    if(settings.debug) {
+      for (unsigned int k = 0; k < nr_labels + 1; ++k) {
+        std::cout << "Label: " << k << ", " << labelcounter[k] << std::endl;
+      }
     }
 
-    cv::Mat test;
+    if(settings.graphic) {
 
-    double minVal, maxVal;
-    cv::minMaxLoc(patch[1], &minVal, &maxVal);
-    patch[1].convertTo(test, CV_32FC1, 1.0 / (maxVal - minVal),
-                       -minVal * 1.0 / (maxVal - minVal));
+      cv::Mat test;
 
-    std::vector<cv::Mat> tv;
-    tv.push_back(test);
-    tv.push_back(test);
-    tv.push_back(test);
-    cv::Mat tvl;
+      double minVal, maxVal;
+      cv::minMaxLoc(patch[1], &minVal, &maxVal);
+      patch[1].convertTo(test, CV_32FC1, 1.0 / (maxVal - minVal),
+          -minVal * 1.0 / (maxVal - minVal));
 
-    cv::merge(tv, tvl);
+      std::vector<cv::Mat> tv;
+      tv.push_back(test);
+      tv.push_back(test);
+      tv.push_back(test);
+      cv::Mat tvl;
 
-    tvl.copyTo(
-        patch[0](
-            cv::Rect(padding_size / 2, padding_size / 2, patch_size,
-                     patch_size)));
+      cv::merge(tv, tvl);
 
-    cv::imshow(OCVDBGW, patch[0]);
-    cv::waitKey(0);
-#endif
+      tvl.copyTo(
+          patch[0](
+              cv::Rect(padding_size / 2, padding_size / 2, patch_size,
+                  patch_size)));
+
+      cv::imshow(OCVDBGW, patch[0]);
+      cv::waitKey(10);
+    }
 
     // The labels
     std::vector<int> lalabels;
@@ -327,89 +275,151 @@ int Train() {
 
     solver->StepPrefilled();
 
+    if(i % testinterval == 0) {
+      // TODO: Run tests with the testset and testnet
+      // TODO: Apply ISBI and other quality measures
+      // TODO: Write out statistics to file
+    }
+
   }
 
-  solver->Snapshot();
-
-  std::cout << "DONE!" << std::endl;
+  LOG(INFO) << "Training done!";
 
   return 0;
 }
 
-int Process() {
+int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
 
-  std::string proto_net = PROTO_NET;
-  std::string input_images = INPUT_IMAGES;
-  std::string model_weights = MODEL_WEIGHTS;
+  if (tool_param.train_size() <= settings.param_index) {
+    LOG(FATAL)<< "Train parameter index does not exist.";
+  }
 
-  int input_start_index = INPUT_START_INDEX;
-  int input_count = INPUT_COUNT;
+  ProcessParam process_param = tool_param.process(settings.param_index);
+  InputParam input_param = process_param.input();
+  OutputParam output_param = process_param.output();
 
-  int nr_labels = NR_LABELS;
+  if(!output_param.has_output()) {
+    LOG(FATAL) << "Processing output path missing.";
+  }
 
-  std::string input_prefix = INPUT_PREFIX;
-  std::string input_format = INPUT_FORMAT;
-  std::string output_labels = OUTPUT_LABELS;
-  std::string output_format = OUTPUT_FORMAT;
+  std::string outpath = output_param.output();
+  std::string format = output_param.has_format()? output_param.format() : ".tif";
+  bool fp32out = output_param.has_fp32_out()? output_param.fp32_out() : false;
+  if(fp32out) {
+    format = ".tif";
+  }
+  std::set<std::string> filetypes = CreateImageTypesSet();
+  if (filetypes.find(format) == filetypes.end()) {
+    format = ".tif";
+  }
+  std::transform(format.begin(), format.end(), format.begin(), ::tolower);
 
-  int input_digits = INPUT_DIGITS;
-  int padding_size = PADDING_SIZE;
-  int patch_size = PATCH_SIZE_PROCESS;
-  int image_size = PROCESS_IMAGE_SIZE;
+  if(!(input_param.has_patch_size() && input_param.has_padding_size() && input_param.has_labels() && input_param.has_channels())) {
+    LOG(FATAL) << "Patch size, padding size, label count or channel count parameter missing.";
+  }
+  int patch_size = input_param.patch_size();
+  int padding_size = input_param.padding_size();
+  unsigned int nr_labels = input_param.labels();
+  unsigned int nr_channels = input_param.channels();
 
-  Net<float> net(proto_net, caffe::TEST);
-  net.CopyTrainedLayersFrom(MODEL_WEIGHTS);
+  if(!(process_param.has_process_net() && process_param.has_caffemodel())) {
+    LOG(FATAL) << "Processing network prototxt or caffemodel argument missing.";
+  }
 
-  ProcessImageProcessor image_processor(image_size, patch_size, nr_labels);
-  image_processor.SetBorderParams(true, padding_size / 2);
-  image_processor.SetClaheParams(true, 4.0);
-  image_processor.SetCropParams(1, 0);
-  image_processor.SetNormalizationParams(true);
+  std::string process_net = process_param.process_net();
+  std::string caffe_model = process_param.caffemodel();
 
-  for (int i = input_start_index; i < input_start_index + input_count; ++i) {
-    std::cout
-        << input_images + input_prefix + ZeroPadNumber(i, input_digits)
-            + input_format
-        << std::endl;
+  Net<float> net(process_net, caffe::TEST);
+  net.CopyTrainedLayersFrom(caffe_model);
+
+  ProcessImageProcessor image_processor(patch_size, nr_labels);
+
+  int imagecrop = 0;
+  if(input_param.has_preprocessor()) {
+
+    PreprocessorParam preprocessor_param = input_param.preprocessor();
+
+    image_processor.SetBorderParams(input_param.has_padding_size(), padding_size / 2);
+    image_processor.SetRotationParams(preprocessor_param.has_rotation() && preprocessor_param.rotation());
+    image_processor.SetPatchMirrorParams(preprocessor_param.has_mirror() && preprocessor_param.mirror());
+    image_processor.SetNormalizationParams(preprocessor_param.has_normalization() && preprocessor_param.normalization());
+
+    if(preprocessor_param.has_histeq()) {
+      PrepHistEqParam histeq_param = preprocessor_param.histeq();
+      std::vector<float> label_boost(nr_labels, 1.0);
+      for(int i = 0; i < histeq_param.label_boost().size(); ++i) {
+        label_boost[i] = histeq_param.label_boost().Get(i);
+      }
+      image_processor.SetLabelHistEqParams(true, histeq_param.has_patch_prior(), histeq_param.has_masking(), label_boost);
+    }
+
+    if(preprocessor_param.has_crop()) {
+      PrepCropParam crop_param = preprocessor_param.crop();
+      image_processor.SetCropParams(crop_param.has_imagecrop()?crop_param.imagecrop():0, crop_param.has_labelcrop()?crop_param.labelcrop():0);
+      imagecrop = crop_param.has_imagecrop()?crop_param.imagecrop():0;
+    }
+
+    if(preprocessor_param.has_clahe()) {
+      PrepClaheParam clahe_param = preprocessor_param.clahe();
+      image_processor.SetClaheParams(true, clahe_param.has_clip()?clahe_param.clip():4.0);
+    }
+
+    if(preprocessor_param.has_blur()) {
+      PrepBlurParam blur_param = preprocessor_param.blur();
+      image_processor.SetBlurParams(true, blur_param.has_mean()?blur_param.mean():0.0, blur_param.has_std()?blur_param.std():0.1, blur_param.has_ksize()?blur_param.ksize():5);
+    }
+  }
+
+  int error;
+  std::vector<bofs::path> process_set = LoadProcessSetItems(filetypes, input_param.raw_images(),&error);
+
+  for (unsigned int i = 0; i < process_set.size(); ++i) {
+    LOG(INFO) << "Processing file: " << process_set[i];
 
     std::vector<cv::Mat> image_stack;
 
-    if (MODE_3DTIFF) {
-      image_stack = LoadTiff(
-          input_images + input_prefix + ZeroPadNumber(i, input_digits)
-              + input_format,
-          3);
+    std::string type = bofs::extension(process_set[0]);
+    std::transform(type.begin(), type.end(), type.begin(), ::tolower);
+
+    if(type == ".tif" || type == ".tiff") {
+      // TIFF and multipage TIFF mode
+      image_stack = LoadTiff(process_set[i].string(),
+          nr_channels);
     } else {
-
-      cv::Mat image = cv::imread(
-          input_images + input_prefix + ZeroPadNumber(i, input_digits)
-              + input_format,
-          CV_LOAD_IMAGE_COLOR);
-
+      // All other image types
+      cv::Mat image = cv::imread(process_set[i].string(),
+          nr_channels == 1 ? CV_LOAD_IMAGE_GRAYSCALE:CV_LOAD_IMAGE_COLOR);
       image_stack.push_back(image);
     }
 
-    std::vector<cv::Mat> output_stack;
+    std::vector<std::vector<cv::Mat>> output_stack;
     for (unsigned int st = 0; st < image_stack.size(); ++st) {
       image_processor.ClearImages();
 
-      std::cout << "Subdirectory: " << st << std::endl;
+      LOG(INFO) << "Processing subdirectory: " << st;
 
       cv::Mat image = image_stack[st];
 
       std::vector<cv::Mat> labels;
-      image_processor.SubmitImage(image, i, labels, 0.0);
+      image_processor.SubmitImage(image, i, labels);
 
       cv::Mat padimage = image_processor.raw_images()[0];
 
-      cv::Mat outimg(image_size, image_size, CV_32FC(nr_labels));
+      int image_size_x = image.cols;
+      int image_size_y = image.rows;
 
-      for (int yoff = 0; yoff < image_size / patch_size; ++yoff) {
-        for (int xoff = 0; xoff < image_size / patch_size; ++xoff) {
+      std::vector<cv::Mat> outimgs;
+      for(unsigned int k = 0; k < nr_labels; ++k) {
+        cv::Mat outimg(image_size_y, image_size_x, CV_32FC1);
+        outimgs.push_back(outimg);
+      }
+
+      for (int yoff = 0; yoff < image_size_y / patch_size; ++yoff) {
+        for (int xoff = 0; xoff < image_size_x / patch_size; ++xoff) {
 
           cv::Rect roi(xoff * patch_size, yoff * patch_size,
-                       padding_size + patch_size - 1,
-                       padding_size + patch_size - 1);
+              padding_size + patch_size - imagecrop,
+              padding_size + patch_size - imagecrop);
           cv::Mat crop = padimage(roi);
 
           std::vector<cv::Mat> images;
@@ -427,69 +437,78 @@ int Process() {
           const float* cpuresult = result[0]->cpu_data();
 
 #pragma omp parallel for
-          for (int y = 0; y < patch_size; ++y) {
-            for (int x = 0; x < patch_size; ++x) {
-              for (int k = 0; k < nr_labels; ++k) {
-                (outimg.at<cv::Vec<float, NR_LABELS>>(y + yoff * patch_size,
-                                                      x + xoff * patch_size))[k] =
-                    cpuresult[(k * patch_size + y) * patch_size + x];
+          for (unsigned int k = 0; k < nr_labels; ++k) {
+            for (int y = 0; y < patch_size; ++y) {
+              for (int x = 0; x < patch_size; ++x) {
+                (outimgs[k].at<float>(y + yoff * patch_size,
+                        x + xoff * patch_size)) =
+                cpuresult[(k * patch_size + y) * patch_size + x];
               }
             }
           }
 
-#ifdef TESTING
-          std::vector<cv::Mat> channels(nr_labels);
-          cv::split(outimg, channels);
-
-          cv::imshow(OCVDBGW, channels[8]);
-          cv::waitKey(1);
-#endif
+          if (settings.graphic) {
+            for (unsigned int k = 0; k < nr_labels; ++k) {
+              cv::imshow(OCVDBGW, outimgs[k]);
+              cv::waitKey(100);
+            }
+          }
 
         }
       }
-
-      std::vector<cv::Mat> channels(nr_labels);
-      cv::split(outimg, channels);
-
-      if (!MODE_3DTIFF) {
-        std::string dir = output_labels + ZeroPadNumber(i, input_digits) + "/";
-        const char* cdir = dir.c_str();
-        mkdir(cdir, 0777);
-
-        for (int c = 0; c < nr_labels; ++c) {
-
-          cv::Mat out;
-
-          channels[c].convertTo(out, CV_8UC(1), 255.0, 0.0);
-
-          cv::imwrite(
-              output_labels + ZeroPadNumber(i, input_digits) + "/"
-                  + std::to_string(c) + output_format,
-              out);
-
-        }
-      } else {
-        cv::Mat out;
-        channels[1].convertTo(out, CV_8UC(1), 255.0, 0.0);
-        output_stack.push_back(out);
-      }
-
+      output_stack.push_back(outimgs);
     }
-    if (MODE_3DTIFF) {
-      SaveTiff(output_stack,
-               output_labels + ZeroPadNumber(i, input_digits) + output_format);
+
+    // Output stacks only supported with multipage TIFFs
+    if(output_stack.size() > 1) {
+      format = ".tif";
+    }
+
+    bofs::path outp(outpath);
+    bofs::create_directories(outp);
+
+    unsigned int nr_out_labels = ((output_param.has_out_all_labels() && output_param.out_all_labels()) || nr_labels > 2)?nr_labels:1;
+
+    // In the two label case, export the second and not the first label output
+    unsigned int label_offset = nr_out_labels==1?1:0;
+
+    for(unsigned int k = 0; k < nr_out_labels; ++k) {
+      bofs::path outpl = outp;
+      if(nr_out_labels > 1) {
+        outpl /= ("/" + ZeroPadNumber(k,std::log10(nr_labels)+1));
+        bofs::create_directories(outpl);
+      }
+      bofs::path filep = outpl;
+      filep /= ("/" + process_set[i].stem().string()+format);
+
+      std::vector<cv::Mat> saveout(output_stack.size());
+      for(unsigned int st = 0; st < output_stack.size();++st) {
+        if(fp32out) {
+          output_stack[st][k+label_offset].convertTo(saveout[st], CV_32FC1, 1.0, 0.0);
+        } else {
+          output_stack[st][k+label_offset].convertTo(saveout[st], CV_8UC1, 255.0, 0.0);
+        }
+      }
+
+      if(format == ".tif" || format == ".tiff") {
+        SaveTiff(saveout,filep.string());
+      } else {
+        cv::imwrite(filep.string(),saveout[0]);
+      }
     }
   }
-
   return 0;
 }
 
-namespace bopo = boost::program_options;
-
 int main(int argc, const char** argv) {
+
+  google::InitGoogleLogging(argv[0]);
 
   int device_id;
   int thread_count;
+  std::string proto;
+  int train_index;
+  int process_index;
 
   bopo::options_description desc("Allowed options");
   desc.add_options()      //
@@ -502,7 +521,12 @@ int main(int argc, const char** argv) {
   ("ompthreads",
    bopo::value<int>(&thread_count)->default_value(omp_get_num_procs()),
    "number of OpenMP threads to use)")  //
-  ("proto", "configuration prototxt file")  //
+  ("proto", bopo::value<std::string>(&proto), "configuration prototxt file")  //
+  ("train", bopo::value<int>(&train_index),
+   "training mode with training parameter set")  //
+  ("process", bopo::value<int>(&process_index),
+   "process mode with process parameter set")  //
+  ("silent", "silence all logging")  //
    ;
 
   bopo::variables_map varmap;
@@ -510,6 +534,12 @@ int main(int argc, const char** argv) {
   bopo::notify(varmap);
 
   omp_set_num_threads(thread_count);
+
+  if (varmap.count("silent")) {
+    FLAGS_logtostderr = 0;
+  } else {
+    FLAGS_logtostderr = 1;
+  }
 
   if (varmap.count("help")) {
     std::cout << desc << std::endl;
@@ -532,13 +562,30 @@ int main(int argc, const char** argv) {
     Caffe::SetDevice(device_id);
   }
 
-#ifndef TESTING
-  Train();
-  //Process();
-#else
-  //Train();
-  Process();
-#endif
+  if (varmap.count("proto")) {
 
-  return 1;
+    ToolParam tool_param;
+    caffe::ReadProtoFromTextFileOrDie(proto, &tool_param);
+
+    CommonSettings settings;
+    settings.graphic = varmap.count("graphic");
+    settings.debug = varmap.count("debug");
+
+    if (varmap.count("train")) {
+      LOG(INFO)<< "Training mode.";
+      settings.param_index = train_index;
+      Train(tool_param, settings);
+    }
+
+    if (varmap.count("process")) {
+      LOG(INFO)<< "Processing mode.";
+      settings.param_index = process_index;
+      Process(tool_param, settings);
+    }
+
+  } else {
+    LOG(FATAL)<< "Missing prototxt argument.";
+  }
+
+  return 0;
 }

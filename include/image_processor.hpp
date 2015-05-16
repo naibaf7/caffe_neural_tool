@@ -17,12 +17,11 @@ namespace caffe_neural {
 
 class ImageProcessor {
  public:
-  ImageProcessor(int image_size, int patch_size, int nr_labels);
+  ImageProcessor(int patch_size, int nr_labels);
   void SubmitRawImage(cv::Mat input, int img_id);
   void ClearImages();
-  void SubmitImage(cv::Mat raw, int img_id, std::vector<cv::Mat> labels,
-                   float label_div);
-  void Init();
+  void SubmitImage(cv::Mat raw, int img_id, std::vector<cv::Mat> labels);
+  int Init();
   void SetBorderParams(bool apply, int border_size);
   void SetClaheParams(bool apply, float clip_limit);
   void SetBlurParams(bool apply, float mu, float std, int blur_size);
@@ -32,7 +31,8 @@ class ImageProcessor {
   void SetRotationParams(bool apply);
   void SetPatchMirrorParams(bool apply);
 
-  void SetLabelHistEqParams(bool apply, bool patch_prior, bool mask_prob, std::vector<float> label_boost);
+  void SetLabelHistEqParams(bool apply, bool patch_prior, bool mask_prob,
+                            std::vector<float> label_boost);
 
   long BinarySearchPatch(double offset);
 
@@ -47,7 +47,8 @@ class ImageProcessor {
   std::vector<int> image_number_;
 
   // General parameters
-  int image_size_;
+  int image_size_x_;
+  int image_size_y_;
   int patch_size_;
   int nr_labels_;
   std::function<double()> offset_selector_;
@@ -98,13 +99,13 @@ class ImageProcessor {
 
 class ProcessImageProcessor : public ImageProcessor {
  public:
-  ProcessImageProcessor(int image_size, int patch_size, int nr_labels);
+  ProcessImageProcessor(int patch_size, int nr_labels);
  protected:
 };
 
 class TrainImageProcessor : public ImageProcessor {
  public:
-  TrainImageProcessor(int image_size, int patch_size, int nr_labels);
+  TrainImageProcessor(int patch_size, int nr_labels);
   std::vector<cv::Mat> DrawPatchRandom();
  protected:
 };

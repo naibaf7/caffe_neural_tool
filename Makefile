@@ -12,8 +12,9 @@ CXXRUN = -O3
 # File dependencies and folders
 PROTO = proto
 SRC = src
+INC = include
 BUILD = build
-FILES = $(SRC)/*.cpp
+FILES := $(shell find $(SRC) -name '*.cpp' -or -name '*.c' -or -name '*.cc')
 
 # Find a valid OpenCL library
 ifdef OPENCL_INC
@@ -42,7 +43,7 @@ ifdef AMDAPPSDKROOT
 endif
 
 # Includes
-INCLUDE = 	-Iinclude \
+INCLUDE = 	-I$(INC) \
 			-I$(CAFFE_PATH)/include \
 			-I$(CAFFE_PATH)/caffe \
 			-I$(CAFFE_PATH)/caffe/src \
@@ -55,7 +56,7 @@ LIBRARY = 	-Wl,--whole-archive -l:$(CAFFE_PATH)/build/lib/libcaffe.a -Wl,--no-wh
 			-lopencv_core -lopencv_highgui -lopencv_imgproc \
 			-lpthread -lprotobuf -lglog -lgflags -lopenblas \
 			-lleveldb -lhdf5_hl -lhdf5 -lsnappy -llmdb -ltiff\
-			-lboost_system -lboost_thread -lboost_program_options\
+			-lboost_system -lboost_thread -lboost_program_options -lboost_filesystem\
 			-fopenmp \
 			-lviennacl -lclBLAS -lOpenCL -lrt $(CLLIBS) \
 			-L$(CUDA_PATH)/lib64/ -lcudart -lcublas -lcurand
@@ -64,15 +65,17 @@ LIBRARY = 	-Wl,--whole-archive -l:$(CAFFE_PATH)/build/lib/libcaffe.a -Wl,--no-wh
 # Compiler targets
 all: aux proto caffe_neural_tool caffe_neural_tool_dbg
 
-proto: $(PROTO)/proto.txt
-	protoc $(PROTO)/proto.txt
+proto: $(PROTO)/caffetool.proto
+	protoc --proto_path=$(PROTO) --cpp_out=$(PROTO)/ $(PROTO)/caffetool.proto
+	cp $(PROTO)/caffetool.pb.cc $(SRC)/caffetool.pb.cc
+	cp $(PROTO)/caffetool.pb.h $(INC)/caffetool.pb.h
 
 # Run target
-caffe_neural_tool: aux proto $(FILES)
+caffe_neural_tool: proto $(FILES)
 	$(CXX) $(CXXFLAGS) $(CXXRUN) $(INCLUDE) -o $(BUILD)/caffe_neural_tool $(FILES) $(LIBRARY)
 	
 # Debug target
-caffe_neural_tool_dbg: aux proto $(FILES)
+caffe_neural_tool_dbg: proto $(FILES)
 	$(CXX) $(CXXFLAGS) $(CXXDBG) $(INCLUDE) -o $(BUILD)/caffe_neural_tool_dbg $(FILES) $(LIBRARY)
 
 # Aux target

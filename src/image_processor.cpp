@@ -10,12 +10,12 @@
 
 #include <omp.h>
 #include <iostream>
+#include <set>
 
 namespace caffe_neural {
 
-ImageProcessor::ImageProcessor(int image_size, int patch_size, int nr_labels)
-    : image_size_(image_size),
-      patch_size_(patch_size),
+ImageProcessor::ImageProcessor(int patch_size, int nr_labels)
+    : patch_size_(patch_size),
       nr_labels_(nr_labels) {
 
 }
@@ -48,7 +48,7 @@ void ImageProcessor::ClearImages() {
 }
 
 void ImageProcessor::SubmitImage(cv::Mat raw, int img_id,
-                                 std::vector<cv::Mat> labels, float label_div) {
+                                 std::vector<cv::Mat> labels) {
 
   std::vector<cv::Mat> rawsplit;
   cv::split(raw, rawsplit);
@@ -85,21 +85,34 @@ void ImageProcessor::SubmitImage(cv::Mat raw, int img_id,
     cv::Mat dst_label(labels[0].rows, labels[0].cols, CV_32FC(1));
     dst_label.setTo(cv::Scalar(0.0));
 
+    std::set<int> labelset;
+
     for (unsigned int i = 0; i < labels.size(); ++i) {
       for (int y = 0; y < labels[0].rows; ++y) {
         for (int x = 0; x < labels[0].cols; ++x) {
-          if (label_div == 0.0) {
+          int ks = labels[i].at<cv::Vec<unsigned char, 1>>(y, x)[0];
+          // Label not yet registered
+          if (labelset.find(ks) == labelset.end()) {
+            labelset.insert(ks);
+          }
+        }
+      }
+    }
+
+    for (unsigned int i = 0; i < labels.size(); ++i) {
+      for (int y = 0; y < labels[0].rows; ++y) {
+        for (int x = 0; x < labels[0].cols; ++x) {
+          if (labels.size() > 1) {
             // Multiple images with 1 label defined per image
             int ks = labels[i].at<cv::Vec<unsigned char, 1>>(y, x)[0];
             if (ks > 0) {
-              (dst_label.at<cv::Vec<float, 1>>(y, x))[0] = i;
+              (dst_label.at<float>(y, x)) = i;
             }
           } else {
             // Single image with many labels defined per image
-            int ks = std::ceil(
-                (float) (labels[0].at<cv::Vec<unsigned char, 1>>(y, x)[0])
-                    / label_div);
-            (dst_label.at<float>(y, x)) = ks;
+            int ks = labels[0].at<unsigned char>(y, x);
+            (dst_label.at<float>(y, x)) =
+                (float) std::distance(labelset.begin(), labelset.find(ks));
           }
         }
       }
@@ -108,10 +121,21 @@ void ImageProcessor::SubmitImage(cv::Mat raw, int img_id,
   }
 }
 
-void ImageProcessor::Init() {
-  int off_size = (image_size_ - patch_size_);
+int ImageProcessor::Init() {
+
+  if (raw_images_.size() == 0 || label_images_.size() == 0
+      || raw_images_.size() != label_images_.size()) {
+    return -1;
+  }
+
+  image_size_x_ = raw_images_[0].cols;
+  image_size_y_ = raw_images_[0].rows;
+
+  int off_size_x = (image_size_x_ - patch_size_);
+  int off_size_y = (image_size_y_ - patch_size_);
+
   offset_selector_ = GetRandomUniform<double>(
-      0, label_images_.size() * off_size * off_size);
+      0, label_images_.size() * off_size_x * off_size_y);
 
   if (apply_label_hist_eq_) {
 
@@ -121,11 +145,11 @@ void ImageProcessor::Init() {
     long total_count = 0;
     for (unsigned int k = 0; k < label_images_.size(); ++k) {
       cv::Mat label_image = label_images_[k];
-      for (int y = 0; y < image_size_; ++y) {
-        for (int x = 0; x < image_size_; ++x) {
+      for (int y = 0; y < image_size_y_; ++y) {
+        for (int x = 0; x < image_size_x_; ++x) {
           // Label counting should be biased towards the borders, as less batches cover those parts
-          long mult = std::min(std::min(x, image_size_ - x), patch_size_)
-              * std::min(std::min(y, image_size_ - y), patch_size_);
+          long mult = std::min(std::min(x, image_size_x_ - x), patch_size_)
+              * std::min(std::min(y, image_size_y_ - y), patch_size_);
           label_count[label_image.at<float>(y, x)] += mult;
           total_count += mult;
         }
@@ -142,13 +166,13 @@ void ImageProcessor::Init() {
       std::vector<double> weighted_label_count(nr_labels_);
 
       label_running_probability_.resize(
-          label_images_.size() * off_size * off_size);
+          label_images_.size() * off_size_x * off_size_y);
 
       for (unsigned int k = 0; k < label_images_.size(); ++k) {
         cv::Mat label_image = label_images_[k];
 #pragma omp parallel for
-        for (int y = 0; y < off_size; ++y) {
-          for (int x = 0; x < off_size; ++x) {
+        for (int y = 0; y < off_size_y; ++y) {
+          for (int x = 0; x < off_size_x; ++x) {
             std::vector<long> patch_label_count(patch_size_, patch_size_);
             for (int py = y; py < y + patch_size_; ++py) {
               for (int px = x; px < x + patch_size_; ++px) {
@@ -163,8 +187,8 @@ void ImageProcessor::Init() {
             for (int l = 0; l < nr_labels_; ++l) {
               weighted_label_count[l] += patch_weight * patch_label_count[l];
             }
-            label_running_probability_[k * off_size * off_size + y * off_size
-                + x] = patch_weight;
+            label_running_probability_[k * off_size_x * off_size_y
+                + y * off_size_x + x] = patch_weight;
           }
         }
       }
@@ -191,12 +215,12 @@ void ImageProcessor::Init() {
       double boost_divisor = 0;
 
       for (int l = 0; l < nr_labels_; ++l) {
-        label_freq[l] *= 1.0/label_boost_[l];
+        label_freq[l] *= 1.0 / label_boost_[l];
         boost_divisor += label_freq[l];
       }
 
       for (int l = 0; l < nr_labels_; ++l) {
-        label_freq[l] *= 1.0/boost_divisor;
+        label_freq[l] *= 1.0 / boost_divisor;
       }
 
       label_mask_probability_.resize(nr_labels_);
@@ -212,6 +236,8 @@ void ImageProcessor::Init() {
       }
     }
   }
+
+  return 0;
 }
 
 void ImageProcessor::SetBlurParams(bool apply, float mean, float std,
@@ -272,15 +298,12 @@ long ImageProcessor::BinarySearchPatch(double offset) {
   return left;
 }
 
-ProcessImageProcessor::ProcessImageProcessor(int image_size, int patch_size,
-                                             int nr_labels)
-    : ImageProcessor(image_size, patch_size, nr_labels) {
+ProcessImageProcessor::ProcessImageProcessor(int patch_size, int nr_labels)
+    : ImageProcessor(patch_size, nr_labels) {
 }
 
-TrainImageProcessor::TrainImageProcessor(int image_size, int patch_size,
-                                         int nr_labels)
-    : ImageProcessor(image_size, patch_size, nr_labels) {
-
+TrainImageProcessor::TrainImageProcessor(int patch_size, int nr_labels)
+    : ImageProcessor(patch_size, nr_labels) {
 }
 
 std::vector<cv::Mat> TrainImageProcessor::DrawPatchRandom() {
@@ -295,11 +318,13 @@ std::vector<cv::Mat> TrainImageProcessor::DrawPatchRandom() {
     abs_id = (long) offset;
   }
 
-  int off_size = (image_size_ - patch_size_);
+  int off_size_x = (image_size_x_ - patch_size_);
+  int off_size_y = (image_size_y_ - patch_size_);
 
-  int img_id = abs_id / (off_size * off_size);
-  int yoff = (abs_id - (img_id * off_size * off_size)) / off_size;
-  int xoff = abs_id - ((img_id * off_size * off_size) + (yoff * off_size));
+  int img_id = abs_id / (off_size_x * off_size_y);
+  int yoff = (abs_id - (img_id * off_size_x * off_size_y)) / off_size_x;
+  int xoff = abs_id
+      - ((img_id * off_size_x * off_size_y) + (yoff * off_size_x));
 
   cv::Mat &full_image = raw_images_[img_id];
   cv::Mat &full_label = label_images_[img_id];
