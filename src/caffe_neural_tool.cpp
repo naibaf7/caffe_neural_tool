@@ -82,7 +82,7 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
   caffe::SolverParameter solver_param;
   caffe::ReadProtoFromTextFileOrDie(proto_solver, &solver_param);
 
-  int testinterval = solver_param.has_test_interval()?solver_param.test_interval():-1;
+  int test_interval = solver_param.has_test_interval()?solver_param.test_interval():-1;
 
   shared_ptr<caffe::Solver<float> > solver(
       caffe::GetSolver<float>(solver_param));
@@ -117,7 +117,7 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
       for(int i = 0; i < histeq_param.label_boost().size(); ++i) {
         label_boost[i] = histeq_param.label_boost().Get(i);
       }
-      image_processor.SetLabelHistEqParams(true, histeq_param.has_patch_prior(), histeq_param.has_masking(), label_boost);
+      image_processor.SetLabelHistEqParams(true, histeq_param.has_patch_prior()&&histeq_param.patch_prior(), histeq_param.has_masking()&&histeq_param.masking(), label_boost);
     }
 
     if(preprocessor_param.has_crop()) {
@@ -188,7 +188,7 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
       for(unsigned int k = 0; k < labels_stack.size(); ++k) {
         label_images.push_back(labels_stack[k][j]);
       }
-      if(label_images.size() < nr_labels && nr_labels != 2) {
+      if(label_images.size() > 1 && nr_labels != 2) {
         // Generate complement label
         cv::Mat clabel(label_images[0].rows, label_images[0].cols, CV_8UC(1), 255.0);
         for(unsigned int k = 0; k < label_images.size(); ++k) {
@@ -196,25 +196,21 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
         }
         label_images.push_back(clabel);
       }
+
       image_processor.SubmitImage(raw_stack[j], ijsum, label_images);
       ++ijsum;
     }
   }
 
-  LOG(INFO) << "GOT HERE -1!";
-
-
   image_processor.Init();
-
-  LOG(INFO) << "GOT HERE 0!";
 
   std::vector<long> labelcounter(nr_labels + 1);
 
-  // Do the training
-  for (int i = 0; i < solver_param.has_max_iter()?solver_param.max_iter():0; ++i) {
-    std::vector<cv::Mat> patch = image_processor.DrawPatchRandom();
+  int train_iters = solver_param.has_max_iter()?solver_param.max_iter():0;
 
-    LOG(INFO) << "GOT HERE 1!";
+  // Do the training
+  for (int i = 0; i < train_iters; ++i) {
+    std::vector<cv::Mat> patch = image_processor.DrawPatchRandom();
 
     std::vector<cv::Mat> images;
     std::vector<cv::Mat> labels;
@@ -252,12 +248,14 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
 
       cv::merge(tv, tvl);
 
+      cv::Mat patchclone = patch[0].clone();
+
       tvl.copyTo(
-          patch[0](
+          patchclone(
               cv::Rect(padding_size / 2, padding_size / 2, patch_size,
                   patch_size)));
 
-      cv::imshow(OCVDBGW, patch[0]);
+      cv::imshow(OCVDBGW, patchclone);
       cv::waitKey(10);
     }
 
@@ -275,12 +273,11 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
 
     solver->StepPrefilled();
 
-    if(i % testinterval == 0) {
+    if(test_interval > -1 && i % test_interval == 0) {
       // TODO: Run tests with the testset and testnet
       // TODO: Apply ISBI and other quality measures
       // TODO: Write out statistics to file
     }
-
   }
 
   LOG(INFO) << "Training done!";
@@ -350,7 +347,7 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       for(int i = 0; i < histeq_param.label_boost().size(); ++i) {
         label_boost[i] = histeq_param.label_boost().Get(i);
       }
-      image_processor.SetLabelHistEqParams(true, histeq_param.has_patch_prior(), histeq_param.has_masking(), label_boost);
+      image_processor.SetLabelHistEqParams(true, histeq_param.has_patch_prior()&&histeq_param.patch_prior(), histeq_param.has_masking()&&histeq_param.masking(), label_boost);
     }
 
     if(preprocessor_param.has_crop()) {
@@ -414,10 +411,21 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
         outimgs.push_back(outimg);
       }
 
-      for (int yoff = 0; yoff < image_size_y / patch_size; ++yoff) {
-        for (int xoff = 0; xoff < image_size_x / patch_size; ++xoff) {
+      for (int yoff = 0; yoff < (image_size_y - 1) / patch_size + 1; ++yoff) {
+        for (int xoff = 0; xoff < (image_size_x - 1) / patch_size + 1; ++xoff) {
 
-          cv::Rect roi(xoff * patch_size, yoff * patch_size,
+          int xoffp = xoff * patch_size;
+          int yoffp = yoff * patch_size;
+
+          if(xoffp + patch_size > image_size_x) {
+            xoffp = image_size_x - patch_size;
+          }
+
+          if(yoffp + patch_size > image_size_y) {
+            yoffp = image_size_y - patch_size;
+          }
+
+          cv::Rect roi(xoffp, yoffp,
               padding_size + patch_size - imagecrop,
               padding_size + patch_size - imagecrop);
           cv::Mat crop = padimage(roi);
@@ -440,8 +448,8 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
           for (unsigned int k = 0; k < nr_labels; ++k) {
             for (int y = 0; y < patch_size; ++y) {
               for (int x = 0; x < patch_size; ++x) {
-                (outimgs[k].at<float>(y + yoff * patch_size,
-                        x + xoff * patch_size)) =
+                (outimgs[k].at<float>(y + yoffp,
+                        x + xoffp)) =
                 cpuresult[(k * patch_size + y) * patch_size + x];
               }
             }

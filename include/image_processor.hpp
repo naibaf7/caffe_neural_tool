@@ -44,6 +44,7 @@ class ImageProcessor {
 
   std::vector<cv::Mat> raw_images_;
   std::vector<cv::Mat> label_images_;
+  std::vector<std::vector<cv::Mat>> label_stack_;
   std::vector<int> image_number_;
 
   // General parameters

@@ -80,17 +80,41 @@ void ImageProcessor::SubmitImage(cv::Mat raw, int img_id,
 
   raw_images_.push_back(src);
   image_number_.push_back(img_id);
+  label_stack_.push_back(labels);
 
-  if (labels.size() > 0) {
-    cv::Mat dst_label(labels[0].rows, labels[0].cols, CV_32FC(1));
-    dst_label.setTo(cv::Scalar(0.0));
+}
+
+int ImageProcessor::Init() {
+
+  if (label_stack_[0].size() > 1) {
+    for (unsigned int j = 0; j < label_stack_.size(); ++j) {
+
+      cv::Mat dst_label(label_stack_[j][0].rows, label_stack_[j][0].cols,
+      CV_32FC1);
+      dst_label.setTo(cv::Scalar(0.0));
+
+      for (unsigned int i = 0; i < label_stack_[j].size(); ++i) {
+#pragma omp parallel for
+        for (int y = 0; y < label_stack_[j][i].rows; ++y) {
+          for (int x = 0; x < label_stack_[j][i].cols; ++x) {
+            // Multiple images with 1 label defined per image
+            int ks = label_stack_[j][i].at<unsigned char>(y, x);
+            if (ks > 0) {
+              (dst_label.at<float>(y, x)) = i;
+            }
+          }
+        }
+      }
+      label_images_.push_back(dst_label);
+    }
+  } else {
 
     std::set<int> labelset;
 
-    for (unsigned int i = 0; i < labels.size(); ++i) {
-      for (int y = 0; y < labels[0].rows; ++y) {
-        for (int x = 0; x < labels[0].cols; ++x) {
-          int ks = labels[i].at<cv::Vec<unsigned char, 1>>(y, x)[0];
+    for (unsigned int j = 0; j < label_stack_.size(); ++j) {
+      for (int y = 0; y < label_stack_[j][0].rows; ++y) {
+        for (int x = 0; x < label_stack_[j][0].cols; ++x) {
+          int ks = label_stack_[j][0].at<unsigned char>(y, x);
           // Label not yet registered
           if (labelset.find(ks) == labelset.end()) {
             labelset.insert(ks);
@@ -99,37 +123,32 @@ void ImageProcessor::SubmitImage(cv::Mat raw, int img_id,
       }
     }
 
-    for (unsigned int i = 0; i < labels.size(); ++i) {
-      for (int y = 0; y < labels[0].rows; ++y) {
-        for (int x = 0; x < labels[0].cols; ++x) {
-          if (labels.size() > 1) {
-            // Multiple images with 1 label defined per image
-            int ks = labels[i].at<cv::Vec<unsigned char, 1>>(y, x)[0];
-            if (ks > 0) {
-              (dst_label.at<float>(y, x)) = i;
-            }
-          } else {
-            // Single image with many labels defined per image
-            int ks = labels[0].at<unsigned char>(y, x);
-            (dst_label.at<float>(y, x)) =
-                (float) std::distance(labelset.begin(), labelset.find(ks));
-          }
+    for (unsigned int j = 0; j < label_stack_.size(); ++j) {
+      cv::Mat dst_label(label_stack_[j][0].rows, label_stack_[j][0].cols,
+      CV_32FC1);
+      dst_label.setTo(cv::Scalar(0.0));
+#pragma omp parallel for
+      for (int y = 0; y < label_stack_[j][0].rows; ++y) {
+        for (int x = 0; x < label_stack_[j][0].cols; ++x) {
+          // Single image with many labels defined per image
+          int ks = label_stack_[j][0].at<unsigned char>(y, x);
+          (dst_label.at<float>(y, x)) = (float) std::distance(
+              labelset.begin(), labelset.find(ks));
         }
       }
+      label_images_.push_back(dst_label);
     }
-    label_images_.push_back(dst_label);
   }
-}
 
-int ImageProcessor::Init() {
+  label_stack_.clear();
 
   if (raw_images_.size() == 0 || label_images_.size() == 0
       || raw_images_.size() != label_images_.size()) {
     return -1;
   }
 
-  image_size_x_ = raw_images_[0].cols;
-  image_size_y_ = raw_images_[0].rows;
+  image_size_x_ = raw_images_[0].cols - 2 * border_size_;
+  image_size_y_ = raw_images_[0].rows - 2 * border_size_;
 
   int off_size_x = (image_size_x_ - patch_size_);
   int off_size_y = (image_size_y_ - patch_size_);
@@ -335,7 +354,7 @@ std::vector<cv::Mat> TrainImageProcessor::DrawPatchRandom() {
   cv::Rect roi_patch(xoff, yoff, actual_patch_size, actual_patch_size);
   cv::Rect roi_label(xoff, yoff, actual_label_size, actual_label_size);
 
-  // Deep copy so that the original image in storage doesn't get messed up
+// Deep copy so that the original image in storage doesn't get messed up
   cv::Mat patch = full_image(roi_patch).clone();
   cv::Mat label = full_label(roi_label).clone();
 

@@ -31,7 +31,8 @@ void SaveTiff(std::vector<cv::Mat> image_stack, std::string file) {
       TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, imagewidth);
       TIFFSetField(tif, TIFFTAG_IMAGELENGTH, imageheight);
       TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, fp32 ? 32 : 8);
-      TIFFSetField(tif, TIFFTAG_SAMPLEFORMAT, fp32 ? SAMPLEFORMAT_IEEEFP : SAMPLEFORMAT_UINT);
+      TIFFSetField(tif, TIFFTAG_SAMPLEFORMAT,
+                   fp32 ? SAMPLEFORMAT_IEEEFP : SAMPLEFORMAT_UINT);
       TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, nr_channels);
       TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
       TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
@@ -113,14 +114,14 @@ std::vector<cv::Mat> LoadTiff(std::string file, int nr_channels) {
 
       cv::Mat image(imageheight, imagewidth, CV_8UC(nr_channels));
       TIFFReadRGBAImageOriented(tif, imagewidth, imageheight, raster,
-      ORIENTATION_TOPLEFT);
+                                ORIENTATION_TOPLEFT);
 
       switch (nr_channels) {
         case 1: {
 #pragma omp parallel for
           for (unsigned int y = 0; y < imageheight; ++y) {
             for (unsigned int x = 0; x < imagewidth; ++x) {
-              image.at<uchar>(y, x) = raster[x + y * imageheight] & 0xFF;
+              image.at<uchar>(y, x) = raster[x + y * imagewidth] & 0xFF;
             }
           }
         }
@@ -130,11 +131,11 @@ std::vector<cv::Mat> LoadTiff(std::string file, int nr_channels) {
 #pragma omp parallel for
           for (unsigned int y = 0; y < imageheight; ++y) {
             for (unsigned int x = 0; x < imagewidth; ++x) {
-              image.at<cv::Vec3b>(y, x)[0] = (raster[x + y * imageheight] >> 0)
+              image.at<cv::Vec3b>(y, x)[0] = (raster[x + y * imagewidth] >> 0)
                   & 0xFF;
-              image.at<cv::Vec3b>(y, x)[1] = (raster[x + y * imageheight] >> 8)
+              image.at<cv::Vec3b>(y, x)[1] = (raster[x + y * imagewidth] >> 8)
                   & 0xFF;
-              image.at<cv::Vec3b>(y, x)[2] = (raster[x + y * imageheight] >> 16)
+              image.at<cv::Vec3b>(y, x)[2] = (raster[x + y * imagewidth] >> 16)
                   & 0xFF;
             }
           }
