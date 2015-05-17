@@ -36,7 +36,7 @@ void SaveTiff(std::vector<cv::Mat> image_stack, std::string file) {
       TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, nr_channels);
       TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
       TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-      TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
+      TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, nr_channels == 3 ? PHOTOMETRIC_RGB : PHOTOMETRIC_MINISBLACK);
       TIFFSetField(tif, TIFFTAG_SUBFILETYPE, FILETYPE_PAGE);
       TIFFSetField(tif, TIFFTAG_PAGENUMBER, i, image_stack.size());
 
@@ -114,7 +114,7 @@ std::vector<cv::Mat> LoadTiff(std::string file, int nr_channels) {
 
       cv::Mat image(imageheight, imagewidth, CV_8UC(nr_channels));
       TIFFReadRGBAImageOriented(tif, imagewidth, imageheight, raster,
-                                ORIENTATION_TOPLEFT);
+      ORIENTATION_TOPLEFT);
 
       switch (nr_channels) {
         case 1: {

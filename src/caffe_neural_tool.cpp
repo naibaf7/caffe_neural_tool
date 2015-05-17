@@ -188,7 +188,8 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
       for(unsigned int k = 0; k < labels_stack.size(); ++k) {
         label_images.push_back(labels_stack[k][j]);
       }
-      if(label_images.size() > 1 && nr_labels != 2) {
+      if(label_images.size() > 1 && nr_labels != 2 && label_images.size() < nr_labels) {
+        std::cout << "HERE!!" << std::endl;
         // Generate complement label
         cv::Mat clabel(label_images[0].rows, label_images[0].cols, CV_8UC(1), 255.0);
         for(unsigned int k = 0; k < label_images.size(); ++k) {
