@@ -62,7 +62,6 @@ std::vector<std::vector<bofs::path>> LoadTrainingSetItems(
 
         if (bofs::is_directory(*it)) {
           // Case: Multiple subdirectories for labels
-
           std::vector<bofs::path> subpathvec;
 
           std::copy(bofs::directory_iterator(*it), bofs::directory_iterator(),
@@ -71,13 +70,14 @@ std::vector<std::vector<bofs::path>> LoadTrainingSetItems(
           std::sort(subpathvec.begin(), subpathvec.end());
           int idxj = 0;
 
-          for (std::vector<bofs::path>::const_iterator subit(pathvec.begin());
-              subit != pathvec.end(); ++subit, ++idxj) {
-            std::string type = bofs::extension(*it);
+          for (std::vector<bofs::path>::const_iterator subit(subpathvec.begin());
+              subit != subpathvec.end(); ++subit, ++idxj) {
+            std::string type = bofs::extension(*subit);
             std::transform(type.begin(), type.end(), type.begin(), ::tolower);
             if (filetypes.find(type) != filetypes.end()) {
               std::vector<bofs::path> &subset = set[idxj];
               subset.push_back(*subit);
+
             }
           }
         } else {
