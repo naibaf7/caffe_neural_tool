@@ -52,7 +52,7 @@ INCLUDE = 	-I$(INC) \
 			-I$(CUDA_PATH)/include
 
 # Library dependencies	
-LIBRARY = 	-Wl,--whole-archive -l:$(CAFFE_PATH)/build/lib/libcaffe.a -Wl,--no-whole-archive \
+LIBRARY = 	-Wl,-Bstatic,--whole-archive -L$(CAFFE_PATH)/build/lib/ -lcaffe -Wl,-Bdynamic,--no-whole-archive \
 			-lopencv_core -lopencv_highgui -lopencv_imgproc \
 			-lpthread -lprotobuf -lglog -lgflags -lopenblas \
 			-lleveldb -lhdf5_hl -lhdf5 -lsnappy -llmdb -ltiff\
@@ -63,7 +63,7 @@ LIBRARY = 	-Wl,--whole-archive -l:$(CAFFE_PATH)/build/lib/libcaffe.a -Wl,--no-wh
 			
 			
 # Compiler targets
-all: aux proto caffe_neural_tool caffe_neural_tool_dbg
+all: caffe_neural_tool caffe_neural_tool_dbg
 
 proto: $(PROTO)/caffetool.proto
 	protoc --proto_path=$(PROTO) --cpp_out=$(PROTO)/ $(PROTO)/caffetool.proto
@@ -71,17 +71,17 @@ proto: $(PROTO)/caffetool.proto
 	cp $(PROTO)/caffetool.pb.h $(INC)/caffetool.pb.h
 
 # Run target
-caffe_neural_tool: proto $(FILES)
+caffe_neural_tool: aux proto $(FILES)
 	$(CXX) $(CXXFLAGS) $(CXXRUN) $(INCLUDE) -o $(BUILD)/caffe_neural_tool $(FILES) $(LIBRARY)
 	
 # Debug target
-caffe_neural_tool_dbg: proto $(FILES)
+caffe_neural_tool_dbg: aux proto $(FILES)
 	$(CXX) $(CXXFLAGS) $(CXXDBG) $(INCLUDE) -o $(BUILD)/caffe_neural_tool_dbg $(FILES) $(LIBRARY)
 
 # Aux target
 aux:
-	mkdir -p build
+	mkdir -p $(BUILD)
 
 # Clean target
 clean:
-	rm -r $(BUILD)/*
+	rm -r $(BUILD)
