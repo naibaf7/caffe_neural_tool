@@ -53,6 +53,7 @@ message PreprocessorParam {
   optional bool mirror = 5 [default = false];
   optional PrepHistEqParam histeq = 6; 
   optional PrepBlurParam blur = 7;
+  optional PrepDeformParam deform = 8;
 }
 
 message PrepCropParam {
@@ -64,6 +65,13 @@ message PrepBlurParam {
   optional float mean = 1 [default = 0.0];
   optional float std = 2 [default = 0.1];
   optional int32 ksize = 3 [default = 5];
+}
+
+message PrepDeformParam {
+  optional float mean_x = 1 [default = 0.0];
+  optional float mean_y = 2 [default = 0.0];
+  optional float std_x = 3 [default = 0.1];
+  optional float std_y = 4 [default = 0.1];
 }
 
 message PrepClaheParam {

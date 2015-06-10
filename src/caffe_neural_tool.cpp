@@ -271,11 +271,11 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
     boost::dynamic_pointer_cast<caffe::MemoryDataLayer<float>>(
         train_net->layers()[1])->AddMatVector(images, imlabels);
 
-    solver->StepPrefilled();
+    solver->Step(1);
 
     if(test_interval > -1 && i % test_interval == 0) {
       // TODO: Run tests with the testset and testnet
-      // TODO: Apply ISBI and other quality measures
+      // TODO: Apply ISBI and other quality measures (cross, rand, pixel, warp, loss)
       // TODO: Write out statistics to file
     }
   }

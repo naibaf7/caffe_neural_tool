@@ -41,6 +41,7 @@ class OutputParam;
 class PreprocessorParam;
 class PrepCropParam;
 class PrepBlurParam;
+class PrepDeformParam;
 class PrepClaheParam;
 class PrepHistEqParam;
 
@@ -782,6 +783,15 @@ class PreprocessorParam : public ::google::protobuf::Message {
   inline ::caffe_neural::PrepBlurParam* release_blur();
   inline void set_allocated_blur(::caffe_neural::PrepBlurParam* blur);
 
+  // optional .caffe_neural.PrepDeformParam deform = 8;
+  inline bool has_deform() const;
+  inline void clear_deform();
+  static const int kDeformFieldNumber = 8;
+  inline const ::caffe_neural::PrepDeformParam& deform() const;
+  inline ::caffe_neural::PrepDeformParam* mutable_deform();
+  inline ::caffe_neural::PrepDeformParam* release_deform();
+  inline void set_allocated_deform(::caffe_neural::PrepDeformParam* deform);
+
   // @@protoc_insertion_point(class_scope:caffe_neural.PreprocessorParam)
  private:
   inline void set_has_normalization();
@@ -798,6 +808,8 @@ class PreprocessorParam : public ::google::protobuf::Message {
   inline void clear_has_histeq();
   inline void set_has_blur();
   inline void clear_has_blur();
+  inline void set_has_deform();
+  inline void clear_has_deform();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -805,12 +817,13 @@ class PreprocessorParam : public ::google::protobuf::Message {
   ::caffe_neural::PrepClaheParam* clahe_;
   ::caffe_neural::PrepHistEqParam* histeq_;
   ::caffe_neural::PrepBlurParam* blur_;
+  ::caffe_neural::PrepDeformParam* deform_;
   bool normalization_;
   bool rotation_;
   bool mirror_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
 
   friend void  protobuf_AddDesc_caffetool_2eproto();
   friend void protobuf_AssignDesc_caffetool_2eproto();
@@ -1012,6 +1025,118 @@ class PrepBlurParam : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static PrepBlurParam* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PrepDeformParam : public ::google::protobuf::Message {
+ public:
+  PrepDeformParam();
+  virtual ~PrepDeformParam();
+
+  PrepDeformParam(const PrepDeformParam& from);
+
+  inline PrepDeformParam& operator=(const PrepDeformParam& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PrepDeformParam& default_instance();
+
+  void Swap(PrepDeformParam* other);
+
+  // implements Message ----------------------------------------------
+
+  PrepDeformParam* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PrepDeformParam& from);
+  void MergeFrom(const PrepDeformParam& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float mean_x = 1 [default = 0];
+  inline bool has_mean_x() const;
+  inline void clear_mean_x();
+  static const int kMeanXFieldNumber = 1;
+  inline float mean_x() const;
+  inline void set_mean_x(float value);
+
+  // optional float mean_y = 2 [default = 0];
+  inline bool has_mean_y() const;
+  inline void clear_mean_y();
+  static const int kMeanYFieldNumber = 2;
+  inline float mean_y() const;
+  inline void set_mean_y(float value);
+
+  // optional float std_x = 3 [default = 0.1];
+  inline bool has_std_x() const;
+  inline void clear_std_x();
+  static const int kStdXFieldNumber = 3;
+  inline float std_x() const;
+  inline void set_std_x(float value);
+
+  // optional float std_y = 4 [default = 0.1];
+  inline bool has_std_y() const;
+  inline void clear_std_y();
+  static const int kStdYFieldNumber = 4;
+  inline float std_y() const;
+  inline void set_std_y(float value);
+
+  // @@protoc_insertion_point(class_scope:caffe_neural.PrepDeformParam)
+ private:
+  inline void set_has_mean_x();
+  inline void clear_has_mean_x();
+  inline void set_has_mean_y();
+  inline void clear_has_mean_y();
+  inline void set_has_std_x();
+  inline void clear_has_std_x();
+  inline void set_has_std_y();
+  inline void clear_has_std_y();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  float mean_x_;
+  float mean_y_;
+  float std_x_;
+  float std_y_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+
+  friend void  protobuf_AddDesc_caffetool_2eproto();
+  friend void protobuf_AssignDesc_caffetool_2eproto();
+  friend void protobuf_ShutdownFile_caffetool_2eproto();
+
+  void InitAsDefaultInstance();
+  static PrepDeformParam* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -2371,6 +2496,44 @@ inline void PreprocessorParam::set_allocated_blur(::caffe_neural::PrepBlurParam*
   }
 }
 
+// optional .caffe_neural.PrepDeformParam deform = 8;
+inline bool PreprocessorParam::has_deform() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void PreprocessorParam::set_has_deform() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void PreprocessorParam::clear_has_deform() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void PreprocessorParam::clear_deform() {
+  if (deform_ != NULL) deform_->::caffe_neural::PrepDeformParam::Clear();
+  clear_has_deform();
+}
+inline const ::caffe_neural::PrepDeformParam& PreprocessorParam::deform() const {
+  return deform_ != NULL ? *deform_ : *default_instance_->deform_;
+}
+inline ::caffe_neural::PrepDeformParam* PreprocessorParam::mutable_deform() {
+  set_has_deform();
+  if (deform_ == NULL) deform_ = new ::caffe_neural::PrepDeformParam;
+  return deform_;
+}
+inline ::caffe_neural::PrepDeformParam* PreprocessorParam::release_deform() {
+  clear_has_deform();
+  ::caffe_neural::PrepDeformParam* temp = deform_;
+  deform_ = NULL;
+  return temp;
+}
+inline void PreprocessorParam::set_allocated_deform(::caffe_neural::PrepDeformParam* deform) {
+  delete deform_;
+  deform_ = deform;
+  if (deform) {
+    set_has_deform();
+  } else {
+    clear_has_deform();
+  }
+}
+
 // -------------------------------------------------------------------
 
 // PrepCropParam
@@ -2487,6 +2650,98 @@ inline ::google::protobuf::int32 PrepBlurParam::ksize() const {
 inline void PrepBlurParam::set_ksize(::google::protobuf::int32 value) {
   set_has_ksize();
   ksize_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// PrepDeformParam
+
+// optional float mean_x = 1 [default = 0];
+inline bool PrepDeformParam::has_mean_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PrepDeformParam::set_has_mean_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PrepDeformParam::clear_has_mean_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PrepDeformParam::clear_mean_x() {
+  mean_x_ = 0;
+  clear_has_mean_x();
+}
+inline float PrepDeformParam::mean_x() const {
+  return mean_x_;
+}
+inline void PrepDeformParam::set_mean_x(float value) {
+  set_has_mean_x();
+  mean_x_ = value;
+}
+
+// optional float mean_y = 2 [default = 0];
+inline bool PrepDeformParam::has_mean_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PrepDeformParam::set_has_mean_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PrepDeformParam::clear_has_mean_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PrepDeformParam::clear_mean_y() {
+  mean_y_ = 0;
+  clear_has_mean_y();
+}
+inline float PrepDeformParam::mean_y() const {
+  return mean_y_;
+}
+inline void PrepDeformParam::set_mean_y(float value) {
+  set_has_mean_y();
+  mean_y_ = value;
+}
+
+// optional float std_x = 3 [default = 0.1];
+inline bool PrepDeformParam::has_std_x() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PrepDeformParam::set_has_std_x() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PrepDeformParam::clear_has_std_x() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PrepDeformParam::clear_std_x() {
+  std_x_ = 0.1f;
+  clear_has_std_x();
+}
+inline float PrepDeformParam::std_x() const {
+  return std_x_;
+}
+inline void PrepDeformParam::set_std_x(float value) {
+  set_has_std_x();
+  std_x_ = value;
+}
+
+// optional float std_y = 4 [default = 0.1];
+inline bool PrepDeformParam::has_std_y() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void PrepDeformParam::set_has_std_y() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void PrepDeformParam::clear_has_std_y() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void PrepDeformParam::clear_std_y() {
+  std_y_ = 0.1f;
+  clear_has_std_y();
+}
+inline float PrepDeformParam::std_y() const {
+  return std_y_;
+}
+inline void PrepDeformParam::set_std_y(float value) {
+  set_has_std_y();
+  std_y_ = value;
 }
 
 // -------------------------------------------------------------------

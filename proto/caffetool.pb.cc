@@ -44,6 +44,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* PrepBlurParam_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   PrepBlurParam_reflection_ = NULL;
+const ::google::protobuf::Descriptor* PrepDeformParam_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  PrepDeformParam_reflection_ = NULL;
 const ::google::protobuf::Descriptor* PrepClaheParam_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   PrepClaheParam_reflection_ = NULL;
@@ -152,7 +155,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OutputParam));
   PreprocessorParam_descriptor_ = file->message_type(5);
-  static const int PreprocessorParam_offsets_[7] = {
+  static const int PreprocessorParam_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, normalization_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, crop_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, clahe_),
@@ -160,6 +163,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, mirror_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, histeq_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, blur_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, deform_),
   };
   PreprocessorParam_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -205,7 +209,25 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepBlurParam));
-  PrepClaheParam_descriptor_ = file->message_type(8);
+  PrepDeformParam_descriptor_ = file->message_type(8);
+  static const int PrepDeformParam_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, mean_x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, mean_y_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, std_x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, std_y_),
+  };
+  PrepDeformParam_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      PrepDeformParam_descriptor_,
+      PrepDeformParam::default_instance_,
+      PrepDeformParam_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(PrepDeformParam));
+  PrepClaheParam_descriptor_ = file->message_type(9);
   static const int PrepClaheParam_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepClaheParam, clip_),
   };
@@ -220,7 +242,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepClaheParam));
-  PrepHistEqParam_descriptor_ = file->message_type(9);
+  PrepHistEqParam_descriptor_ = file->message_type(10);
   static const int PrepHistEqParam_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepHistEqParam, patch_prior_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepHistEqParam, masking_),
@@ -267,6 +289,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     PrepBlurParam_descriptor_, &PrepBlurParam::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    PrepDeformParam_descriptor_, &PrepDeformParam::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     PrepClaheParam_descriptor_, &PrepClaheParam::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     PrepHistEqParam_descriptor_, &PrepHistEqParam::default_instance());
@@ -292,6 +316,8 @@ void protobuf_ShutdownFile_caffetool_2eproto() {
   delete PrepCropParam_reflection_;
   delete PrepBlurParam::default_instance_;
   delete PrepBlurParam_reflection_;
+  delete PrepDeformParam::default_instance_;
+  delete PrepDeformParam_reflection_;
   delete PrepClaheParam::default_instance_;
   delete PrepClaheParam_reflection_;
   delete PrepHistEqParam::default_instance_;
@@ -322,20 +348,24 @@ void protobuf_AddDesc_caffetool_2eproto() {
     "images\030\010 \001(\t\"j\n\013OutputParam\022\016\n\006output\030\001 "
     "\001(\t\022\027\n\010fp32_out\030\002 \001(\010:\005false\022\035\n\016out_all_"
     "labels\030\003 \001(\010:\005false\022\023\n\006format\030\004 \001(\t:\003tif"
-    "\"\222\002\n\021PreprocessorParam\022\033\n\rnormalization\030"
+    "\"\301\002\n\021PreprocessorParam\022\033\n\rnormalization\030"
     "\001 \001(\010:\004true\022)\n\004crop\030\002 \001(\0132\033.caffe_neural"
     ".PrepCropParam\022+\n\005clahe\030\003 \001(\0132\034.caffe_ne"
     "ural.PrepClaheParam\022\027\n\010rotation\030\004 \001(\010:\005f"
     "alse\022\025\n\006mirror\030\005 \001(\010:\005false\022-\n\006histeq\030\006 "
     "\001(\0132\035.caffe_neural.PrepHistEqParam\022)\n\004bl"
-    "ur\030\007 \001(\0132\033.caffe_neural.PrepBlurParam\"5\n"
-    "\rPrepCropParam\022\021\n\timagecrop\030\001 \001(\005\022\021\n\tlab"
-    "elcrop\030\002 \001(\005\"D\n\rPrepBlurParam\022\017\n\004mean\030\001 "
-    "\001(\002:\0010\022\020\n\003std\030\002 \001(\002:\0030.1\022\020\n\005ksize\030\003 \001(\005:"
-    "\0015\"!\n\016PrepClaheParam\022\017\n\004clip\030\001 \001(\002:\0014\"r\n"
-    "\017PrepHistEqParam\022\031\n\013patch_prior\030\001 \001(\010:\004t"
-    "rue\022\026\n\007masking\030\002 \001(\010:\005false\022\023\n\013label_boo"
-    "st\030\003 \003(\002\022\027\n\014border_boost\030\004 \001(\002:\0011", 1233);
+    "ur\030\007 \001(\0132\033.caffe_neural.PrepBlurParam\022-\n"
+    "\006deform\030\010 \001(\0132\035.caffe_neural.PrepDeformP"
+    "aram\"5\n\rPrepCropParam\022\021\n\timagecrop\030\001 \001(\005"
+    "\022\021\n\tlabelcrop\030\002 \001(\005\"D\n\rPrepBlurParam\022\017\n\004"
+    "mean\030\001 \001(\002:\0010\022\020\n\003std\030\002 \001(\002:\0030.1\022\020\n\005ksize"
+    "\030\003 \001(\005:\0015\"_\n\017PrepDeformParam\022\021\n\006mean_x\030\001"
+    " \001(\002:\0010\022\021\n\006mean_y\030\002 \001(\002:\0010\022\022\n\005std_x\030\003 \001("
+    "\002:\0030.1\022\022\n\005std_y\030\004 \001(\002:\0030.1\"!\n\016PrepClaheP"
+    "aram\022\017\n\004clip\030\001 \001(\002:\0014\"r\n\017PrepHistEqParam"
+    "\022\031\n\013patch_prior\030\001 \001(\010:\004true\022\026\n\007masking\030\002"
+    " \001(\010:\005false\022\023\n\013label_boost\030\003 \003(\002\022\027\n\014bord"
+    "er_boost\030\004 \001(\002:\0011", 1377);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "caffetool.proto", &protobuf_RegisterTypes);
   ToolParam::default_instance_ = new ToolParam();
@@ -348,6 +378,7 @@ void protobuf_AddDesc_caffetool_2eproto() {
   PreprocessorParam::default_instance_ = new PreprocessorParam();
   PrepCropParam::default_instance_ = new PrepCropParam();
   PrepBlurParam::default_instance_ = new PrepBlurParam();
+  PrepDeformParam::default_instance_ = new PrepDeformParam();
   PrepClaheParam::default_instance_ = new PrepClaheParam();
   PrepHistEqParam::default_instance_ = new PrepHistEqParam();
   ToolParam::default_instance_->InitAsDefaultInstance();
@@ -358,6 +389,7 @@ void protobuf_AddDesc_caffetool_2eproto() {
   PreprocessorParam::default_instance_->InitAsDefaultInstance();
   PrepCropParam::default_instance_->InitAsDefaultInstance();
   PrepBlurParam::default_instance_->InitAsDefaultInstance();
+  PrepDeformParam::default_instance_->InitAsDefaultInstance();
   PrepClaheParam::default_instance_->InitAsDefaultInstance();
   PrepHistEqParam::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_caffetool_2eproto);
@@ -2208,6 +2240,7 @@ const int PreprocessorParam::kRotationFieldNumber;
 const int PreprocessorParam::kMirrorFieldNumber;
 const int PreprocessorParam::kHisteqFieldNumber;
 const int PreprocessorParam::kBlurFieldNumber;
+const int PreprocessorParam::kDeformFieldNumber;
 #endif  // !_MSC_VER
 
 PreprocessorParam::PreprocessorParam()
@@ -2220,6 +2253,7 @@ void PreprocessorParam::InitAsDefaultInstance() {
   clahe_ = const_cast< ::caffe_neural::PrepClaheParam*>(&::caffe_neural::PrepClaheParam::default_instance());
   histeq_ = const_cast< ::caffe_neural::PrepHistEqParam*>(&::caffe_neural::PrepHistEqParam::default_instance());
   blur_ = const_cast< ::caffe_neural::PrepBlurParam*>(&::caffe_neural::PrepBlurParam::default_instance());
+  deform_ = const_cast< ::caffe_neural::PrepDeformParam*>(&::caffe_neural::PrepDeformParam::default_instance());
 }
 
 PreprocessorParam::PreprocessorParam(const PreprocessorParam& from)
@@ -2237,6 +2271,7 @@ void PreprocessorParam::SharedCtor() {
   mirror_ = false;
   histeq_ = NULL;
   blur_ = NULL;
+  deform_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2250,6 +2285,7 @@ void PreprocessorParam::SharedDtor() {
     delete clahe_;
     delete histeq_;
     delete blur_;
+    delete deform_;
   }
 }
 
@@ -2290,6 +2326,9 @@ void PreprocessorParam::Clear() {
     }
     if (has_blur()) {
       if (blur_ != NULL) blur_->::caffe_neural::PrepBlurParam::Clear();
+    }
+    if (has_deform()) {
+      if (deform_ != NULL) deform_->::caffe_neural::PrepDeformParam::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -2401,6 +2440,20 @@ bool PreprocessorParam::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(66)) goto parse_deform;
+        break;
+      }
+
+      // optional .caffe_neural.PrepDeformParam deform = 8;
+      case 8: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_deform:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_deform()));
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -2462,6 +2515,12 @@ void PreprocessorParam::SerializeWithCachedSizes(
       7, this->blur(), output);
   }
 
+  // optional .caffe_neural.PrepDeformParam deform = 8;
+  if (has_deform()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      8, this->deform(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -2511,6 +2570,13 @@ void PreprocessorParam::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         7, this->blur(), target);
+  }
+
+  // optional .caffe_neural.PrepDeformParam deform = 8;
+  if (has_deform()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        8, this->deform(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -2567,6 +2633,13 @@ int PreprocessorParam::ByteSize() const {
           this->blur());
     }
 
+    // optional .caffe_neural.PrepDeformParam deform = 8;
+    if (has_deform()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->deform());
+    }
+
   }
   if (!unknown_fields().empty()) {
     total_size +=
@@ -2615,6 +2688,9 @@ void PreprocessorParam::MergeFrom(const PreprocessorParam& from) {
     if (from.has_blur()) {
       mutable_blur()->::caffe_neural::PrepBlurParam::MergeFrom(from.blur());
     }
+    if (from.has_deform()) {
+      mutable_deform()->::caffe_neural::PrepDeformParam::MergeFrom(from.deform());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -2645,6 +2721,7 @@ void PreprocessorParam::Swap(PreprocessorParam* other) {
     std::swap(mirror_, other->mirror_);
     std::swap(histeq_, other->histeq_);
     std::swap(blur_, other->blur_);
+    std::swap(deform_, other->deform_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -3188,6 +3265,326 @@ void PrepBlurParam::Swap(PrepBlurParam* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = PrepBlurParam_descriptor_;
   metadata.reflection = PrepBlurParam_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int PrepDeformParam::kMeanXFieldNumber;
+const int PrepDeformParam::kMeanYFieldNumber;
+const int PrepDeformParam::kStdXFieldNumber;
+const int PrepDeformParam::kStdYFieldNumber;
+#endif  // !_MSC_VER
+
+PrepDeformParam::PrepDeformParam()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void PrepDeformParam::InitAsDefaultInstance() {
+}
+
+PrepDeformParam::PrepDeformParam(const PrepDeformParam& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void PrepDeformParam::SharedCtor() {
+  _cached_size_ = 0;
+  mean_x_ = 0;
+  mean_y_ = 0;
+  std_x_ = 0.1f;
+  std_y_ = 0.1f;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+PrepDeformParam::~PrepDeformParam() {
+  SharedDtor();
+}
+
+void PrepDeformParam::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void PrepDeformParam::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* PrepDeformParam::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return PrepDeformParam_descriptor_;
+}
+
+const PrepDeformParam& PrepDeformParam::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_caffetool_2eproto();
+  return *default_instance_;
+}
+
+PrepDeformParam* PrepDeformParam::default_instance_ = NULL;
+
+PrepDeformParam* PrepDeformParam::New() const {
+  return new PrepDeformParam;
+}
+
+void PrepDeformParam::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    mean_x_ = 0;
+    mean_y_ = 0;
+    std_x_ = 0.1f;
+    std_y_ = 0.1f;
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool PrepDeformParam::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional float mean_x = 1 [default = 0];
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &mean_x_)));
+          set_has_mean_x();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(21)) goto parse_mean_y;
+        break;
+      }
+
+      // optional float mean_y = 2 [default = 0];
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_mean_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &mean_y_)));
+          set_has_mean_y();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(29)) goto parse_std_x;
+        break;
+      }
+
+      // optional float std_x = 3 [default = 0.1];
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_std_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &std_x_)));
+          set_has_std_x();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(37)) goto parse_std_y;
+        break;
+      }
+
+      // optional float std_y = 4 [default = 0.1];
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_std_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &std_y_)));
+          set_has_std_y();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void PrepDeformParam::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional float mean_x = 1 [default = 0];
+  if (has_mean_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->mean_x(), output);
+  }
+
+  // optional float mean_y = 2 [default = 0];
+  if (has_mean_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->mean_y(), output);
+  }
+
+  // optional float std_x = 3 [default = 0.1];
+  if (has_std_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->std_x(), output);
+  }
+
+  // optional float std_y = 4 [default = 0.1];
+  if (has_std_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->std_y(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* PrepDeformParam::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional float mean_x = 1 [default = 0];
+  if (has_mean_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->mean_x(), target);
+  }
+
+  // optional float mean_y = 2 [default = 0];
+  if (has_mean_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->mean_y(), target);
+  }
+
+  // optional float std_x = 3 [default = 0.1];
+  if (has_std_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->std_x(), target);
+  }
+
+  // optional float std_y = 4 [default = 0.1];
+  if (has_std_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->std_y(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int PrepDeformParam::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional float mean_x = 1 [default = 0];
+    if (has_mean_x()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float mean_y = 2 [default = 0];
+    if (has_mean_y()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float std_x = 3 [default = 0.1];
+    if (has_std_x()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float std_y = 4 [default = 0.1];
+    if (has_std_y()) {
+      total_size += 1 + 4;
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void PrepDeformParam::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const PrepDeformParam* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const PrepDeformParam*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void PrepDeformParam::MergeFrom(const PrepDeformParam& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_mean_x()) {
+      set_mean_x(from.mean_x());
+    }
+    if (from.has_mean_y()) {
+      set_mean_y(from.mean_y());
+    }
+    if (from.has_std_x()) {
+      set_std_x(from.std_x());
+    }
+    if (from.has_std_y()) {
+      set_std_y(from.std_y());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void PrepDeformParam::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void PrepDeformParam::CopyFrom(const PrepDeformParam& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool PrepDeformParam::IsInitialized() const {
+
+  return true;
+}
+
+void PrepDeformParam::Swap(PrepDeformParam* other) {
+  if (other != this) {
+    std::swap(mean_x_, other->mean_x_);
+    std::swap(mean_y_, other->mean_y_);
+    std::swap(std_x_, other->std_x_);
+    std::swap(std_y_, other->std_y_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata PrepDeformParam::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = PrepDeformParam_descriptor_;
+  metadata.reflection = PrepDeformParam_reflection_;
   return metadata;
 }
 
