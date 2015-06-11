@@ -6,6 +6,9 @@ USE_CUDA := 1
 # Enable the OpenCL/Greentea backend
 USE_GREENTEA := 1
 
+# Path to the modified caffe
+CAFFE_PATH = ../caffe
+
 # Folder of the ViennaCL header-only library
 VIENNACL_DIR = ../ViennaCL
 
@@ -15,3 +18,8 @@ VIENNACL_DIR = ../ViennaCL
 USE_CLBLAS := 1
 USE_VIENNACLBLAS := 0
 
+# CUDA directory contains bin/ and lib/ directories that we need.
+CUDA_DIR := /usr/local/cuda
+# On Ubuntu 14.04, if cuda tools are installed via
+# "sudo apt-get install nvidia-cuda-toolkit" then use this instead:
+# CUDA_DIR := /usr
