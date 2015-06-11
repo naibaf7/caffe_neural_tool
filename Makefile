@@ -1,11 +1,28 @@
-# Paths to define
+CONFIG_FILE := Makefile.config
+# Explicitly check for the config file, otherwise make -k will proceed anyway.
+ifeq ($(wildcard $(CONFIG_FILE)),)
+$(error $(CONFIG_FILE) not found. See $(CONFIG_FILE).example.)
+endif
+include $(CONFIG_FILE)
+
+# Path to the modified caffe
 CAFFE_PATH = ../caffe_gt
+
+# Path to the CUDA installation
 CUDA_PATH = $(CUDA_HOME)
+
+# Path to the ViennaCL header-only library
 VIENNACL_PATH = ../ViennaCL
+
+# CUDA and OpenCL/Greentea flags. Remove backends you don't need.
+BACKENDS = -DUSE_GREENTEA -DUSE_CUDA -DVIENNACL_WITH_OPENCL
+
+# OpenCL BLAS to use for Greentea
+OPENCL_BLAS = -lviennacl -lclBLAS
 
 # Compiler configuration
 CXX=g++
-CXXFLAGS = -Wall -std=c++11 -DUSE_GREENTEA -DVIENNACL_WITH_OPENCL
+CXXFLAGS = -Wall -std=c++11 $(BACKENDS)
 CXXDBG = -O0 -g
 CXXRUN = -O3
 
