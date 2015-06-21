@@ -29,6 +29,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* ProcessParam_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ProcessParam_reflection_ = NULL;
+const ::google::protobuf::Descriptor* FilterOutputParam_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  FilterOutputParam_reflection_ = NULL;
 const ::google::protobuf::Descriptor* InputParam_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   InputParam_reflection_ = NULL;
@@ -97,11 +100,12 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(TrainParam));
   ProcessParam_descriptor_ = file->message_type(2);
-  static const int ProcessParam_offsets_[4] = {
+  static const int ProcessParam_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ProcessParam, process_net_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ProcessParam, caffemodel_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ProcessParam, input_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ProcessParam, output_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ProcessParam, filter_output_),
   };
   ProcessParam_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -114,7 +118,23 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ProcessParam));
-  InputParam_descriptor_ = file->message_type(3);
+  FilterOutputParam_descriptor_ = file->message_type(3);
+  static const int FilterOutputParam_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FilterOutputParam, output_filters_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FilterOutputParam, output_),
+  };
+  FilterOutputParam_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      FilterOutputParam_descriptor_,
+      FilterOutputParam::default_instance_,
+      FilterOutputParam_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FilterOutputParam, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FilterOutputParam, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(FilterOutputParam));
+  InputParam_descriptor_ = file->message_type(4);
   static const int InputParam_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(InputParam, padding_size_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(InputParam, patch_size_),
@@ -136,7 +156,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(InputParam));
-  OutputParam_descriptor_ = file->message_type(4);
+  OutputParam_descriptor_ = file->message_type(5);
   static const int OutputParam_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OutputParam, output_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OutputParam, fp32_out_),
@@ -154,7 +174,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OutputParam));
-  PreprocessorParam_descriptor_ = file->message_type(5);
+  PreprocessorParam_descriptor_ = file->message_type(6);
   static const int PreprocessorParam_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, normalization_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, crop_),
@@ -176,7 +196,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PreprocessorParam));
-  PrepCropParam_descriptor_ = file->message_type(6);
+  PrepCropParam_descriptor_ = file->message_type(7);
   static const int PrepCropParam_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepCropParam, imagecrop_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepCropParam, labelcrop_),
@@ -192,7 +212,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepCropParam));
-  PrepBlurParam_descriptor_ = file->message_type(7);
+  PrepBlurParam_descriptor_ = file->message_type(8);
   static const int PrepBlurParam_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepBlurParam, mean_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepBlurParam, std_),
@@ -209,7 +229,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepBlurParam));
-  PrepDeformParam_descriptor_ = file->message_type(8);
+  PrepDeformParam_descriptor_ = file->message_type(9);
   static const int PrepDeformParam_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, mean_x_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, mean_y_),
@@ -227,7 +247,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepDeformParam));
-  PrepClaheParam_descriptor_ = file->message_type(9);
+  PrepClaheParam_descriptor_ = file->message_type(10);
   static const int PrepClaheParam_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepClaheParam, clip_),
   };
@@ -242,7 +262,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepClaheParam));
-  PrepHistEqParam_descriptor_ = file->message_type(10);
+  PrepHistEqParam_descriptor_ = file->message_type(11);
   static const int PrepHistEqParam_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepHistEqParam, patch_prior_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepHistEqParam, masking_),
@@ -279,6 +299,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     ProcessParam_descriptor_, &ProcessParam::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    FilterOutputParam_descriptor_, &FilterOutputParam::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     InputParam_descriptor_, &InputParam::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     OutputParam_descriptor_, &OutputParam::default_instance());
@@ -305,6 +327,8 @@ void protobuf_ShutdownFile_caffetool_2eproto() {
   delete TrainParam_reflection_;
   delete ProcessParam::default_instance_;
   delete ProcessParam_reflection_;
+  delete FilterOutputParam::default_instance_;
+  delete FilterOutputParam_reflection_;
   delete InputParam::default_instance_;
   delete InputParam_reflection_;
   delete OutputParam::default_instance_;
@@ -336,41 +360,45 @@ void protobuf_AddDesc_caffetool_2eproto() {
     "Param\022+\n\007process\030\002 \003(\0132\032.caffe_neural.Pr"
     "ocessParam\"Z\n\nTrainParam\022\016\n\006solver\030\001 \001(\t"
     "\022\023\n\013solverstate\030\002 \001(\t\022\'\n\005input\030\003 \001(\0132\030.c"
-    "affe_neural.InputParam\"\213\001\n\014ProcessParam\022"
+    "affe_neural.InputParam\"\303\001\n\014ProcessParam\022"
     "\023\n\013process_net\030\001 \001(\t\022\022\n\ncaffemodel\030\002 \001(\t"
     "\022\'\n\005input\030\003 \001(\0132\030.caffe_neural.InputPara"
     "m\022)\n\006output\030\004 \001(\0132\031.caffe_neural.OutputP"
-    "aram\"\315\001\n\nInputParam\022\024\n\014padding_size\030\001 \001("
-    "\005\022\022\n\npatch_size\030\002 \001(\005\022\020\n\010channels\030\003 \001(\005\022"
-    "\016\n\006labels\030\004 \001(\005\022\022\n\nbatch_size\030\005 \001(\005\0225\n\014p"
-    "reprocessor\030\006 \001(\0132\037.caffe_neural.Preproc"
-    "essorParam\022\022\n\nraw_images\030\007 \001(\t\022\024\n\014label_"
-    "images\030\010 \001(\t\"j\n\013OutputParam\022\016\n\006output\030\001 "
-    "\001(\t\022\027\n\010fp32_out\030\002 \001(\010:\005false\022\035\n\016out_all_"
-    "labels\030\003 \001(\010:\005false\022\023\n\006format\030\004 \001(\t:\003tif"
-    "\"\301\002\n\021PreprocessorParam\022\033\n\rnormalization\030"
-    "\001 \001(\010:\004true\022)\n\004crop\030\002 \001(\0132\033.caffe_neural"
-    ".PrepCropParam\022+\n\005clahe\030\003 \001(\0132\034.caffe_ne"
-    "ural.PrepClaheParam\022\027\n\010rotation\030\004 \001(\010:\005f"
-    "alse\022\025\n\006mirror\030\005 \001(\010:\005false\022-\n\006histeq\030\006 "
-    "\001(\0132\035.caffe_neural.PrepHistEqParam\022)\n\004bl"
-    "ur\030\007 \001(\0132\033.caffe_neural.PrepBlurParam\022-\n"
-    "\006deform\030\010 \001(\0132\035.caffe_neural.PrepDeformP"
-    "aram\"5\n\rPrepCropParam\022\021\n\timagecrop\030\001 \001(\005"
-    "\022\021\n\tlabelcrop\030\002 \001(\005\"D\n\rPrepBlurParam\022\017\n\004"
-    "mean\030\001 \001(\002:\0010\022\020\n\003std\030\002 \001(\002:\0030.1\022\020\n\005ksize"
-    "\030\003 \001(\005:\0015\"_\n\017PrepDeformParam\022\021\n\006mean_x\030\001"
-    " \001(\002:\0010\022\021\n\006mean_y\030\002 \001(\002:\0010\022\022\n\005std_x\030\003 \001("
-    "\002:\0030.1\022\022\n\005std_y\030\004 \001(\002:\0030.1\"!\n\016PrepClaheP"
-    "aram\022\017\n\004clip\030\001 \001(\002:\0014\"r\n\017PrepHistEqParam"
-    "\022\031\n\013patch_prior\030\001 \001(\010:\004true\022\026\n\007masking\030\002"
-    " \001(\010:\005false\022\023\n\013label_boost\030\003 \003(\002\022\027\n\014bord"
-    "er_boost\030\004 \001(\002:\0011", 1377);
+    "aram\0226\n\rfilter_output\030\005 \001(\0132\037.caffe_neur"
+    "al.FilterOutputParam\";\n\021FilterOutputPara"
+    "m\022\026\n\016output_filters\030\001 \001(\010\022\016\n\006output\030\002 \001("
+    "\t\"\315\001\n\nInputParam\022\024\n\014padding_size\030\001 \001(\005\022\022"
+    "\n\npatch_size\030\002 \001(\005\022\020\n\010channels\030\003 \001(\005\022\016\n\006"
+    "labels\030\004 \001(\005\022\022\n\nbatch_size\030\005 \001(\005\0225\n\014prep"
+    "rocessor\030\006 \001(\0132\037.caffe_neural.Preprocess"
+    "orParam\022\022\n\nraw_images\030\007 \001(\t\022\024\n\014label_ima"
+    "ges\030\010 \001(\t\"j\n\013OutputParam\022\016\n\006output\030\001 \001(\t"
+    "\022\027\n\010fp32_out\030\002 \001(\010:\005false\022\035\n\016out_all_lab"
+    "els\030\003 \001(\010:\005false\022\023\n\006format\030\004 \001(\t:\003tif\"\301\002"
+    "\n\021PreprocessorParam\022\033\n\rnormalization\030\001 \001"
+    "(\010:\004true\022)\n\004crop\030\002 \001(\0132\033.caffe_neural.Pr"
+    "epCropParam\022+\n\005clahe\030\003 \001(\0132\034.caffe_neura"
+    "l.PrepClaheParam\022\027\n\010rotation\030\004 \001(\010:\005fals"
+    "e\022\025\n\006mirror\030\005 \001(\010:\005false\022-\n\006histeq\030\006 \001(\013"
+    "2\035.caffe_neural.PrepHistEqParam\022)\n\004blur\030"
+    "\007 \001(\0132\033.caffe_neural.PrepBlurParam\022-\n\006de"
+    "form\030\010 \001(\0132\035.caffe_neural.PrepDeformPara"
+    "m\"5\n\rPrepCropParam\022\021\n\timagecrop\030\001 \001(\005\022\021\n"
+    "\tlabelcrop\030\002 \001(\005\"D\n\rPrepBlurParam\022\017\n\004mea"
+    "n\030\001 \001(\002:\0010\022\020\n\003std\030\002 \001(\002:\0030.1\022\020\n\005ksize\030\003 "
+    "\001(\005:\0015\"_\n\017PrepDeformParam\022\021\n\006mean_x\030\001 \001("
+    "\002:\0010\022\021\n\006mean_y\030\002 \001(\002:\0010\022\022\n\005std_x\030\003 \001(\002:\003"
+    "0.1\022\022\n\005std_y\030\004 \001(\002:\0030.1\"!\n\016PrepClahePara"
+    "m\022\017\n\004clip\030\001 \001(\002:\0014\"r\n\017PrepHistEqParam\022\031\n"
+    "\013patch_prior\030\001 \001(\010:\004true\022\026\n\007masking\030\002 \001("
+    "\010:\005false\022\023\n\013label_boost\030\003 \003(\002\022\027\n\014border_"
+    "boost\030\004 \001(\002:\0011", 1494);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "caffetool.proto", &protobuf_RegisterTypes);
   ToolParam::default_instance_ = new ToolParam();
   TrainParam::default_instance_ = new TrainParam();
   ProcessParam::default_instance_ = new ProcessParam();
+  FilterOutputParam::default_instance_ = new FilterOutputParam();
   InputParam::default_instance_ = new InputParam();
   OutputParam::_default_format_ =
       new ::std::string("tif", 3);
@@ -384,6 +412,7 @@ void protobuf_AddDesc_caffetool_2eproto() {
   ToolParam::default_instance_->InitAsDefaultInstance();
   TrainParam::default_instance_->InitAsDefaultInstance();
   ProcessParam::default_instance_->InitAsDefaultInstance();
+  FilterOutputParam::default_instance_->InitAsDefaultInstance();
   InputParam::default_instance_->InitAsDefaultInstance();
   OutputParam::default_instance_->InitAsDefaultInstance();
   PreprocessorParam::default_instance_->InitAsDefaultInstance();
@@ -979,6 +1008,7 @@ const int ProcessParam::kProcessNetFieldNumber;
 const int ProcessParam::kCaffemodelFieldNumber;
 const int ProcessParam::kInputFieldNumber;
 const int ProcessParam::kOutputFieldNumber;
+const int ProcessParam::kFilterOutputFieldNumber;
 #endif  // !_MSC_VER
 
 ProcessParam::ProcessParam()
@@ -989,6 +1019,7 @@ ProcessParam::ProcessParam()
 void ProcessParam::InitAsDefaultInstance() {
   input_ = const_cast< ::caffe_neural::InputParam*>(&::caffe_neural::InputParam::default_instance());
   output_ = const_cast< ::caffe_neural::OutputParam*>(&::caffe_neural::OutputParam::default_instance());
+  filter_output_ = const_cast< ::caffe_neural::FilterOutputParam*>(&::caffe_neural::FilterOutputParam::default_instance());
 }
 
 ProcessParam::ProcessParam(const ProcessParam& from)
@@ -1003,6 +1034,7 @@ void ProcessParam::SharedCtor() {
   caffemodel_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   input_ = NULL;
   output_ = NULL;
+  filter_output_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1020,6 +1052,7 @@ void ProcessParam::SharedDtor() {
   if (this != default_instance_) {
     delete input_;
     delete output_;
+    delete filter_output_;
   }
 }
 
@@ -1061,6 +1094,9 @@ void ProcessParam::Clear() {
     }
     if (has_output()) {
       if (output_ != NULL) output_->::caffe_neural::OutputParam::Clear();
+    }
+    if (has_filter_output()) {
+      if (filter_output_ != NULL) filter_output_->::caffe_neural::FilterOutputParam::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -1130,6 +1166,20 @@ bool ProcessParam::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(42)) goto parse_filter_output;
+        break;
+      }
+
+      // optional .caffe_neural.FilterOutputParam filter_output = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_filter_output:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_filter_output()));
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1182,6 +1232,12 @@ void ProcessParam::SerializeWithCachedSizes(
       4, this->output(), output);
   }
 
+  // optional .caffe_neural.FilterOutputParam filter_output = 5;
+  if (has_filter_output()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, this->filter_output(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1224,6 +1280,13 @@ void ProcessParam::SerializeWithCachedSizes(
         4, this->output(), target);
   }
 
+  // optional .caffe_neural.FilterOutputParam filter_output = 5;
+  if (has_filter_output()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        5, this->filter_output(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1261,6 +1324,13 @@ int ProcessParam::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->output());
+    }
+
+    // optional .caffe_neural.FilterOutputParam filter_output = 5;
+    if (has_filter_output()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->filter_output());
     }
 
   }
@@ -1302,6 +1372,9 @@ void ProcessParam::MergeFrom(const ProcessParam& from) {
     if (from.has_output()) {
       mutable_output()->::caffe_neural::OutputParam::MergeFrom(from.output());
     }
+    if (from.has_filter_output()) {
+      mutable_filter_output()->::caffe_neural::FilterOutputParam::MergeFrom(from.filter_output());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1329,6 +1402,7 @@ void ProcessParam::Swap(ProcessParam* other) {
     std::swap(caffemodel_, other->caffemodel_);
     std::swap(input_, other->input_);
     std::swap(output_, other->output_);
+    std::swap(filter_output_, other->filter_output_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1340,6 +1414,269 @@ void ProcessParam::Swap(ProcessParam* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = ProcessParam_descriptor_;
   metadata.reflection = ProcessParam_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int FilterOutputParam::kOutputFiltersFieldNumber;
+const int FilterOutputParam::kOutputFieldNumber;
+#endif  // !_MSC_VER
+
+FilterOutputParam::FilterOutputParam()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void FilterOutputParam::InitAsDefaultInstance() {
+}
+
+FilterOutputParam::FilterOutputParam(const FilterOutputParam& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void FilterOutputParam::SharedCtor() {
+  _cached_size_ = 0;
+  output_filters_ = false;
+  output_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+FilterOutputParam::~FilterOutputParam() {
+  SharedDtor();
+}
+
+void FilterOutputParam::SharedDtor() {
+  if (output_ != &::google::protobuf::internal::kEmptyString) {
+    delete output_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void FilterOutputParam::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* FilterOutputParam::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return FilterOutputParam_descriptor_;
+}
+
+const FilterOutputParam& FilterOutputParam::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_caffetool_2eproto();
+  return *default_instance_;
+}
+
+FilterOutputParam* FilterOutputParam::default_instance_ = NULL;
+
+FilterOutputParam* FilterOutputParam::New() const {
+  return new FilterOutputParam;
+}
+
+void FilterOutputParam::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    output_filters_ = false;
+    if (has_output()) {
+      if (output_ != &::google::protobuf::internal::kEmptyString) {
+        output_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool FilterOutputParam::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional bool output_filters = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &output_filters_)));
+          set_has_output_filters();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_output;
+        break;
+      }
+
+      // optional string output = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_output:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_output()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->output().data(), this->output().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void FilterOutputParam::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional bool output_filters = 1;
+  if (has_output_filters()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->output_filters(), output);
+  }
+
+  // optional string output = 2;
+  if (has_output()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->output().data(), this->output().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->output(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* FilterOutputParam::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional bool output_filters = 1;
+  if (has_output_filters()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->output_filters(), target);
+  }
+
+  // optional string output = 2;
+  if (has_output()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->output().data(), this->output().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->output(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int FilterOutputParam::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional bool output_filters = 1;
+    if (has_output_filters()) {
+      total_size += 1 + 1;
+    }
+
+    // optional string output = 2;
+    if (has_output()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->output());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void FilterOutputParam::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const FilterOutputParam* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const FilterOutputParam*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void FilterOutputParam::MergeFrom(const FilterOutputParam& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_output_filters()) {
+      set_output_filters(from.output_filters());
+    }
+    if (from.has_output()) {
+      set_output(from.output());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void FilterOutputParam::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void FilterOutputParam::CopyFrom(const FilterOutputParam& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool FilterOutputParam::IsInitialized() const {
+
+  return true;
+}
+
+void FilterOutputParam::Swap(FilterOutputParam* other) {
+  if (other != this) {
+    std::swap(output_filters_, other->output_filters_);
+    std::swap(output_, other->output_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata FilterOutputParam::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = FilterOutputParam_descriptor_;
+  metadata.reflection = FilterOutputParam_reflection_;
   return metadata;
 }
 

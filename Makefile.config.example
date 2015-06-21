@@ -1,13 +1,14 @@
 # GreenTea (ViennaCL/OpenCL) backend switch
 
-# Enable the CUDA backend
+# Enable the CUDA backend and CUDNN
 USE_CUDA := 1
+USE_CUDNN := 0
 
 # Enable the OpenCL/Greentea backend
 USE_GREENTEA := 1
 
 # Path to the modified caffe
-CAFFE_PATH = ../caffe
+CAFFE_PATH = ../caffe_gt
 
 # Folder of the ViennaCL header-only library
 VIENNACL_DIR = ../ViennaCL
@@ -15,6 +16,8 @@ VIENNACL_DIR = ../ViennaCL
 # Either set CLBLAS or VIENNACLBLAS to 1, not both.
 # If you want to use OpenCL/Greentea on the CPU only, you can also disable both.
 # When both are disabled, GPUs won't work. CPUs always use CBLAS (Atlas, MKL or OpenBLAS).
+# The chosen BLAS library needs to be compiled and installed from source.
+# CLBLAS should be faster, especially on AMD cards.
 USE_CLBLAS := 1
 USE_VIENNACLBLAS := 0
 

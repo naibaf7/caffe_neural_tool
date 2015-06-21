@@ -5,7 +5,9 @@
  *      Author: Fabian Tschopp
  */
 
+#ifdef USE_CUDA
 #include <cuda_runtime.h>
+#endif // USE_CUDA
 #include <cstring>
 #include <cstdlib>
 #include <vector>
@@ -285,6 +287,62 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
   return 0;
 }
 
+int ExportFilters(Net<float> *net, std::string output_folder,
+                  bofs::path input_name, int st, int y, int x) {
+  std::vector<std::string> names = net->blob_names();
+  std::vector<boost::shared_ptr<Blob<float>>>blobs = net->blobs();
+
+  for (unsigned int i = 0; i < names.size(); ++i) {
+    std::string name = names[i];
+    shared_ptr<Blob<float>> blob = blobs[i];
+
+    const float* cpu_ptr = blob->cpu_data();
+
+    for (int n = 0; n < blob->num(); ++n) {
+      for (int c = 0; c < blob->channels(); ++c) {
+        cv::Mat mat(blob->height(), blob->width(), CV_32FC1);
+        for (int h = 0; h < blob->height(); ++h) {
+#pragma omp parallel for
+          for (int w = 0; w < blob->width(); ++w) {
+            mat.at<float>(h, w) = *(cpu_ptr + w);
+          }
+          cpu_ptr += blob->width();
+        }
+
+        bofs::path outp(output_folder);
+
+        std::stringstream ssp;
+        ssp << "/";
+        ssp << input_name.stem().string();
+        ssp << "_" << st << "_" << y << "_" << x;
+
+        std::stringstream ssf;
+        ssf << "/";
+        ssf << name;
+        ssf << "_" << n << "_" << c;
+        ssf << ".png";
+
+        bofs::path outpl = outp;
+        outpl /= (ssp.str());
+        bofs::create_directories(outpl);
+        bofs::path filep = outpl;
+        filep /= (ssf.str());
+
+        cv::Mat outfc;
+        cv::Mat outuc;
+        double minVal, maxVal;
+        cv::minMaxLoc(mat, &minVal, &maxVal);
+        mat.convertTo(outfc, CV_32FC1, 1.0 / (maxVal - minVal),
+                  -minVal * 1.0 / (maxVal - minVal));
+        outfc.convertTo(outuc, CV_8UC1, 255.0, 0.0);
+
+        cv::imwrite(filep.string(), outuc);
+      }
+    }
+  }
+  return 0;
+}
+
 int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
 
   if (tool_param.train_size() <= settings.param_index) {
@@ -441,6 +499,13 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
 
           float loss = 0.0;
           const vector<Blob<float>*>& result = net.ForwardPrefilled(&loss);
+
+          if(process_param.has_filter_output()) {
+            FilterOutputParam filter_param = process_param.filter_output();
+            if(filter_param.has_output_filters() && filter_param.output_filters() && filter_param.has_output()) {
+              ExportFilters(&net, filter_param.output(), process_set[i], st, yoff, xoff);
+            }
+          }
 
           const float* cpuresult = result[0]->cpu_data();
 

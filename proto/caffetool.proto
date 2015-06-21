@@ -18,7 +18,14 @@ message ProcessParam {
   optional string caffemodel = 2;
   optional InputParam input = 3;
   optional OutputParam output = 4;
+  optional FilterOutputParam filter_output = 5;
 }
+
+message FilterOutputParam {
+  optional bool output_filters = 1;
+  optional string output = 2;
+}
+
 
 message InputParam {
   optional int32 padding_size = 1;

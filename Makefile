@@ -21,7 +21,8 @@ FILES := $(shell find $(SRC) -name '*.cpp' -or -name '*.c' -or -name '*.cc')
 INCLUDE = 	-I$(INC) \
 			-I$(CAFFE_PATH)/include \
 			-I$(CAFFE_PATH)/caffe \
-			-I$(CAFFE_PATH)/caffe/src
+			-I$(CAFFE_PATH)/caffe/src \
+			-I$(CAFFE_PATH)/build/src
 			
 # Library dependencies	
 LIBRARY = 	-Wl,-Bstatic,--whole-archive -L$(CAFFE_PATH)/build/lib/ -lcaffe -Wl,-Bdynamic,--no-whole-archive \
@@ -73,6 +74,9 @@ ifeq ($(USE_CUDA), 1)
 	CXXFLAGS += -DUSE_CUDA
 	INCLUDE += -I$(CUDA_DIR)/include
 	LIBRARY += -L$(CUDA_DIR)/lib64/ -lcudart -lcublas -lcurand
+	ifeq ($(USE_CUDNN), 1)
+		LIBRARY += -lcudnn
+	endif
 endif
 
 # Compiler targets

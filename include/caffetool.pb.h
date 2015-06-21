@@ -36,6 +36,7 @@ void protobuf_ShutdownFile_caffetool_2eproto();
 class ToolParam;
 class TrainParam;
 class ProcessParam;
+class FilterOutputParam;
 class InputParam;
 class OutputParam;
 class PreprocessorParam;
@@ -355,6 +356,15 @@ class ProcessParam : public ::google::protobuf::Message {
   inline ::caffe_neural::OutputParam* release_output();
   inline void set_allocated_output(::caffe_neural::OutputParam* output);
 
+  // optional .caffe_neural.FilterOutputParam filter_output = 5;
+  inline bool has_filter_output() const;
+  inline void clear_filter_output();
+  static const int kFilterOutputFieldNumber = 5;
+  inline const ::caffe_neural::FilterOutputParam& filter_output() const;
+  inline ::caffe_neural::FilterOutputParam* mutable_filter_output();
+  inline ::caffe_neural::FilterOutputParam* release_filter_output();
+  inline void set_allocated_filter_output(::caffe_neural::FilterOutputParam* filter_output);
+
   // @@protoc_insertion_point(class_scope:caffe_neural.ProcessParam)
  private:
   inline void set_has_process_net();
@@ -365,6 +375,8 @@ class ProcessParam : public ::google::protobuf::Message {
   inline void clear_has_input();
   inline void set_has_output();
   inline void clear_has_output();
+  inline void set_has_filter_output();
+  inline void clear_has_filter_output();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -372,9 +384,10 @@ class ProcessParam : public ::google::protobuf::Message {
   ::std::string* caffemodel_;
   ::caffe_neural::InputParam* input_;
   ::caffe_neural::OutputParam* output_;
+  ::caffe_neural::FilterOutputParam* filter_output_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_caffetool_2eproto();
   friend void protobuf_AssignDesc_caffetool_2eproto();
@@ -382,6 +395,103 @@ class ProcessParam : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static ProcessParam* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class FilterOutputParam : public ::google::protobuf::Message {
+ public:
+  FilterOutputParam();
+  virtual ~FilterOutputParam();
+
+  FilterOutputParam(const FilterOutputParam& from);
+
+  inline FilterOutputParam& operator=(const FilterOutputParam& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const FilterOutputParam& default_instance();
+
+  void Swap(FilterOutputParam* other);
+
+  // implements Message ----------------------------------------------
+
+  FilterOutputParam* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const FilterOutputParam& from);
+  void MergeFrom(const FilterOutputParam& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional bool output_filters = 1;
+  inline bool has_output_filters() const;
+  inline void clear_output_filters();
+  static const int kOutputFiltersFieldNumber = 1;
+  inline bool output_filters() const;
+  inline void set_output_filters(bool value);
+
+  // optional string output = 2;
+  inline bool has_output() const;
+  inline void clear_output();
+  static const int kOutputFieldNumber = 2;
+  inline const ::std::string& output() const;
+  inline void set_output(const ::std::string& value);
+  inline void set_output(const char* value);
+  inline void set_output(const char* value, size_t size);
+  inline ::std::string* mutable_output();
+  inline ::std::string* release_output();
+  inline void set_allocated_output(::std::string* output);
+
+  // @@protoc_insertion_point(class_scope:caffe_neural.FilterOutputParam)
+ private:
+  inline void set_has_output_filters();
+  inline void clear_has_output_filters();
+  inline void set_has_output();
+  inline void clear_has_output();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* output_;
+  bool output_filters_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_caffetool_2eproto();
+  friend void protobuf_AssignDesc_caffetool_2eproto();
+  friend void protobuf_ShutdownFile_caffetool_2eproto();
+
+  void InitAsDefaultInstance();
+  static FilterOutputParam* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1791,6 +1901,140 @@ inline void ProcessParam::set_allocated_output(::caffe_neural::OutputParam* outp
     set_has_output();
   } else {
     clear_has_output();
+  }
+}
+
+// optional .caffe_neural.FilterOutputParam filter_output = 5;
+inline bool ProcessParam::has_filter_output() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void ProcessParam::set_has_filter_output() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void ProcessParam::clear_has_filter_output() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void ProcessParam::clear_filter_output() {
+  if (filter_output_ != NULL) filter_output_->::caffe_neural::FilterOutputParam::Clear();
+  clear_has_filter_output();
+}
+inline const ::caffe_neural::FilterOutputParam& ProcessParam::filter_output() const {
+  return filter_output_ != NULL ? *filter_output_ : *default_instance_->filter_output_;
+}
+inline ::caffe_neural::FilterOutputParam* ProcessParam::mutable_filter_output() {
+  set_has_filter_output();
+  if (filter_output_ == NULL) filter_output_ = new ::caffe_neural::FilterOutputParam;
+  return filter_output_;
+}
+inline ::caffe_neural::FilterOutputParam* ProcessParam::release_filter_output() {
+  clear_has_filter_output();
+  ::caffe_neural::FilterOutputParam* temp = filter_output_;
+  filter_output_ = NULL;
+  return temp;
+}
+inline void ProcessParam::set_allocated_filter_output(::caffe_neural::FilterOutputParam* filter_output) {
+  delete filter_output_;
+  filter_output_ = filter_output;
+  if (filter_output) {
+    set_has_filter_output();
+  } else {
+    clear_has_filter_output();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// FilterOutputParam
+
+// optional bool output_filters = 1;
+inline bool FilterOutputParam::has_output_filters() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void FilterOutputParam::set_has_output_filters() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void FilterOutputParam::clear_has_output_filters() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void FilterOutputParam::clear_output_filters() {
+  output_filters_ = false;
+  clear_has_output_filters();
+}
+inline bool FilterOutputParam::output_filters() const {
+  return output_filters_;
+}
+inline void FilterOutputParam::set_output_filters(bool value) {
+  set_has_output_filters();
+  output_filters_ = value;
+}
+
+// optional string output = 2;
+inline bool FilterOutputParam::has_output() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void FilterOutputParam::set_has_output() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void FilterOutputParam::clear_has_output() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void FilterOutputParam::clear_output() {
+  if (output_ != &::google::protobuf::internal::kEmptyString) {
+    output_->clear();
+  }
+  clear_has_output();
+}
+inline const ::std::string& FilterOutputParam::output() const {
+  return *output_;
+}
+inline void FilterOutputParam::set_output(const ::std::string& value) {
+  set_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    output_ = new ::std::string;
+  }
+  output_->assign(value);
+}
+inline void FilterOutputParam::set_output(const char* value) {
+  set_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    output_ = new ::std::string;
+  }
+  output_->assign(value);
+}
+inline void FilterOutputParam::set_output(const char* value, size_t size) {
+  set_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    output_ = new ::std::string;
+  }
+  output_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* FilterOutputParam::mutable_output() {
+  set_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    output_ = new ::std::string;
+  }
+  return output_;
+}
+inline ::std::string* FilterOutputParam::release_output() {
+  clear_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = output_;
+    output_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void FilterOutputParam::set_allocated_output(::std::string* output) {
+  if (output_ != &::google::protobuf::internal::kEmptyString) {
+    delete output_;
+  }
+  if (output) {
+    set_has_output();
+    output_ = output;
+  } else {
+    clear_has_output();
+    output_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
