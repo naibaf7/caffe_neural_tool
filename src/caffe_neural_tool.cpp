@@ -330,8 +330,10 @@ int ExportFilters(Net<float> *net, std::string output_folder,
 
         cv::Mat outfc;
         cv::Mat outuc;
+
         double minVal, maxVal;
         cv::minMaxLoc(mat, &minVal, &maxVal);
+
         mat.convertTo(outfc, CV_32FC1, 1.0 / (maxVal - minVal),
                   -minVal * 1.0 / (maxVal - minVal));
         outfc.convertTo(outuc, CV_8UC1, 255.0, 0.0);
@@ -358,8 +360,9 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
   }
 
   std::string outpath = output_param.output();
-  std::string format = output_param.has_format()? output_param.format() : ".tif";
-  bool fp32out = output_param.has_fp32_out()? output_param.fp32_out() : false;
+  std::string format = output_param.has_format() ? output_param.format() : ".tif";
+  std::transform(format.begin(), format.end(), format.begin(), ::tolower);
+  bool fp32out = output_param.has_fp32_out() ? output_param.fp32_out() : false;
   if(fp32out) {
     format = ".tif";
   }
@@ -367,7 +370,6 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
   if (filetypes.find(format) == filetypes.end()) {
     format = ".tif";
   }
-  std::transform(format.begin(), format.end(), format.begin(), ::tolower);
 
   if(!(input_param.has_patch_size() && input_param.has_padding_size() && input_param.has_labels() && input_param.has_channels())) {
     LOG(FATAL) << "Patch size, padding size, label count or channel count parameter missing.";
@@ -377,15 +379,18 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
   unsigned int nr_labels = input_param.labels();
   unsigned int nr_channels = input_param.channels();
 
-  if(!(process_param.has_process_net() && process_param.has_caffemodel())) {
-    LOG(FATAL) << "Processing network prototxt or caffemodel argument missing.";
+  if(!(process_param.has_process_net())) {
+    LOG(FATAL) << "Processing network prototxt argument missing.";
   }
 
   std::string process_net = process_param.process_net();
-  std::string caffe_model = process_param.caffemodel();
 
   Net<float> net(process_net, caffe::TEST);
-  net.CopyTrainedLayersFrom(caffe_model);
+
+  if(process_param.has_caffemodel()) {
+    std::string caffe_model = process_param.caffemodel();
+    net.CopyTrainedLayersFrom(caffe_model);
+  }
 
   ProcessImageProcessor image_processor(patch_size, nr_labels);
 

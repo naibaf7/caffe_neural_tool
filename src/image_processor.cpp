@@ -187,17 +187,35 @@ int ImageProcessor::Init() {
       label_running_probability_.resize(
           label_images_.size() * off_size_x * off_size_y);
 
+
+      // Loop over all images
+#pragma omp parallel for
       for (unsigned int k = 0; k < label_images_.size(); ++k) {
         cv::Mat label_image = label_images_[k];
-#pragma omp parallel for
+        std::vector<long> patch_label_count(nr_labels_);
+        // Loop over all possible patches
         for (int y = 0; y < off_size_y; ++y) {
           for (int x = 0; x < off_size_x; ++x) {
-            std::vector<long> patch_label_count(patch_size_, patch_size_);
-            for (int py = y; py < y + patch_size_; ++py) {
-              for (int px = x; px < x + patch_size_; ++px) {
-                patch_label_count[label_image.at<float>(py, px)]++;
+
+            if(x == 0) {
+              // Fully compute the patches at the beginning of the row
+              for(int l = 0; l < nr_labels_; ++l) {
+                patch_label_count[l] = 0;
+              }
+              for (int py = y; py < y + patch_size_; ++py) {
+                for (int px = x; px < x + patch_size_; ++px) {
+                  patch_label_count[label_image.at<float>(py, px)]++;
+                }
+              }
+            } else {
+              // Only compute difference for further patches in the row (more efficient)
+              for (int py = y; py < y + patch_size_; ++py) {
+                patch_label_count[label_image.at<float>(py, x - 1)]--;
+                patch_label_count[label_image.at<float>(py, x + patch_size_ - 1)]++;
               }
             }
+
+            // Compute the weight of the patch
             double patch_weight = 0;
             for (int l = 0; l < nr_labels_; ++l) {
               patch_weight += (((double) (patch_label_count[l]))

@@ -24,6 +24,7 @@ void SaveTiff(std::vector<cv::Mat> image_stack, std::string file) {
       int imageheight = image_stack[i].rows;
       int nr_channels = image_stack[i].channels();
       bool fp32 = (image_stack[i].type() == CV_32FC1);
+
       unsigned char buf[imagewidth
           * (nr_channels == 3 ?
               sizeof(uint32) : (fp32 ? sizeof(float) : sizeof(uchar)))];
