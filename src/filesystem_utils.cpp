@@ -5,7 +5,7 @@
  *      Author: Fabian Tschopp
  */
 
-#include "filesystem_utils.hpp"
+#include "../include/utils.hpp"
 
 namespace caffe_neural {
 

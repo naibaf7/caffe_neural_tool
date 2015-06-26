@@ -8,6 +8,8 @@
 #include "image_processor.hpp"
 #include "neural_utils.hpp"
 
+#include <glog/logging.h>
+
 #include <omp.h>
 #include <iostream>
 #include <set>
@@ -177,7 +179,7 @@ int ImageProcessor::Init() {
 
     for (int l = 0; l < nr_labels_; ++l) {
       label_freq[l] = (double) (label_count[l]) / (double) (total_count);
-      std::cout << "Label " << l << ": " << label_freq[l] << std::endl;
+      LOG(INFO) << "Label " << l << ": " << label_freq[l];
     }
 
     if (apply_label_patch_prior_) {
@@ -240,7 +242,7 @@ int ImageProcessor::Init() {
       }
       for (int l = 0; l < nr_labels_; ++l) {
         label_freq[l] = weighted_label_count[l] / freq_divisor;
-        std::cout << "Label " << l << ": " << label_freq[l] << std::endl;
+        LOG(INFO) << "Label " << l << ": " << label_freq[l];
       }
 
       offset_selector_ = GetRandomUniform<double>(
@@ -268,8 +270,8 @@ int ImageProcessor::Init() {
       }
       for (int l = 0; l < nr_labels_; ++l) {
         label_mask_probability_[l] /= mask_divisor;
-        std::cout << "Label " << l << ", mask probability: "
-                  << label_mask_probability_[l] << std::endl;
+        LOG(INFO) << "Label " << l << ", mask probability: "
+                  << label_mask_probability_[l];
       }
     }
   }

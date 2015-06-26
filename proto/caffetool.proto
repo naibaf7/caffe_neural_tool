@@ -5,6 +5,15 @@ package caffe_neural;
 message ToolParam {
   repeated TrainParam train = 1;
   repeated ProcessParam process = 2;
+  repeated BenchmarkParam benchmark = 3;
+}
+
+message BenchmarkParam {
+  optional int32 bench_runs = 1;
+  optional int32 warmup_runs = 2;
+  optional string output = 3;
+  optional int32 train_index = 4;
+  optional int32 process_index = 5;
 }
 
 message TrainParam {

@@ -34,6 +34,7 @@ void protobuf_AssignDesc_caffetool_2eproto();
 void protobuf_ShutdownFile_caffetool_2eproto();
 
 class ToolParam;
+class BenchmarkParam;
 class TrainParam;
 class ProcessParam;
 class FilterOutputParam;
@@ -126,6 +127,18 @@ class ToolParam : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedPtrField< ::caffe_neural::ProcessParam >*
       mutable_process();
 
+  // repeated .caffe_neural.BenchmarkParam benchmark = 3;
+  inline int benchmark_size() const;
+  inline void clear_benchmark();
+  static const int kBenchmarkFieldNumber = 3;
+  inline const ::caffe_neural::BenchmarkParam& benchmark(int index) const;
+  inline ::caffe_neural::BenchmarkParam* mutable_benchmark(int index);
+  inline ::caffe_neural::BenchmarkParam* add_benchmark();
+  inline const ::google::protobuf::RepeatedPtrField< ::caffe_neural::BenchmarkParam >&
+      benchmark() const;
+  inline ::google::protobuf::RepeatedPtrField< ::caffe_neural::BenchmarkParam >*
+      mutable_benchmark();
+
   // @@protoc_insertion_point(class_scope:caffe_neural.ToolParam)
  private:
 
@@ -133,9 +146,10 @@ class ToolParam : public ::google::protobuf::Message {
 
   ::google::protobuf::RepeatedPtrField< ::caffe_neural::TrainParam > train_;
   ::google::protobuf::RepeatedPtrField< ::caffe_neural::ProcessParam > process_;
+  ::google::protobuf::RepeatedPtrField< ::caffe_neural::BenchmarkParam > benchmark_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_caffetool_2eproto();
   friend void protobuf_AssignDesc_caffetool_2eproto();
@@ -143,6 +157,133 @@ class ToolParam : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static ToolParam* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class BenchmarkParam : public ::google::protobuf::Message {
+ public:
+  BenchmarkParam();
+  virtual ~BenchmarkParam();
+
+  BenchmarkParam(const BenchmarkParam& from);
+
+  inline BenchmarkParam& operator=(const BenchmarkParam& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const BenchmarkParam& default_instance();
+
+  void Swap(BenchmarkParam* other);
+
+  // implements Message ----------------------------------------------
+
+  BenchmarkParam* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const BenchmarkParam& from);
+  void MergeFrom(const BenchmarkParam& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional int32 bench_runs = 1;
+  inline bool has_bench_runs() const;
+  inline void clear_bench_runs();
+  static const int kBenchRunsFieldNumber = 1;
+  inline ::google::protobuf::int32 bench_runs() const;
+  inline void set_bench_runs(::google::protobuf::int32 value);
+
+  // optional int32 warmup_runs = 2;
+  inline bool has_warmup_runs() const;
+  inline void clear_warmup_runs();
+  static const int kWarmupRunsFieldNumber = 2;
+  inline ::google::protobuf::int32 warmup_runs() const;
+  inline void set_warmup_runs(::google::protobuf::int32 value);
+
+  // optional string output = 3;
+  inline bool has_output() const;
+  inline void clear_output();
+  static const int kOutputFieldNumber = 3;
+  inline const ::std::string& output() const;
+  inline void set_output(const ::std::string& value);
+  inline void set_output(const char* value);
+  inline void set_output(const char* value, size_t size);
+  inline ::std::string* mutable_output();
+  inline ::std::string* release_output();
+  inline void set_allocated_output(::std::string* output);
+
+  // optional int32 train_index = 4;
+  inline bool has_train_index() const;
+  inline void clear_train_index();
+  static const int kTrainIndexFieldNumber = 4;
+  inline ::google::protobuf::int32 train_index() const;
+  inline void set_train_index(::google::protobuf::int32 value);
+
+  // optional int32 process_index = 5;
+  inline bool has_process_index() const;
+  inline void clear_process_index();
+  static const int kProcessIndexFieldNumber = 5;
+  inline ::google::protobuf::int32 process_index() const;
+  inline void set_process_index(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:caffe_neural.BenchmarkParam)
+ private:
+  inline void set_has_bench_runs();
+  inline void clear_has_bench_runs();
+  inline void set_has_warmup_runs();
+  inline void clear_has_warmup_runs();
+  inline void set_has_output();
+  inline void clear_has_output();
+  inline void set_has_train_index();
+  inline void clear_has_train_index();
+  inline void set_has_process_index();
+  inline void clear_has_process_index();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::int32 bench_runs_;
+  ::google::protobuf::int32 warmup_runs_;
+  ::std::string* output_;
+  ::google::protobuf::int32 train_index_;
+  ::google::protobuf::int32 process_index_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+
+  friend void  protobuf_AddDesc_caffetool_2eproto();
+  friend void protobuf_AssignDesc_caffetool_2eproto();
+  friend void protobuf_ShutdownFile_caffetool_2eproto();
+
+  void InitAsDefaultInstance();
+  static BenchmarkParam* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1500,6 +1641,193 @@ ToolParam::process() const {
 inline ::google::protobuf::RepeatedPtrField< ::caffe_neural::ProcessParam >*
 ToolParam::mutable_process() {
   return &process_;
+}
+
+// repeated .caffe_neural.BenchmarkParam benchmark = 3;
+inline int ToolParam::benchmark_size() const {
+  return benchmark_.size();
+}
+inline void ToolParam::clear_benchmark() {
+  benchmark_.Clear();
+}
+inline const ::caffe_neural::BenchmarkParam& ToolParam::benchmark(int index) const {
+  return benchmark_.Get(index);
+}
+inline ::caffe_neural::BenchmarkParam* ToolParam::mutable_benchmark(int index) {
+  return benchmark_.Mutable(index);
+}
+inline ::caffe_neural::BenchmarkParam* ToolParam::add_benchmark() {
+  return benchmark_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::caffe_neural::BenchmarkParam >&
+ToolParam::benchmark() const {
+  return benchmark_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::caffe_neural::BenchmarkParam >*
+ToolParam::mutable_benchmark() {
+  return &benchmark_;
+}
+
+// -------------------------------------------------------------------
+
+// BenchmarkParam
+
+// optional int32 bench_runs = 1;
+inline bool BenchmarkParam::has_bench_runs() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void BenchmarkParam::set_has_bench_runs() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void BenchmarkParam::clear_has_bench_runs() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void BenchmarkParam::clear_bench_runs() {
+  bench_runs_ = 0;
+  clear_has_bench_runs();
+}
+inline ::google::protobuf::int32 BenchmarkParam::bench_runs() const {
+  return bench_runs_;
+}
+inline void BenchmarkParam::set_bench_runs(::google::protobuf::int32 value) {
+  set_has_bench_runs();
+  bench_runs_ = value;
+}
+
+// optional int32 warmup_runs = 2;
+inline bool BenchmarkParam::has_warmup_runs() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void BenchmarkParam::set_has_warmup_runs() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void BenchmarkParam::clear_has_warmup_runs() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void BenchmarkParam::clear_warmup_runs() {
+  warmup_runs_ = 0;
+  clear_has_warmup_runs();
+}
+inline ::google::protobuf::int32 BenchmarkParam::warmup_runs() const {
+  return warmup_runs_;
+}
+inline void BenchmarkParam::set_warmup_runs(::google::protobuf::int32 value) {
+  set_has_warmup_runs();
+  warmup_runs_ = value;
+}
+
+// optional string output = 3;
+inline bool BenchmarkParam::has_output() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void BenchmarkParam::set_has_output() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void BenchmarkParam::clear_has_output() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void BenchmarkParam::clear_output() {
+  if (output_ != &::google::protobuf::internal::kEmptyString) {
+    output_->clear();
+  }
+  clear_has_output();
+}
+inline const ::std::string& BenchmarkParam::output() const {
+  return *output_;
+}
+inline void BenchmarkParam::set_output(const ::std::string& value) {
+  set_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    output_ = new ::std::string;
+  }
+  output_->assign(value);
+}
+inline void BenchmarkParam::set_output(const char* value) {
+  set_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    output_ = new ::std::string;
+  }
+  output_->assign(value);
+}
+inline void BenchmarkParam::set_output(const char* value, size_t size) {
+  set_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    output_ = new ::std::string;
+  }
+  output_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* BenchmarkParam::mutable_output() {
+  set_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    output_ = new ::std::string;
+  }
+  return output_;
+}
+inline ::std::string* BenchmarkParam::release_output() {
+  clear_has_output();
+  if (output_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = output_;
+    output_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void BenchmarkParam::set_allocated_output(::std::string* output) {
+  if (output_ != &::google::protobuf::internal::kEmptyString) {
+    delete output_;
+  }
+  if (output) {
+    set_has_output();
+    output_ = output;
+  } else {
+    clear_has_output();
+    output_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional int32 train_index = 4;
+inline bool BenchmarkParam::has_train_index() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void BenchmarkParam::set_has_train_index() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void BenchmarkParam::clear_has_train_index() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void BenchmarkParam::clear_train_index() {
+  train_index_ = 0;
+  clear_has_train_index();
+}
+inline ::google::protobuf::int32 BenchmarkParam::train_index() const {
+  return train_index_;
+}
+inline void BenchmarkParam::set_train_index(::google::protobuf::int32 value) {
+  set_has_train_index();
+  train_index_ = value;
+}
+
+// optional int32 process_index = 5;
+inline bool BenchmarkParam::has_process_index() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void BenchmarkParam::set_has_process_index() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void BenchmarkParam::clear_has_process_index() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void BenchmarkParam::clear_process_index() {
+  process_index_ = 0;
+  clear_has_process_index();
+}
+inline ::google::protobuf::int32 BenchmarkParam::process_index() const {
+  return process_index_;
+}
+inline void BenchmarkParam::set_process_index(::google::protobuf::int32 value) {
+  set_has_process_index();
+  process_index_ = value;
 }
 
 // -------------------------------------------------------------------

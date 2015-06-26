@@ -26,6 +26,15 @@ std::vector<bofs::path> LoadProcessSetItems(std::set<std::string> filetypes, std
 
 std::set<std::string> CreateImageTypesSet();
 
+std::function<unsigned int()> GetRandomSelector(unsigned int set_size);
+std::function<unsigned int()> GetRandomOffset(unsigned int min, unsigned int max);
+template<typename Dtype>
+std::function<Dtype()> GetRandomUniform(Dtype min, Dtype max);
+std::function<int()> GetRandomUniform(int min, int max);
+template<typename Dtype>
+std::function<Dtype()> GetRandomNormal(Dtype mu, Dtype std);
+
+
 
 }
 

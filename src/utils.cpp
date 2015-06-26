@@ -59,6 +59,19 @@ std::function<Dtype()> GetRandomUniform(Dtype min, Dtype max) {
   return uniform;
 }
 
+template std::function<float()> GetRandomUniform(float min, float max);
+template std::function<double()> GetRandomUniform(double min, double max);
+
+std::function<int()> GetRandomUniform(int min, int max) {
+  struct timeval start_time;
+  gettimeofday(&start_time, NULL);
+  std::seed_seq seq { start_time.tv_sec, start_time.tv_usec };
+  std::mt19937_64 generator(seq);
+  std::uniform_int_distribution<int> distribution(min, max);
+  std::function<int()> uniform = std::bind(distribution, generator);
+  return uniform;
+}
+
 template<typename Dtype>
 std::function<Dtype()> GetRandomNormal(Dtype mu, Dtype std) {
   struct timeval start_time;
@@ -69,9 +82,6 @@ std::function<Dtype()> GetRandomNormal(Dtype mu, Dtype std) {
   std::function<Dtype()> normal = std::bind(distribution, generator);
   return normal;
 }
-
-template std::function<float()> GetRandomUniform(float min, float max);
-template std::function<double()> GetRandomUniform(double min, double max);
 
 template std::function<float()> GetRandomNormal(float mu, float std);
 template std::function<double()> GetRandomNormal(double mu, double std);
