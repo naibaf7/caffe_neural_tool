@@ -10,7 +10,6 @@
 
 
 #include "image_processor.hpp"
-#include "neural_utils.hpp"
 #include "tiffio_wrapper.hpp"
 #include <glog/logging.h>
 #include "google/protobuf/message.h"
@@ -25,6 +24,8 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+
+#include "filesystem_utils.hpp"
 #include "utils.hpp"
 
 using caffe::Blob;

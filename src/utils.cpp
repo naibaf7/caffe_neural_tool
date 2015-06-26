@@ -5,9 +5,8 @@
  *      Author: Fabian Tschopp
  */
 
-#include "neural_utils.hpp"
-
 #include <sys/time.h>
+#include <utils.hpp>
 #include <random>
 #include <sstream>
 

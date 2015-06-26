@@ -6,13 +6,13 @@
  */
 
 #include "benchmark.hpp"
-#include "utils.hpp"
 #include <vector>
 #include <string>
 #include <iostream>
 #include <functional>
 #include <chrono>
 #include <cassert>
+#include "../include/filesystem_utils.hpp"
 
 namespace caffe_neural {
 

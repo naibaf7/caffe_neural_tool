@@ -6,13 +6,12 @@
  */
 
 #include "image_processor.hpp"
-#include "neural_utils.hpp"
-
 #include <glog/logging.h>
 
 #include <omp.h>
 #include <iostream>
 #include <set>
+#include "../include/utils.hpp"
 
 namespace caffe_neural {
 
