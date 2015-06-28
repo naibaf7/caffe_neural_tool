@@ -182,11 +182,12 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       out_file.open(filep.string());
       assert(out_file.is_open());
       for (int l = 0; l < net->layers().size(); ++l) {
-        out_file << l << ";" << "\"" << layers[l] << "\";"
+        out_file << l << ";" << layers[l] << ";"
                  << std::setprecision(10)
                  << layer_forward_times[l] / ((double) bench_runs * 1e6)
                  << std::endl;
       }
+      out_file.close();
     }
 
     {
@@ -197,11 +198,12 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       out_file.open(filep.string());
       assert(out_file.is_open());
       for (int l = 0; l < net->layers().size(); ++l) {
-        out_file << l << ";" << "\"" << layers[l] << "\";"
+        out_file << l << ";" << layers[l] << ";"
                  << std::setprecision(10)
                  << layer_backward_times[l] / ((double) bench_runs * 1e6)
                  << std::endl;
       }
+      out_file.close();
     }
 
     {
@@ -212,13 +214,25 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       out_file.open(filep.string());
       assert(out_file.is_open());
 
-      out_file << "\"Forward\";" << std::setprecision(10)
+      out_file << "Forward;" << std::setprecision(10)
                << total_forward_time / ((double) bench_runs * 1e6)
                << std::endl;
 
-      out_file << "\"Backward\";" << std::setprecision(10)
+      out_file << "Backward;" << std::setprecision(10)
                << total_backward_time / ((double) bench_runs * 1e6)
                << std::endl;
+      out_file.close();
+    }
+
+    {
+      bofs::path filep = benchpath;
+      filep /= ("/train_memory_usage.csv");
+
+      std::ofstream out_file;
+      out_file.open(filep.string());
+      assert(out_file.is_open());
+
+      out_file << "Peak memory usage;" << net->layers()[0]->device_context()->peak_memory_usage();
     }
 
   }
@@ -270,7 +284,7 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       out_file.open(filep.string());
       assert(out_file.is_open());
       for (int l = 0; l < net.layers().size(); ++l) {
-        out_file << l << ";" << "\"" << layers[l] << "\";"
+        out_file << l << ";" << layers[l] << ";"
                  << std::setprecision(10)
                  << layer_forward_times[l] / ((double) bench_runs * 1e6)
                  << std::endl;
@@ -285,8 +299,19 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       out_file.open(filep.string());
       assert(out_file.is_open());
 
-      out_file << "\"Forward\";" << std::setprecision(10)
+      out_file << "Forward;" << std::setprecision(10)
                << total_forward_time / ((double) bench_runs * 1e6) << std::endl;
+    }
+
+    {
+      bofs::path filep = benchpath;
+      filep /= ("/process_memory_usage.csv");
+
+      std::ofstream out_file;
+      out_file.open(filep.string());
+      assert(out_file.is_open());
+
+      out_file << "Peak memory usage;" << net.layers()[0]->device_context()->peak_memory_usage();
     }
   }
 

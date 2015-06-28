@@ -29,6 +29,8 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.809692740" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__GXX_EXPERIMENTAL_CXX0X__"/>
+									<listOptionValue builtIn="false" value="USE_CUDA"/>
+									<listOptionValue builtIn="false" value="USE_GREENTEA"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.971414024" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -41,6 +43,8 @@
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1776129135" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__GXX_EXPERIMENTAL_CXX0X__"/>
+									<listOptionValue builtIn="false" value="USE_CUDA"/>
+									<listOptionValue builtIn="false" value="USE_GREENTEA"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.880619317" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
