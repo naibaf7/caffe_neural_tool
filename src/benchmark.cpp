@@ -232,7 +232,10 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       out_file.open(filep.string());
       assert(out_file.is_open());
 
-      out_file << "Peak memory usage;" << net->layers()[0]->device_context()->peak_memory_usage();
+      out_file << "Peak memory usage;"
+          << net->layers()[0]->device_context()->peak_memory_usage()
+          << std::endl;
+      out_file.close();
     }
 
   }
@@ -289,6 +292,7 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
                  << layer_forward_times[l] / ((double) bench_runs * 1e6)
                  << std::endl;
       }
+      out_file.close();
     }
 
     {
@@ -300,7 +304,9 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       assert(out_file.is_open());
 
       out_file << "Forward;" << std::setprecision(10)
-               << total_forward_time / ((double) bench_runs * 1e6) << std::endl;
+               << total_forward_time / ((double) bench_runs * 1e6)
+               << std::endl;
+      out_file.close();
     }
 
     {
@@ -311,7 +317,10 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       out_file.open(filep.string());
       assert(out_file.is_open());
 
-      out_file << "Peak memory usage;" << net.layers()[0]->device_context()->peak_memory_usage();
+      out_file << "Peak memory usage;"
+          << net.layers()[0]->device_context()->peak_memory_usage()
+          << std::endl;
+      out_file.close();
     }
   }
 
