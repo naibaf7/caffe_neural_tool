@@ -109,7 +109,7 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
   std::chrono::time_point<std::chrono::high_resolution_clock> t_start, t_end;
 
   // Benchmark block 1: Training Net
-  {
+  if (benchmark_param.has_train_index()) {
     caffe::SolverParameter solver_param;
     caffe::ReadProtoFromTextFileOrDie(proto_solver, &solver_param);
     shared_ptr<caffe::Solver<float> > solver(
@@ -213,7 +213,8 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       assert(out_file.is_open());
 
       out_file << "\"Forward\";" << std::setprecision(10)
-               << total_forward_time / ((double) bench_runs * 1e6) << std::endl;
+               << total_forward_time / ((double) bench_runs * 1e6)
+               << std::endl;
 
       out_file << "\"Backward\";" << std::setprecision(10)
                << total_backward_time / ((double) bench_runs * 1e6)
@@ -223,7 +224,7 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
   }
 
   // Benchmark block 2: Processing Net
-  {
+  if (benchmark_param.has_process_index()) {
     Net<float> net(process_net, caffe::TEST);
 
     std::vector<double> layer_forward_times(net.layers().size());
