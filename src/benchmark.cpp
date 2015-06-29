@@ -99,6 +99,8 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
 
   }
 
+  double tmp_time = 0;
+
   // Create output directories
   bofs::path benchpath(benchmark_param.output());
   bofs::create_directories(benchpath);
@@ -125,16 +127,23 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
     for (int run = 0; run < warmup_runs + bench_runs; ++run) {
       FillNet(net->layers()[1], net->layers()[0], train_param.input().labels());
 
+      tmp_time = 0;
+
       // Benchmark 1: Layer wise measurements (forward)
       for (int l = 0; l < net->layers().size(); ++l) {
         t_start = std::chrono::high_resolution_clock::now();
         net->ForwardFromTo(l, l);
         Caffe::Synchronize(net->layers()[l]->device_context()->id());
         t_end = std::chrono::high_resolution_clock::now();
+        tmp_time += (t_end - t_start).count();
         if (run >= warmup_runs) {
           layer_forward_times[l] += (t_end - t_start).count();
         }
       }
+      LOG(INFO) << "Forward pass: " << std::setprecision(10)
+          << (tmp_time)/((double)1e6) << " ms";
+
+      tmp_time = 0;
 
       // Benchmark 2: Layer wise measurements (backward)
       for (int l = net->layers().size() - 1; l >= 0; --l) {
@@ -142,10 +151,14 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
         net->BackwardFromTo(l, l);
         Caffe::Synchronize(net->layers()[l]->device_context()->id());
         t_end = std::chrono::high_resolution_clock::now();
+        tmp_time += (t_end - t_start).count();
         if (run >= warmup_runs) {
           layer_backward_times[l] += (t_end - t_start).count();
         }
       }
+      LOG(INFO) << "Backward pass: " << std::setprecision(10)
+          << (tmp_time)/((double)1e6) << " ms";
+
     }
 
     for (int run = 0; run < warmup_runs + bench_runs; ++run) {
@@ -255,16 +268,20 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
     for (int run = 0; run < warmup_runs + bench_runs; ++run) {
       FillNet(net.layers()[0], NULL, train_param.input().labels());
 
+      tmp_time = 0;
       // Benchmark 1: Layer wise measurements (forward)
       for (int l = 0; l < net.layers().size(); ++l) {
         t_start = std::chrono::high_resolution_clock::now();
         net.ForwardFromTo(l, l);
         Caffe::Synchronize(net.layers()[l]->device_context()->id());
         t_end = std::chrono::high_resolution_clock::now();
+        tmp_time += (t_end - t_start).count();
         if (run >= warmup_runs) {
           layer_forward_times[l] += (t_end - t_start).count();
         }
       }
+      LOG(INFO) << "Forward pass: " << std::setprecision(10)
+          << (tmp_time)/((double)1e6) << " ms";
     }
 
     // Benchmark 2: Whole forward pass
