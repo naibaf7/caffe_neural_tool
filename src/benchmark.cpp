@@ -157,6 +157,8 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       Caffe::Synchronize(
           net->layers()[net->layers().size() - 1]->device_context()->id());
       t_end = std::chrono::high_resolution_clock::now();
+      LOG(INFO) << "Forward pass: " << std::setprecision(10)
+          << (double)((t_end - t_start).count())/((double)1e6) << " ms";
       if (run >= warmup_runs) {
         total_forward_time += (t_end - t_start).count();
       }
@@ -166,6 +168,8 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       net->Backward();
       Caffe::Synchronize(net->layers()[0]->device_context()->id());
       t_end = std::chrono::high_resolution_clock::now();
+      LOG(INFO) << "Backward pass: " << std::setprecision(10)
+          << (double)((t_end - t_start).count())/((double)1e6) << " ms";
       if (run >= warmup_runs) {
         total_backward_time += (t_end - t_start).count();
       }
@@ -271,6 +275,8 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
       Caffe::Synchronize(
           net.layers()[net.layers().size() - 1]->device_context()->id());
       t_end = std::chrono::high_resolution_clock::now();
+      LOG(INFO) << "Forward pass: " << std::setprecision(10)
+          << (double)((t_end - t_start).count())/((double)1e6) << " ms";
       if (run >= warmup_runs) {
         total_forward_time += (t_end - t_start).count();
       }
