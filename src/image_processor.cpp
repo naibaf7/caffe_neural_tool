@@ -155,7 +155,7 @@ int ImageProcessor::Init() {
   int off_size_y = (image_size_y_ - patch_size_);
 
   offset_selector_ = GetRandomUniform<double>(
-      0, label_images_.size() * off_size_x * off_size_y);
+      0, label_images_.size() * (off_size_x + 1) * (off_size_y + 1));
 
   if (apply_label_hist_eq_) {
 
@@ -186,7 +186,7 @@ int ImageProcessor::Init() {
       std::vector<double> weighted_label_count(nr_labels_);
 
       label_running_probability_.resize(
-          label_images_.size() * off_size_x * off_size_y);
+          label_images_.size() * (off_size_x + 1) * (off_size_y + 1));
 
 
       // Loop over all images
@@ -225,8 +225,8 @@ int ImageProcessor::Init() {
             for (int l = 0; l < nr_labels_; ++l) {
               weighted_label_count[l] += patch_weight * patch_label_count[l];
             }
-            label_running_probability_[k * off_size_x * off_size_y
-                + y * off_size_x + x] = patch_weight;
+            label_running_probability_[k * (off_size_x + 1) * (off_size_y + 1)
+                + y * (off_size_x + 1) + x] = patch_weight;
           }
         }
       }

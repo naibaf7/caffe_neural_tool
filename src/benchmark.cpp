@@ -117,6 +117,7 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
     shared_ptr<caffe::Solver<float> > solver(
         caffe::GetSolver<float>(solver_param));
     boost::shared_ptr<caffe::Net<float>> net = solver->net();
+    net->layers()[0]->device_context()->ResetPeakMemoryUsage();
 
     std::vector<double> layer_forward_times(net->layers().size());
     std::vector<double> layer_backward_times(net->layers().size());
@@ -260,6 +261,7 @@ int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
   // Benchmark block 2: Processing Net
   if (benchmark_param.has_process_index()) {
     Net<float> net(process_net, caffe::TEST);
+    net.layers()[0]->device_context()->ResetPeakMemoryUsage();
 
     std::vector<double> layer_forward_times(net.layers().size());
     double total_forward_time = 0;
