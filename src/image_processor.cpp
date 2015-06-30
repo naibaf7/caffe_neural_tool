@@ -151,11 +151,11 @@ int ImageProcessor::Init() {
   image_size_x_ = raw_images_[0].cols - 2 * border_size_;
   image_size_y_ = raw_images_[0].rows - 2 * border_size_;
 
-  int off_size_x = (image_size_x_ - patch_size_);
-  int off_size_y = (image_size_y_ - patch_size_);
+  int off_size_x = (image_size_x_ - patch_size_) + 1;
+  int off_size_y = (image_size_y_ - patch_size_) + 1;
 
   offset_selector_ = GetRandomUniform<double>(
-      0, label_images_.size() * (off_size_x + 1) * (off_size_y + 1));
+      0, label_images_.size() * off_size_x * off_size_y);
 
   if (apply_label_hist_eq_) {
 
@@ -186,7 +186,7 @@ int ImageProcessor::Init() {
       std::vector<double> weighted_label_count(nr_labels_);
 
       label_running_probability_.resize(
-          label_images_.size() * (off_size_x + 1) * (off_size_y + 1));
+          label_images_.size() * off_size_x * off_size_y);
 
 
       // Loop over all images
@@ -225,8 +225,8 @@ int ImageProcessor::Init() {
             for (int l = 0; l < nr_labels_; ++l) {
               weighted_label_count[l] += patch_weight * patch_label_count[l];
             }
-            label_running_probability_[k * (off_size_x + 1) * (off_size_y + 1)
-                + y * (off_size_x + 1) + x] = patch_weight;
+            label_running_probability_[k * off_size_x * off_size_y
+                + y * off_size_x + x] = patch_weight;
           }
         }
       }
@@ -356,8 +356,8 @@ std::vector<cv::Mat> TrainImageProcessor::DrawPatchRandom() {
     abs_id = (long) offset;
   }
 
-  int off_size_x = (image_size_x_ - patch_size_);
-  int off_size_y = (image_size_y_ - patch_size_);
+  int off_size_x = (image_size_x_ - patch_size_) + 1;
+  int off_size_y = (image_size_y_ - patch_size_) + 1;
 
   int img_id = abs_id / (off_size_x * off_size_y);
   int yoff = (abs_id - (img_id * off_size_x * off_size_y)) / off_size_x;
