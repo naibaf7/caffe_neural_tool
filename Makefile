@@ -6,16 +6,25 @@ include $(CONFIG_FILE)
 
 # Compiler configuration
 CXX=g++
-CXXFLAGS = -Wall -std=c++11
+CXXFLAGS = -Wall -std=c++11 -fopenmp -Wno-sign-compare
 CXXDBG = -O0 -g
 CXXRUN = -O3
 
 # File dependencies and folders
 PROTO = proto
-SRC = src
 INC = include
+SRC = src
 BUILD = build
-FILES := $(shell find $(SRC) -name '*.cpp' -or -name '*.c' -or -name '*.cc')
+OBJDIR = build/obj
+
+SRC_DIRS := $(shell find * -type d -exec bash -c "find {} -maxdepth 1 \
+	\( -name '*.cpp' \) | grep -q ." \; -print)
+
+SRCS := $(shell find $(SRC_DIRS) -name '*.cpp' -or -name '*.c' -or -name '*.cc')
+INCS := $(shell find $(SRC_DIRS) -name '*.hpp' -or -name '*.h' -or -name '*.hh')
+
+RELOBJS := $(patsubst %.cpp,$(OBJDIR)/rel/%.o,$(SRCS))
+DBGOBJS := $(patsubst %.cpp,$(OBJDIR)/dbg/%.o,$(SRCS))
 
 # Includes
 INCLUDE = 	-I$(INC) \
@@ -29,8 +38,7 @@ LIBRARY = 	-Wl,-Bstatic,--whole-archive -L$(CAFFE_PATH)/build/lib/ -lcaffe -Wl,-
 			-lopencv_core -lopencv_highgui -lopencv_imgproc \
 			-lpthread -lprotobuf -lglog -lgflags -lopenblas \
 			-lleveldb -lhdf5_hl -lhdf5 -lsnappy -llmdb -ltiff \
-			-lboost_system -lboost_thread -lboost_program_options -lboost_filesystem \
-			-fopenmp
+			-lboost_system -lboost_thread -lboost_program_options -lboost_filesystem
 			
 ifeq ($(USE_GREENTEA), 1)
 	# Find a valid OpenCL library
@@ -81,19 +89,31 @@ endif
 
 # Compiler targets
 all: caffe_neural_tool caffe_neural_tool_dbg
+    
+$(OBJDIR)/rel/%.o: %.cpp | $(SRC_DIRS)
+	@ echo CXX -o $@
+	@ mkdir -p $(@D)
+	$(Q) $(CXX) $(CXXFLAGS) $(CXXDBG) $(INCLUDE) -c -o $@ $<
+    
+$(OBJDIR)/dbg/%.o: %.cpp | $(SRC_DIRS)
+	@ echo CXX -o $@
+	@ mkdir -p $(@D)
+	$(Q) $(CXX) $(CXXFLAGS) $(CXXDBG) $(INCLUDE) -c -o $@ $<
 
 proto: $(PROTO)/caffetool.proto
 	protoc --proto_path=$(PROTO) --cpp_out=$(PROTO)/ $(PROTO)/caffetool.proto
-	cp $(PROTO)/caffetool.pb.cc $(SRC)/caffetool.pb.cc
+	cp $(PROTO)/caffetool.pb.cc $(SRC)/caffetool.pb.cpp
 	cp $(PROTO)/caffetool.pb.h $(INC)/caffetool.pb.h
 
 # Run target
-caffe_neural_tool: aux proto $(FILES)
-	$(CXX) $(CXXFLAGS) $(CXXRUN) $(INCLUDE) -o $(BUILD)/caffe_neural_tool $(FILES) $(LIBRARY)
+caffe_neural_tool: aux proto $(CAFFE_PATH)/build/lib/libcaffe.a $(RELOBJS)
+	@ echo LD -o $@
+	$(Q) $(CXX) $(CXXFLAGS) $(CXXRUN) $(RELOBJS) -o $(BUILD)/$@ $(LIBRARY)
 	
 # Debug target
-caffe_neural_tool_dbg: aux proto $(FILES)
-	$(CXX) $(CXXFLAGS) $(CXXDBG) $(INCLUDE) -o $(BUILD)/caffe_neural_tool_dbg $(FILES) $(LIBRARY)
+caffe_neural_tool_dbg: aux proto $(CAFFE_PATH)/build/lib/libcaffe.a $(DBGOBJS)
+	@ echo LD -o $@
+	$(Q) $(CXX) $(CXXFLAGS) $(CXXDBG) $(DBGOBJS) -o $(BUILD)/$@ $(LIBRARY)
 
 # Aux target
 aux:
@@ -101,4 +121,4 @@ aux:
 
 # Clean target
 clean:
-	rm -r $(BUILD)
+	rm -r -f $(BUILD)

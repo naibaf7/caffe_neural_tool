@@ -16,8 +16,8 @@ VIENNACL_DIR = ../ViennaCL
 # Either set CLBLAS or VIENNACLBLAS to 1, not both.
 # If you want to use OpenCL/Greentea on the CPU only, you can also disable both.
 # When both are disabled, GPUs won't work. CPUs always use CBLAS (Atlas, MKL or OpenBLAS).
-# The chosen BLAS library needs to be compiled and installed from source.
-# CLBLAS should be faster, especially on AMD cards.
+# CLBLAS needs to be compiled and installed from source, ViennaCL-BLAS is in the header-only
+# library already.
 USE_CLBLAS := 1
 USE_VIENNACLBLAS := 0
 
@@ -26,3 +26,6 @@ CUDA_DIR := /usr/local/cuda
 # On Ubuntu 14.04, if cuda tools are installed via
 # "sudo apt-get install nvidia-cuda-toolkit" then use this instead:
 # CUDA_DIR := /usr
+
+# enable pretty build (comment to see full commands)
+Q ?= @

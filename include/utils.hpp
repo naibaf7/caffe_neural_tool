@@ -26,6 +26,8 @@ std::function<Dtype()> GetRandomUniform(Dtype min, Dtype max);
 template<typename Dtype>
 std::function<Dtype()> GetRandomNormal(Dtype mu, Dtype std);
 
+std::function<int()> GetRandomUniform(int min, int max);
+
 }
 
 #endif /* UTILS_HPP_ */

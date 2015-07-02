@@ -6,6 +6,8 @@
  */
 
 #include "process.hpp"
+#include "filesystem_utils.hpp"
+#include "utils.hpp"
 
 namespace caffe_neural {
 

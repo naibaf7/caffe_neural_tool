@@ -12,12 +12,13 @@
 #include <functional>
 #include <chrono>
 #include <cassert>
-#include "../include/filesystem_utils.hpp"
+#include "filesystem_utils.hpp"
+#include "utils.hpp"
 
 namespace caffe_neural {
 
-void FillNet(shared_ptr<Layer<float>> data_layer,
-             shared_ptr<Layer<float>> label_layer, int num_output) {
+void FillNet(shared_ptr< Layer<float> > data_layer,
+             shared_ptr< Layer<float> > label_layer, int num_output) {
 
   std::function<float()> rfu = GetRandomUniform<float>(-1.0, 1.0);
   std::function<float()> riu = GetRandomUniform(0, num_output);
@@ -80,7 +81,7 @@ void FillNet(shared_ptr<Layer<float>> data_layer,
   }
 }
 
-int Benchmark(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
+int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
 
   BenchmarkParam benchmark_param = tool_param.benchmark(settings.param_index);
   TrainParam train_param = tool_param.train(

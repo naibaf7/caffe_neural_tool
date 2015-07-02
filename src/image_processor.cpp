@@ -11,7 +11,7 @@
 #include <omp.h>
 #include <iostream>
 #include <set>
-#include "../include/utils.hpp"
+#include "utils.hpp"
 
 namespace caffe_neural {
 

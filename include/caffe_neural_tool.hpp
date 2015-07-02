@@ -25,9 +25,6 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-#include "filesystem_utils.hpp"
-#include "utils.hpp"
-
 using caffe::Blob;
 using caffe::Caffe;
 using caffe::Net;
