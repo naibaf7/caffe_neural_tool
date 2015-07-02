@@ -76,9 +76,6 @@ ifeq ($(USE_GREENTEA), 1)
 	ifeq ($(USE_CLBLAS), 1)
 		LIBRARY += -lclBLAS
 	endif
-	ifeq ($(USE_VIENNACLBLAS), 1)
-		LIBRARY += -lviennacl
-	endif
 	LIBRARY += -lOpenCL -lrt $(CLLIBS)
 endif
 

@@ -19,7 +19,6 @@ VIENNACL_DIR = ../ViennaCL
 # CLBLAS needs to be compiled and installed from source, ViennaCL-BLAS is in the header-only
 # library already.
 USE_CLBLAS := 1
-USE_VIENNACLBLAS := 0
 
 # CUDA directory contains bin/ and lib/ directories that we need.
 CUDA_DIR := /usr/local/cuda
