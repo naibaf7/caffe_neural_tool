@@ -37,13 +37,21 @@ INCLUDE = 	-I$(INC) \
 			-I$(CAFFE_PATH)/caffe/src \
 			-I$(CAFFE_PATH)/build/src
 			
-# Library dependencies	
-LIBRARY = 	-Wl,-Bstatic,--whole-archive -L$(CAFFE_PATH)/build/lib/ -lcaffe -Wl,-Bdynamic,--no-whole-archive \
-			-lopencv_core -lopencv_highgui -lopencv_imgproc \
-			-lpthread -lprotobuf -lglog -lgflags -lopenblas \
-			-lleveldb -lhdf5_hl -lhdf5 -lsnappy -llmdb -ltiff \
-			-lboost_system -lboost_thread -lboost_program_options -lboost_filesystem -lboost_python -lpython2.7
-			
+# Library dependencies
+ifeq ($(CAFFE_MAKE_BUILD), 1)
+	LIBRARY = 	-Wl,-Bstatic,--whole-archive -L$(CAFFE_PATH)/build/lib/ -lcaffe -Wl,-Bdynamic,--no-whole-archive \
+				-lopencv_core -lopencv_highgui -lopencv_imgproc \
+				-lpthread -lprotobuf -lglog -lgflags -lopenblas \
+				-lleveldb -lhdf5_hl -lhdf5 -lsnappy -llmdb -ltiff \
+				-lboost_system -lboost_thread -lboost_program_options -lboost_filesystem
+else
+	LIBRARY = 	-Wl,-Bstatic,--whole-archive -L$(CAFFE_PATH)/build/lib/ -lcaffe -lproto -Wl,-Bdynamic,--no-whole-archive \
+				-lopencv_core -lopencv_highgui -lopencv_imgproc \
+				-lpthread -lprotobuf -lglog -lgflags -lopenblas \
+				-lleveldb -lhdf5_hl -lhdf5 -lsnappy -llmdb -ltiff \
+				-lboost_system -lboost_thread -lboost_program_options -lboost_filesystem -lboost_python -lpython2.7
+endif
+
 ifeq ($(USE_GREENTEA), 1)
 	# Find a valid OpenCL library
 	ifdef OPENCL_INC

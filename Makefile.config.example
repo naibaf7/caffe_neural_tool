@@ -28,3 +28,6 @@ CUDA_DIR := /usr/local/cuda
 
 # enable pretty build (comment to see full commands)
 Q ?= @
+
+# Backward compability for makefile caffe
+# CAFFE_MAKE_BUILD := 1
