@@ -36,6 +36,8 @@ class ImageProcessor {
 
   long BinarySearchPatch(double offset);
 
+  void SetLabelConsolidateParams(bool apply, std::vector<int> labels);
+
   std::vector<cv::Mat>& raw_images();
   std::vector<cv::Mat>& label_images();
   std::vector<int>& image_number();
@@ -93,6 +95,10 @@ class ImageProcessor {
   std::vector<std::function<float()>> label_mask_prob_rand_;
   std::function<double()> label_patch_prior_rand_;
   std::vector<float> label_boost_;
+
+  // Label consolidation
+  bool label_consolidate_;
+  std::vector<int> label_consolidate_labels_;
 
   // Patch sequence index
   int sequence_index_;

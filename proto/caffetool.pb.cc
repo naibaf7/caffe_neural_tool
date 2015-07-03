@@ -32,6 +32,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* ProcessParam_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ProcessParam_reflection_ = NULL;
+const ::google::protobuf::Descriptor* LabelConsolidateParam_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  LabelConsolidateParam_reflection_ = NULL;
 const ::google::protobuf::Descriptor* FilterOutputParam_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   FilterOutputParam_reflection_ = NULL;
@@ -141,7 +144,22 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ProcessParam));
-  FilterOutputParam_descriptor_ = file->message_type(4);
+  LabelConsolidateParam_descriptor_ = file->message_type(4);
+  static const int LabelConsolidateParam_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LabelConsolidateParam, label_),
+  };
+  LabelConsolidateParam_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      LabelConsolidateParam_descriptor_,
+      LabelConsolidateParam::default_instance_,
+      LabelConsolidateParam_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LabelConsolidateParam, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LabelConsolidateParam, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(LabelConsolidateParam));
+  FilterOutputParam_descriptor_ = file->message_type(5);
   static const int FilterOutputParam_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FilterOutputParam, output_filters_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FilterOutputParam, output_),
@@ -157,7 +175,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(FilterOutputParam));
-  InputParam_descriptor_ = file->message_type(5);
+  InputParam_descriptor_ = file->message_type(6);
   static const int InputParam_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(InputParam, padding_size_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(InputParam, patch_size_),
@@ -179,7 +197,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(InputParam));
-  OutputParam_descriptor_ = file->message_type(6);
+  OutputParam_descriptor_ = file->message_type(7);
   static const int OutputParam_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OutputParam, output_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OutputParam, fp32_out_),
@@ -197,8 +215,8 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OutputParam));
-  PreprocessorParam_descriptor_ = file->message_type(7);
-  static const int PreprocessorParam_offsets_[8] = {
+  PreprocessorParam_descriptor_ = file->message_type(8);
+  static const int PreprocessorParam_offsets_[9] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, normalization_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, crop_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, clahe_),
@@ -207,6 +225,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, histeq_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, blur_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, deform_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PreprocessorParam, label_consolidate_),
   };
   PreprocessorParam_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -219,7 +238,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PreprocessorParam));
-  PrepCropParam_descriptor_ = file->message_type(8);
+  PrepCropParam_descriptor_ = file->message_type(9);
   static const int PrepCropParam_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepCropParam, imagecrop_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepCropParam, labelcrop_),
@@ -235,7 +254,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepCropParam));
-  PrepBlurParam_descriptor_ = file->message_type(9);
+  PrepBlurParam_descriptor_ = file->message_type(10);
   static const int PrepBlurParam_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepBlurParam, mean_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepBlurParam, std_),
@@ -252,7 +271,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepBlurParam));
-  PrepDeformParam_descriptor_ = file->message_type(10);
+  PrepDeformParam_descriptor_ = file->message_type(11);
   static const int PrepDeformParam_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, mean_x_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepDeformParam, mean_y_),
@@ -270,7 +289,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepDeformParam));
-  PrepClaheParam_descriptor_ = file->message_type(11);
+  PrepClaheParam_descriptor_ = file->message_type(12);
   static const int PrepClaheParam_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepClaheParam, clip_),
   };
@@ -285,7 +304,7 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PrepClaheParam));
-  PrepHistEqParam_descriptor_ = file->message_type(12);
+  PrepHistEqParam_descriptor_ = file->message_type(13);
   static const int PrepHistEqParam_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepHistEqParam, patch_prior_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PrepHistEqParam, masking_),
@@ -324,6 +343,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     ProcessParam_descriptor_, &ProcessParam::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    LabelConsolidateParam_descriptor_, &LabelConsolidateParam::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     FilterOutputParam_descriptor_, &FilterOutputParam::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     InputParam_descriptor_, &InputParam::default_instance());
@@ -354,6 +375,8 @@ void protobuf_ShutdownFile_caffetool_2eproto() {
   delete TrainParam_reflection_;
   delete ProcessParam::default_instance_;
   delete ProcessParam_reflection_;
+  delete LabelConsolidateParam::default_instance_;
+  delete LabelConsolidateParam_reflection_;
   delete FilterOutputParam::default_instance_;
   delete FilterOutputParam_reflection_;
   delete InputParam::default_instance_;
@@ -396,7 +419,8 @@ void protobuf_AddDesc_caffetool_2eproto() {
     "del\030\002 \001(\t\022\'\n\005input\030\003 \001(\0132\030.caffe_neural."
     "InputParam\022)\n\006output\030\004 \001(\0132\031.caffe_neura"
     "l.OutputParam\0226\n\rfilter_output\030\005 \001(\0132\037.c"
-    "affe_neural.FilterOutputParam\";\n\021FilterO"
+    "affe_neural.FilterOutputParam\"&\n\025LabelCo"
+    "nsolidateParam\022\r\n\005label\030\001 \003(\005\";\n\021FilterO"
     "utputParam\022\026\n\016output_filters\030\001 \001(\010\022\016\n\006ou"
     "tput\030\002 \001(\t\"\315\001\n\nInputParam\022\024\n\014padding_siz"
     "e\030\001 \001(\005\022\022\n\npatch_size\030\002 \001(\005\022\020\n\010channels\030"
@@ -406,7 +430,7 @@ void protobuf_AddDesc_caffetool_2eproto() {
     "label_images\030\010 \001(\t\"j\n\013OutputParam\022\016\n\006out"
     "put\030\001 \001(\t\022\027\n\010fp32_out\030\002 \001(\010:\005false\022\035\n\016ou"
     "t_all_labels\030\003 \001(\010:\005false\022\023\n\006format\030\004 \001("
-    "\t:\003tif\"\301\002\n\021PreprocessorParam\022\033\n\rnormaliz"
+    "\t:\003tif\"\201\003\n\021PreprocessorParam\022\033\n\rnormaliz"
     "ation\030\001 \001(\010:\004true\022)\n\004crop\030\002 \001(\0132\033.caffe_"
     "neural.PrepCropParam\022+\n\005clahe\030\003 \001(\0132\034.ca"
     "ffe_neural.PrepClaheParam\022\027\n\010rotation\030\004 "
@@ -414,22 +438,25 @@ void protobuf_AddDesc_caffetool_2eproto() {
     "teq\030\006 \001(\0132\035.caffe_neural.PrepHistEqParam"
     "\022)\n\004blur\030\007 \001(\0132\033.caffe_neural.PrepBlurPa"
     "ram\022-\n\006deform\030\010 \001(\0132\035.caffe_neural.PrepD"
-    "eformParam\"5\n\rPrepCropParam\022\021\n\timagecrop"
-    "\030\001 \001(\005\022\021\n\tlabelcrop\030\002 \001(\005\"D\n\rPrepBlurPar"
-    "am\022\017\n\004mean\030\001 \001(\002:\0010\022\020\n\003std\030\002 \001(\002:\0030.1\022\020\n"
-    "\005ksize\030\003 \001(\005:\0015\"_\n\017PrepDeformParam\022\021\n\006me"
-    "an_x\030\001 \001(\002:\0010\022\021\n\006mean_y\030\002 \001(\002:\0010\022\022\n\005std_"
-    "x\030\003 \001(\002:\0030.1\022\022\n\005std_y\030\004 \001(\002:\0030.1\"!\n\016Prep"
-    "ClaheParam\022\017\n\004clip\030\001 \001(\002:\0014\"r\n\017PrepHistE"
-    "qParam\022\031\n\013patch_prior\030\001 \001(\010:\004true\022\026\n\007mas"
-    "king\030\002 \001(\010:\005false\022\023\n\013label_boost\030\003 \003(\002\022\027"
-    "\n\014border_boost\030\004 \001(\002:\0011", 1663);
+    "eformParam\022>\n\021label_consolidate\030\t \001(\0132#."
+    "caffe_neural.LabelConsolidateParam\"5\n\rPr"
+    "epCropParam\022\021\n\timagecrop\030\001 \001(\005\022\021\n\tlabelc"
+    "rop\030\002 \001(\005\"D\n\rPrepBlurParam\022\017\n\004mean\030\001 \001(\002"
+    ":\0010\022\020\n\003std\030\002 \001(\002:\0030.1\022\020\n\005ksize\030\003 \001(\005:\0015\""
+    "_\n\017PrepDeformParam\022\021\n\006mean_x\030\001 \001(\002:\0010\022\021\n"
+    "\006mean_y\030\002 \001(\002:\0010\022\022\n\005std_x\030\003 \001(\002:\0030.1\022\022\n\005"
+    "std_y\030\004 \001(\002:\0030.1\"!\n\016PrepClaheParam\022\017\n\004cl"
+    "ip\030\001 \001(\002:\0014\"r\n\017PrepHistEqParam\022\031\n\013patch_"
+    "prior\030\001 \001(\010:\004true\022\026\n\007masking\030\002 \001(\010:\005fals"
+    "e\022\023\n\013label_boost\030\003 \003(\002\022\027\n\014border_boost\030\004"
+    " \001(\002:\0011", 1767);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "caffetool.proto", &protobuf_RegisterTypes);
   ToolParam::default_instance_ = new ToolParam();
   BenchmarkParam::default_instance_ = new BenchmarkParam();
   TrainParam::default_instance_ = new TrainParam();
   ProcessParam::default_instance_ = new ProcessParam();
+  LabelConsolidateParam::default_instance_ = new LabelConsolidateParam();
   FilterOutputParam::default_instance_ = new FilterOutputParam();
   InputParam::default_instance_ = new InputParam();
   OutputParam::_default_format_ =
@@ -445,6 +472,7 @@ void protobuf_AddDesc_caffetool_2eproto() {
   BenchmarkParam::default_instance_->InitAsDefaultInstance();
   TrainParam::default_instance_->InitAsDefaultInstance();
   ProcessParam::default_instance_->InitAsDefaultInstance();
+  LabelConsolidateParam::default_instance_->InitAsDefaultInstance();
   FilterOutputParam::default_instance_->InitAsDefaultInstance();
   InputParam::default_instance_->InitAsDefaultInstance();
   OutputParam::default_instance_->InitAsDefaultInstance();
@@ -1879,6 +1907,217 @@ void ProcessParam::Swap(ProcessParam* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int LabelConsolidateParam::kLabelFieldNumber;
+#endif  // !_MSC_VER
+
+LabelConsolidateParam::LabelConsolidateParam()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void LabelConsolidateParam::InitAsDefaultInstance() {
+}
+
+LabelConsolidateParam::LabelConsolidateParam(const LabelConsolidateParam& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void LabelConsolidateParam::SharedCtor() {
+  _cached_size_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+LabelConsolidateParam::~LabelConsolidateParam() {
+  SharedDtor();
+}
+
+void LabelConsolidateParam::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void LabelConsolidateParam::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* LabelConsolidateParam::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return LabelConsolidateParam_descriptor_;
+}
+
+const LabelConsolidateParam& LabelConsolidateParam::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_caffetool_2eproto();
+  return *default_instance_;
+}
+
+LabelConsolidateParam* LabelConsolidateParam::default_instance_ = NULL;
+
+LabelConsolidateParam* LabelConsolidateParam::New() const {
+  return new LabelConsolidateParam;
+}
+
+void LabelConsolidateParam::Clear() {
+  label_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool LabelConsolidateParam::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated int32 label = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_label:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 1, 8, input, this->mutable_label())));
+        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
+                   == ::google::protobuf::internal::WireFormatLite::
+                      WIRETYPE_LENGTH_DELIMITED) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, this->mutable_label())));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(8)) goto parse_label;
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void LabelConsolidateParam::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // repeated int32 label = 1;
+  for (int i = 0; i < this->label_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(
+      1, this->label(i), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* LabelConsolidateParam::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // repeated int32 label = 1;
+  for (int i = 0; i < this->label_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteInt32ToArray(1, this->label(i), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int LabelConsolidateParam::ByteSize() const {
+  int total_size = 0;
+
+  // repeated int32 label = 1;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->label_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        Int32Size(this->label(i));
+    }
+    total_size += 1 * this->label_size() + data_size;
+  }
+
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void LabelConsolidateParam::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const LabelConsolidateParam* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const LabelConsolidateParam*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void LabelConsolidateParam::MergeFrom(const LabelConsolidateParam& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  label_.MergeFrom(from.label_);
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void LabelConsolidateParam::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void LabelConsolidateParam::CopyFrom(const LabelConsolidateParam& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool LabelConsolidateParam::IsInitialized() const {
+
+  return true;
+}
+
+void LabelConsolidateParam::Swap(LabelConsolidateParam* other) {
+  if (other != this) {
+    label_.Swap(&other->label_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata LabelConsolidateParam::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = LabelConsolidateParam_descriptor_;
+  metadata.reflection = LabelConsolidateParam_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int FilterOutputParam::kOutputFiltersFieldNumber;
 const int FilterOutputParam::kOutputFieldNumber;
 #endif  // !_MSC_VER
@@ -3036,6 +3275,7 @@ const int PreprocessorParam::kMirrorFieldNumber;
 const int PreprocessorParam::kHisteqFieldNumber;
 const int PreprocessorParam::kBlurFieldNumber;
 const int PreprocessorParam::kDeformFieldNumber;
+const int PreprocessorParam::kLabelConsolidateFieldNumber;
 #endif  // !_MSC_VER
 
 PreprocessorParam::PreprocessorParam()
@@ -3049,6 +3289,7 @@ void PreprocessorParam::InitAsDefaultInstance() {
   histeq_ = const_cast< ::caffe_neural::PrepHistEqParam*>(&::caffe_neural::PrepHistEqParam::default_instance());
   blur_ = const_cast< ::caffe_neural::PrepBlurParam*>(&::caffe_neural::PrepBlurParam::default_instance());
   deform_ = const_cast< ::caffe_neural::PrepDeformParam*>(&::caffe_neural::PrepDeformParam::default_instance());
+  label_consolidate_ = const_cast< ::caffe_neural::LabelConsolidateParam*>(&::caffe_neural::LabelConsolidateParam::default_instance());
 }
 
 PreprocessorParam::PreprocessorParam(const PreprocessorParam& from)
@@ -3067,6 +3308,7 @@ void PreprocessorParam::SharedCtor() {
   histeq_ = NULL;
   blur_ = NULL;
   deform_ = NULL;
+  label_consolidate_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -3081,6 +3323,7 @@ void PreprocessorParam::SharedDtor() {
     delete histeq_;
     delete blur_;
     delete deform_;
+    delete label_consolidate_;
   }
 }
 
@@ -3124,6 +3367,11 @@ void PreprocessorParam::Clear() {
     }
     if (has_deform()) {
       if (deform_ != NULL) deform_->::caffe_neural::PrepDeformParam::Clear();
+    }
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (has_label_consolidate()) {
+      if (label_consolidate_ != NULL) label_consolidate_->::caffe_neural::LabelConsolidateParam::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -3249,6 +3497,20 @@ bool PreprocessorParam::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(74)) goto parse_label_consolidate;
+        break;
+      }
+
+      // optional .caffe_neural.LabelConsolidateParam label_consolidate = 9;
+      case 9: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_label_consolidate:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_label_consolidate()));
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -3316,6 +3578,12 @@ void PreprocessorParam::SerializeWithCachedSizes(
       8, this->deform(), output);
   }
 
+  // optional .caffe_neural.LabelConsolidateParam label_consolidate = 9;
+  if (has_label_consolidate()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      9, this->label_consolidate(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -3372,6 +3640,13 @@ void PreprocessorParam::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         8, this->deform(), target);
+  }
+
+  // optional .caffe_neural.LabelConsolidateParam label_consolidate = 9;
+  if (has_label_consolidate()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        9, this->label_consolidate(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -3436,6 +3711,15 @@ int PreprocessorParam::ByteSize() const {
     }
 
   }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // optional .caffe_neural.LabelConsolidateParam label_consolidate = 9;
+    if (has_label_consolidate()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->label_consolidate());
+    }
+
+  }
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -3487,6 +3771,11 @@ void PreprocessorParam::MergeFrom(const PreprocessorParam& from) {
       mutable_deform()->::caffe_neural::PrepDeformParam::MergeFrom(from.deform());
     }
   }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_label_consolidate()) {
+      mutable_label_consolidate()->::caffe_neural::LabelConsolidateParam::MergeFrom(from.label_consolidate());
+    }
+  }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
@@ -3517,6 +3806,7 @@ void PreprocessorParam::Swap(PreprocessorParam* other) {
     std::swap(histeq_, other->histeq_);
     std::swap(blur_, other->blur_);
     std::swap(deform_, other->deform_);
+    std::swap(label_consolidate_, other->label_consolidate_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

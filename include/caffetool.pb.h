@@ -37,6 +37,7 @@ class ToolParam;
 class BenchmarkParam;
 class TrainParam;
 class ProcessParam;
+class LabelConsolidateParam;
 class FilterOutputParam;
 class InputParam;
 class OutputParam;
@@ -536,6 +537,91 @@ class ProcessParam : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static ProcessParam* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class LabelConsolidateParam : public ::google::protobuf::Message {
+ public:
+  LabelConsolidateParam();
+  virtual ~LabelConsolidateParam();
+
+  LabelConsolidateParam(const LabelConsolidateParam& from);
+
+  inline LabelConsolidateParam& operator=(const LabelConsolidateParam& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const LabelConsolidateParam& default_instance();
+
+  void Swap(LabelConsolidateParam* other);
+
+  // implements Message ----------------------------------------------
+
+  LabelConsolidateParam* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const LabelConsolidateParam& from);
+  void MergeFrom(const LabelConsolidateParam& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated int32 label = 1;
+  inline int label_size() const;
+  inline void clear_label();
+  static const int kLabelFieldNumber = 1;
+  inline ::google::protobuf::int32 label(int index) const;
+  inline void set_label(int index, ::google::protobuf::int32 value);
+  inline void add_label(::google::protobuf::int32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+      label() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+      mutable_label();
+
+  // @@protoc_insertion_point(class_scope:caffe_neural.LabelConsolidateParam)
+ private:
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > label_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+
+  friend void  protobuf_AddDesc_caffetool_2eproto();
+  friend void protobuf_AssignDesc_caffetool_2eproto();
+  friend void protobuf_ShutdownFile_caffetool_2eproto();
+
+  void InitAsDefaultInstance();
+  static LabelConsolidateParam* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1043,6 +1129,15 @@ class PreprocessorParam : public ::google::protobuf::Message {
   inline ::caffe_neural::PrepDeformParam* release_deform();
   inline void set_allocated_deform(::caffe_neural::PrepDeformParam* deform);
 
+  // optional .caffe_neural.LabelConsolidateParam label_consolidate = 9;
+  inline bool has_label_consolidate() const;
+  inline void clear_label_consolidate();
+  static const int kLabelConsolidateFieldNumber = 9;
+  inline const ::caffe_neural::LabelConsolidateParam& label_consolidate() const;
+  inline ::caffe_neural::LabelConsolidateParam* mutable_label_consolidate();
+  inline ::caffe_neural::LabelConsolidateParam* release_label_consolidate();
+  inline void set_allocated_label_consolidate(::caffe_neural::LabelConsolidateParam* label_consolidate);
+
   // @@protoc_insertion_point(class_scope:caffe_neural.PreprocessorParam)
  private:
   inline void set_has_normalization();
@@ -1061,6 +1156,8 @@ class PreprocessorParam : public ::google::protobuf::Message {
   inline void clear_has_blur();
   inline void set_has_deform();
   inline void clear_has_deform();
+  inline void set_has_label_consolidate();
+  inline void clear_has_label_consolidate();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1069,12 +1166,13 @@ class PreprocessorParam : public ::google::protobuf::Message {
   ::caffe_neural::PrepHistEqParam* histeq_;
   ::caffe_neural::PrepBlurParam* blur_;
   ::caffe_neural::PrepDeformParam* deform_;
+  ::caffe_neural::LabelConsolidateParam* label_consolidate_;
   bool normalization_;
   bool rotation_;
   bool mirror_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
 
   friend void  protobuf_AddDesc_caffetool_2eproto();
   friend void protobuf_AssignDesc_caffetool_2eproto();
@@ -2272,6 +2370,35 @@ inline void ProcessParam::set_allocated_filter_output(::caffe_neural::FilterOutp
 
 // -------------------------------------------------------------------
 
+// LabelConsolidateParam
+
+// repeated int32 label = 1;
+inline int LabelConsolidateParam::label_size() const {
+  return label_.size();
+}
+inline void LabelConsolidateParam::clear_label() {
+  label_.Clear();
+}
+inline ::google::protobuf::int32 LabelConsolidateParam::label(int index) const {
+  return label_.Get(index);
+}
+inline void LabelConsolidateParam::set_label(int index, ::google::protobuf::int32 value) {
+  label_.Set(index, value);
+}
+inline void LabelConsolidateParam::add_label(::google::protobuf::int32 value) {
+  label_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+LabelConsolidateParam::label() const {
+  return label_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+LabelConsolidateParam::mutable_label() {
+  return &label_;
+}
+
+// -------------------------------------------------------------------
+
 // FilterOutputParam
 
 // optional bool output_filters = 1;
@@ -3103,6 +3230,44 @@ inline void PreprocessorParam::set_allocated_deform(::caffe_neural::PrepDeformPa
     set_has_deform();
   } else {
     clear_has_deform();
+  }
+}
+
+// optional .caffe_neural.LabelConsolidateParam label_consolidate = 9;
+inline bool PreprocessorParam::has_label_consolidate() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void PreprocessorParam::set_has_label_consolidate() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void PreprocessorParam::clear_has_label_consolidate() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void PreprocessorParam::clear_label_consolidate() {
+  if (label_consolidate_ != NULL) label_consolidate_->::caffe_neural::LabelConsolidateParam::Clear();
+  clear_has_label_consolidate();
+}
+inline const ::caffe_neural::LabelConsolidateParam& PreprocessorParam::label_consolidate() const {
+  return label_consolidate_ != NULL ? *label_consolidate_ : *default_instance_->label_consolidate_;
+}
+inline ::caffe_neural::LabelConsolidateParam* PreprocessorParam::mutable_label_consolidate() {
+  set_has_label_consolidate();
+  if (label_consolidate_ == NULL) label_consolidate_ = new ::caffe_neural::LabelConsolidateParam;
+  return label_consolidate_;
+}
+inline ::caffe_neural::LabelConsolidateParam* PreprocessorParam::release_label_consolidate() {
+  clear_has_label_consolidate();
+  ::caffe_neural::LabelConsolidateParam* temp = label_consolidate_;
+  label_consolidate_ = NULL;
+  return temp;
+}
+inline void PreprocessorParam::set_allocated_label_consolidate(::caffe_neural::LabelConsolidateParam* label_consolidate) {
+  delete label_consolidate_;
+  label_consolidate_ = label_consolidate;
+  if (label_consolidate) {
+    set_has_label_consolidate();
+  } else {
+    clear_has_label_consolidate();
   }
 }
 

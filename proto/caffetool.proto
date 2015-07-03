@@ -30,6 +30,10 @@ message ProcessParam {
   optional FilterOutputParam filter_output = 5;
 }
 
+message LabelConsolidateParam {
+  repeated int32 label = 1;
+}
+
 message FilterOutputParam {
   optional bool output_filters = 1;
   optional string output = 2;
@@ -70,6 +74,7 @@ message PreprocessorParam {
   optional PrepHistEqParam histeq = 6; 
   optional PrepBlurParam blur = 7;
   optional PrepDeformParam deform = 8;
+  optional LabelConsolidateParam label_consolidate = 9;
 }
 
 message PrepCropParam {

@@ -67,6 +67,15 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
     image_processor.SetPatchMirrorParams(preprocessor_param.has_mirror() && preprocessor_param.mirror());
     image_processor.SetNormalizationParams(preprocessor_param.has_normalization() && preprocessor_param.normalization());
 
+    if(preprocessor_param.has_label_consolidate()) {
+      LabelConsolidateParam label_consolidate_param = preprocessor_param.label_consolidate();
+      std::vector<int> con_labels;
+      for(int cl = 0; cl < label_consolidate_param.label_size(); ++ cl) {
+        con_labels.push_back(label_consolidate_param.label(cl));
+      }
+      image_processor.SetLabelConsolidateParams(preprocessor_param.has_label_consolidate(), con_labels);
+    }
+
     if(preprocessor_param.has_histeq()) {
       PrepHistEqParam histeq_param = preprocessor_param.histeq();
       std::vector<float> label_boost(nr_labels, 1.0);

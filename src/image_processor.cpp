@@ -48,6 +48,11 @@ void ImageProcessor::ClearImages() {
   image_number_.clear();
 }
 
+void ImageProcessor::SetLabelConsolidateParams(bool apply, std::vector<int> labels) {
+  label_consolidate_ = apply;
+  label_consolidate_labels_ = labels;
+}
+
 void ImageProcessor::SubmitImage(cv::Mat raw, int img_id,
                                  std::vector<cv::Mat> labels) {
 
@@ -140,6 +145,18 @@ int ImageProcessor::Init() {
       label_images_.push_back(dst_label);
     }
   }
+
+  if (label_consolidate_) {
+    for (int k = 0; k < label_images_.size(); ++k) {
+      cv::Mat label_image = label_images_[k];
+      for (int y = 0; y < label_images_[k].rows; ++y) {
+        for (int x = 0; x < label_images_[k].cols; ++x) {
+          label_image.at<float>(y, x) = label_consolidate_labels_[label_image.at<float>(y, x)];
+        }
+      }
+    }
+  }
+
 
   label_stack_.clear();
 
