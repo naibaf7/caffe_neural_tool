@@ -97,7 +97,7 @@ class ImageProcessor {
   std::vector<float> label_boost_;
 
   // Label consolidation
-  bool label_consolidate_;
+  bool label_consolidate_ = false
   std::vector<int> label_consolidate_labels_;
 
   // Patch sequence index
