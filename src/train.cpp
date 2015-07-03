@@ -56,6 +56,14 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
     test_net = solver->test_nets()[0];
   }
 
+  // Overwrite label count from the desired count to the pre-consolidation count
+  if(input_param.has_preprocessor()) {
+    PreprocessorParam preprocessor_param = input_param.preprocessor();
+    if(preprocessor_param.has_label_consolidate()) {
+      nr_labels = preprocessor_param.label_consolidate().label_size();
+    }
+  }
+
   TrainImageProcessor image_processor(patch_size, nr_labels);
 
   if(input_param.has_preprocessor()) {

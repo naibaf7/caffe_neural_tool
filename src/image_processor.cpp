@@ -146,19 +146,6 @@ int ImageProcessor::Init() {
     }
   }
 
-  if (label_consolidate_) {
-    for (int k = 0; k < label_images_.size(); ++k) {
-      cv::Mat label_image = label_images_[k];
-#pragma omp parallel for
-      for (int y = 0; y < label_images_[k].rows; ++y) {
-        for (int x = 0; x < label_images_[k].cols; ++x) {
-          label_image.at<float>(y, x) = label_consolidate_labels_[label_image.at<float>(y, x)];
-        }
-      }
-    }
-  }
-
-
   label_stack_.clear();
 
   if (raw_images_.size() == 0 || label_images_.size() == 0
@@ -472,6 +459,16 @@ std::vector<cv::Mat> TrainImageProcessor::DrawPatchRandom() {
   }
 
   std::vector<cv::Mat> patch_label;
+
+  if (label_consolidate_) {
+#pragma omp parallel for
+    for (int y = 0; y < label.rows; ++y) {
+      for (int x = 0; x < label.cols; ++x) {
+        label.at<float>(y, x) = label_consolidate_labels_[label.at<float>(y, x)];
+      }
+    }
+  }
+
 
   patch_label.push_back(patch);
   patch_label.push_back(label);
