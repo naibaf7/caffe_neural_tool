@@ -149,6 +149,7 @@ int ImageProcessor::Init() {
   if (label_consolidate_) {
     for (int k = 0; k < label_images_.size(); ++k) {
       cv::Mat label_image = label_images_[k];
+#pragma omp parallel for
       for (int y = 0; y < label_images_[k].rows; ++y) {
         for (int x = 0; x < label_images_[k].cols; ++x) {
           label_image.at<float>(y, x) = label_consolidate_labels_[label_image.at<float>(y, x)];
