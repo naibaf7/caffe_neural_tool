@@ -464,7 +464,8 @@ std::vector<cv::Mat> TrainImageProcessor::DrawPatchRandom() {
 #pragma omp parallel for
     for (int y = 0; y < label.rows; ++y) {
       for (int x = 0; x < label.cols; ++x) {
-        label.at<float>(y, x) = label_consolidate_labels_[label.at<float>(y, x)];
+        label.at<float>(y, x) = label.at<float>(y, x) < 0 ?
+            -1.0 : label_consolidate_labels_[label.at<float>(y, x)];
       }
     }
   }
