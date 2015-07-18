@@ -200,7 +200,7 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
 
     if(settings.debug) {
       for (unsigned int k = 0; k < nr_labels + 1; ++k) {
-        std::cout << "Label: " << (k - 1) << ", " << labelcounter[k] << std::endl;
+        std::cout << "Label: " << ((int)k - 1) << ", " << labelcounter[k] << std::endl;
       }
     }
 
