@@ -14,8 +14,10 @@
 #include <cassert>
 #include "filesystem_utils.hpp"
 #include "utils.hpp"
+#include "caffe/vision_layers.hpp"
 
 namespace caffe_neural {
+
 
 void FillNet(shared_ptr< Layer<float> > data_layer,
              shared_ptr< Layer<float> > label_layer, int num_output) {
@@ -204,6 +206,7 @@ int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
         out_file << l << ";" << layers[l] << ";"
                  << std::setprecision(10)
                  << layer_forward_times[l] / ((double) bench_runs * 1e6)
+                 << ";" << net->layers()[l]->ForwardFlops()
                  << std::endl;
       }
       out_file.close();
@@ -220,6 +223,7 @@ int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
         out_file << l << ";" << layers[l] << ";"
                  << std::setprecision(10)
                  << layer_backward_times[l] / ((double) bench_runs * 1e6)
+                 << ";" << net->layers()[l]->BackwardFlops()
                  << std::endl;
       }
       out_file.close();
@@ -254,6 +258,9 @@ int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
       out_file << "Peak memory usage;"
           << net->layers()[0]->device_context()->peak_memory_usage()
           << std::endl;
+      for(int i = 0; i < net->blobs().size(); ++i) {
+        out_file << net->blob_names()[i] << ";" << net->blobs()[i]->count() * sizeof(float) << std::endl;
+      }
       out_file.close();
     }
 
@@ -316,6 +323,7 @@ int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
         out_file << l << ";" << layers[l] << ";"
                  << std::setprecision(10)
                  << layer_forward_times[l] / ((double) bench_runs * 1e6)
+                 << ";" << net.layers()[l]->ForwardFlops()
                  << std::endl;
       }
       out_file.close();
@@ -346,6 +354,9 @@ int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
       out_file << "Peak memory usage;"
           << net.layers()[0]->device_context()->peak_memory_usage()
           << std::endl;
+      for(int i = 0; i < net.blobs().size(); ++i) {
+        out_file << net.blob_names()[i] << ";" << net.blobs()[i]->count() * sizeof(float) << std::endl;
+      }
       out_file.close();
     }
   }
