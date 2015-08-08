@@ -8,7 +8,7 @@ USE_CUDNN := 0
 USE_GREENTEA := 1
 
 # Path to the modified caffe
-CAFFE_PATH = ../caffe_gt
+CAFFE_PATH = ../caffe
 
 # Folder of the ViennaCL header-only library
 VIENNACL_DIR = ../ViennaCL
@@ -29,5 +29,6 @@ CUDA_DIR := /usr/local/cuda
 # enable pretty build (comment to see full commands)
 Q ?= @
 
-# Backward compability for makefile caffe
+# Backward compability for Makefile Caffe.
+# Use if Caffe has been built with the Makefile instead of CMake.
 # CAFFE_MAKE_BUILD := 1
