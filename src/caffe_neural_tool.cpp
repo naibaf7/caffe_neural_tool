@@ -91,6 +91,7 @@ int main(int argc, const char** argv) {
     Caffe::set_mode(Caffe::CPU);
   } else {
     Caffe::set_mode(Caffe::GPU);
+    Caffe::SetDevices(std::vector<int>{device_id});
     Caffe::SetDevice(device_id);
   }
 
