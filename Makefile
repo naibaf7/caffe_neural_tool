@@ -6,7 +6,7 @@ include $(CONFIG_FILE)
 
 # Compiler configuration
 CXX=g++
-CXXFLAGS = -Wall -std=c++11 -fopenmp -Wno-sign-compare
+CXXFLAGS = -Wall -std=c++11 -fopenmp -Wno-sign-compare -DUSE_OPENCV
 CXXDBG = -O0 -g
 CXXRUN = -O3
 
