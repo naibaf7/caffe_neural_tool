@@ -8,6 +8,8 @@
 #ifndef CAFFE_NEURAL_TOOL_HPP_
 #define CAFFE_NEURAL_TOOL_HPP_
 
+#include "caffe/definitions.hpp"
+
 
 #include "image_processor.hpp"
 #include "tiffio_wrapper.hpp"

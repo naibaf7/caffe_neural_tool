@@ -27,7 +27,7 @@ void FillNet(shared_ptr< Layer<float> > data_layer,
 
   if (data_layer != NULL) {
     std::vector<cv::Mat> images;
-    std::vector<int> labels;
+    std::vector<int_tp> labels;
 
     shared_ptr<caffe::MemoryDataLayer<float>> data_layer_ptr =
         boost::dynamic_pointer_cast<caffe::MemoryDataLayer<float>>(data_layer);
@@ -56,7 +56,7 @@ void FillNet(shared_ptr< Layer<float> > data_layer,
 
   if (label_layer != NULL) {
     std::vector<cv::Mat> images;
-    std::vector<int> labels;
+    std::vector<int_tp> labels;
 
     shared_ptr<caffe::MemoryDataLayer<float>> layer_ptr =
         boost::dynamic_pointer_cast<caffe::MemoryDataLayer<float>>(label_layer);
@@ -117,10 +117,10 @@ int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
   if (benchmark_param.has_train_index()) {
     caffe::SolverParameter solver_param;
     caffe::ReadProtoFromTextFileOrDie(proto_solver, &solver_param);
-    shared_ptr<caffe::Solver<float> > solver(
-        caffe::GetSolver<float>(solver_param));
+    shared_ptr<caffe::Solver<float> >
+          solver(caffe::SolverRegistry<float>::CreateSolver(solver_param));
     boost::shared_ptr<caffe::Net<float>> net = solver->net();
-    net->layers()[0]->get_device()->ResetPeakMemoryUsage();
+    net->layers()[0L]->get_device()->ResetPeakMemoryUsage();
 
     std::vector<double> layer_forward_times(net->layers().size());
     std::vector<double> layer_backward_times(net->layers().size());
@@ -134,7 +134,7 @@ int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
       tmp_time = 0;
 
       // Benchmark 1: Layer wise measurements (forward)
-      for (int l = 0; l < net->layers().size(); ++l) {
+      for (int_tp l = 0; l < net->layers().size(); ++l) {
         t_start = std::chrono::high_resolution_clock::now();
         net->ForwardFromTo(l, l);
         Caffe::Synchronize(net->layers()[l]->get_device()->id());
@@ -150,7 +150,7 @@ int Benchmark(ToolParam &tool_param, CommonSettings &settings) {
       tmp_time = 0;
 
       // Benchmark 2: Layer wise measurements (backward)
-      for (int l = net->layers().size() - 1; l >= 0; --l) {
+      for (int_tp l = net->layers().size() - 1; l >= 0; --l) {
         t_start = std::chrono::high_resolution_clock::now();
         net->BackwardFromTo(l, l);
         Caffe::Synchronize(net->layers()[l]->get_device()->id());

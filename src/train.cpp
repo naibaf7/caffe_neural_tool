@@ -40,8 +40,8 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
 
   int test_interval = solver_param.has_test_interval()?solver_param.test_interval():-1;
 
-  shared_ptr<caffe::Solver<float> > solver(
-      caffe::GetSolver<float>(solver_param));
+  shared_ptr<caffe::Solver<float> >
+        solver(caffe::SolverRegistry<float>::CreateSolver(solver_param));
 
   if(train_param.has_solverstate()) {
     // Continue from previous solverstate
@@ -233,18 +233,18 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
     }
 
     // The labels
-    std::vector<int> lalabels;
+    std::vector<int_tp> lalabels;
     lalabels.push_back(0);
     boost::dynamic_pointer_cast<caffe::MemoryDataLayer<float>>(
         train_net->layers()[0])->AddMatVector(labels, lalabels);
 
     // The images
-    std::vector<int> imlabels;
+    std::vector<int_tp> imlabels;
     imlabels.push_back(0);
     boost::dynamic_pointer_cast<caffe::MemoryDataLayer<float>>(
         train_net->layers()[1])->AddMatVector(images, imlabels);
 
-    solver->Step(1);
+    solver->Step(1L);
 
     if(test_interval > -1 && i % test_interval == 0) {
       // TODO: Run tests with the testset and testnet
