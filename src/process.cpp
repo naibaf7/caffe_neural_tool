@@ -218,7 +218,7 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
           cv::Mat crop = padimage(roi);
 
           std::vector<cv::Mat> images;
-          std::vector<int> labels;
+          std::vector<int_tp> labels;
 
           images.push_back(crop);
           labels.push_back(0);
