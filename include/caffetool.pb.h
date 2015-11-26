@@ -375,6 +375,15 @@ class TrainParam : public ::google::protobuf::Message {
   inline ::caffe_neural::InputParam* release_input();
   inline void set_allocated_input(::caffe_neural::InputParam* input);
 
+  // optional .caffe_neural.FilterOutputParam filter_output = 5;
+  inline bool has_filter_output() const;
+  inline void clear_filter_output();
+  static const int kFilterOutputFieldNumber = 5;
+  inline const ::caffe_neural::FilterOutputParam& filter_output() const;
+  inline ::caffe_neural::FilterOutputParam* mutable_filter_output();
+  inline ::caffe_neural::FilterOutputParam* release_filter_output();
+  inline void set_allocated_filter_output(::caffe_neural::FilterOutputParam* filter_output);
+
   // @@protoc_insertion_point(class_scope:caffe_neural.TrainParam)
  private:
   inline void set_has_solver();
@@ -383,15 +392,18 @@ class TrainParam : public ::google::protobuf::Message {
   inline void clear_has_solverstate();
   inline void set_has_input();
   inline void clear_has_input();
+  inline void set_has_filter_output();
+  inline void clear_has_filter_output();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* solver_;
   ::std::string* solverstate_;
   ::caffe_neural::InputParam* input_;
+  ::caffe_neural::FilterOutputParam* filter_output_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_caffetool_2eproto();
   friend void protobuf_AssignDesc_caffetool_2eproto();
@@ -2107,6 +2119,44 @@ inline void TrainParam::set_allocated_input(::caffe_neural::InputParam* input) {
     set_has_input();
   } else {
     clear_has_input();
+  }
+}
+
+// optional .caffe_neural.FilterOutputParam filter_output = 5;
+inline bool TrainParam::has_filter_output() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void TrainParam::set_has_filter_output() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void TrainParam::clear_has_filter_output() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void TrainParam::clear_filter_output() {
+  if (filter_output_ != NULL) filter_output_->::caffe_neural::FilterOutputParam::Clear();
+  clear_has_filter_output();
+}
+inline const ::caffe_neural::FilterOutputParam& TrainParam::filter_output() const {
+  return filter_output_ != NULL ? *filter_output_ : *default_instance_->filter_output_;
+}
+inline ::caffe_neural::FilterOutputParam* TrainParam::mutable_filter_output() {
+  set_has_filter_output();
+  if (filter_output_ == NULL) filter_output_ = new ::caffe_neural::FilterOutputParam;
+  return filter_output_;
+}
+inline ::caffe_neural::FilterOutputParam* TrainParam::release_filter_output() {
+  clear_has_filter_output();
+  ::caffe_neural::FilterOutputParam* temp = filter_output_;
+  filter_output_ = NULL;
+  return temp;
+}
+inline void TrainParam::set_allocated_filter_output(::caffe_neural::FilterOutputParam* filter_output) {
+  delete filter_output_;
+  filter_output_ = filter_output;
+  if (filter_output) {
+    set_has_filter_output();
+  } else {
+    clear_has_filter_output();
   }
 }
 

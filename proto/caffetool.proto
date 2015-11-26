@@ -20,6 +20,7 @@ message TrainParam {
   optional string solver = 1;
   optional string solverstate = 2;
   optional InputParam input = 3;
+  optional FilterOutputParam filter_output = 5;
 }
 
 message ProcessParam {

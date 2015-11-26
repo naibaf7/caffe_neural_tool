@@ -109,10 +109,11 @@ void protobuf_AssignDesc_caffetool_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(BenchmarkParam));
   TrainParam_descriptor_ = file->message_type(2);
-  static const int TrainParam_offsets_[3] = {
+  static const int TrainParam_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TrainParam, solver_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TrainParam, solverstate_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TrainParam, input_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TrainParam, filter_output_),
   };
   TrainParam_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -412,44 +413,45 @@ void protobuf_AddDesc_caffetool_2eproto() {
     "eural.BenchmarkParam\"u\n\016BenchmarkParam\022\022"
     "\n\nbench_runs\030\001 \001(\005\022\023\n\013warmup_runs\030\002 \001(\005\022"
     "\016\n\006output\030\003 \001(\t\022\023\n\013train_index\030\004 \001(\005\022\025\n\r"
-    "process_index\030\005 \001(\005\"Z\n\nTrainParam\022\016\n\006sol"
-    "ver\030\001 \001(\t\022\023\n\013solverstate\030\002 \001(\t\022\'\n\005input\030"
-    "\003 \001(\0132\030.caffe_neural.InputParam\"\303\001\n\014Proc"
-    "essParam\022\023\n\013process_net\030\001 \001(\t\022\022\n\ncaffemo"
-    "del\030\002 \001(\t\022\'\n\005input\030\003 \001(\0132\030.caffe_neural."
-    "InputParam\022)\n\006output\030\004 \001(\0132\031.caffe_neura"
-    "l.OutputParam\0226\n\rfilter_output\030\005 \001(\0132\037.c"
-    "affe_neural.FilterOutputParam\"&\n\025LabelCo"
-    "nsolidateParam\022\r\n\005label\030\001 \003(\005\";\n\021FilterO"
-    "utputParam\022\026\n\016output_filters\030\001 \001(\010\022\016\n\006ou"
-    "tput\030\002 \001(\t\"\315\001\n\nInputParam\022\024\n\014padding_siz"
-    "e\030\001 \001(\005\022\022\n\npatch_size\030\002 \001(\005\022\020\n\010channels\030"
-    "\003 \001(\005\022\016\n\006labels\030\004 \001(\005\022\022\n\nbatch_size\030\005 \001("
-    "\005\0225\n\014preprocessor\030\006 \001(\0132\037.caffe_neural.P"
-    "reprocessorParam\022\022\n\nraw_images\030\007 \001(\t\022\024\n\014"
-    "label_images\030\010 \001(\t\"j\n\013OutputParam\022\016\n\006out"
-    "put\030\001 \001(\t\022\027\n\010fp32_out\030\002 \001(\010:\005false\022\035\n\016ou"
-    "t_all_labels\030\003 \001(\010:\005false\022\023\n\006format\030\004 \001("
-    "\t:\003tif\"\201\003\n\021PreprocessorParam\022\033\n\rnormaliz"
-    "ation\030\001 \001(\010:\004true\022)\n\004crop\030\002 \001(\0132\033.caffe_"
-    "neural.PrepCropParam\022+\n\005clahe\030\003 \001(\0132\034.ca"
-    "ffe_neural.PrepClaheParam\022\027\n\010rotation\030\004 "
-    "\001(\010:\005false\022\025\n\006mirror\030\005 \001(\010:\005false\022-\n\006his"
-    "teq\030\006 \001(\0132\035.caffe_neural.PrepHistEqParam"
-    "\022)\n\004blur\030\007 \001(\0132\033.caffe_neural.PrepBlurPa"
-    "ram\022-\n\006deform\030\010 \001(\0132\035.caffe_neural.PrepD"
-    "eformParam\022>\n\021label_consolidate\030\t \001(\0132#."
-    "caffe_neural.LabelConsolidateParam\"5\n\rPr"
-    "epCropParam\022\021\n\timagecrop\030\001 \001(\005\022\021\n\tlabelc"
-    "rop\030\002 \001(\005\"D\n\rPrepBlurParam\022\017\n\004mean\030\001 \001(\002"
-    ":\0010\022\020\n\003std\030\002 \001(\002:\0030.1\022\020\n\005ksize\030\003 \001(\005:\0015\""
-    "_\n\017PrepDeformParam\022\021\n\006mean_x\030\001 \001(\002:\0010\022\021\n"
-    "\006mean_y\030\002 \001(\002:\0010\022\022\n\005std_x\030\003 \001(\002:\0030.1\022\022\n\005"
-    "std_y\030\004 \001(\002:\0030.1\"!\n\016PrepClaheParam\022\017\n\004cl"
-    "ip\030\001 \001(\002:\0014\"r\n\017PrepHistEqParam\022\031\n\013patch_"
-    "prior\030\001 \001(\010:\004true\022\026\n\007masking\030\002 \001(\010:\005fals"
-    "e\022\023\n\013label_boost\030\003 \003(\002\022\027\n\014border_boost\030\004"
-    " \001(\002:\0011", 1767);
+    "process_index\030\005 \001(\005\"\222\001\n\nTrainParam\022\016\n\006so"
+    "lver\030\001 \001(\t\022\023\n\013solverstate\030\002 \001(\t\022\'\n\005input"
+    "\030\003 \001(\0132\030.caffe_neural.InputParam\0226\n\rfilt"
+    "er_output\030\005 \001(\0132\037.caffe_neural.FilterOut"
+    "putParam\"\303\001\n\014ProcessParam\022\023\n\013process_net"
+    "\030\001 \001(\t\022\022\n\ncaffemodel\030\002 \001(\t\022\'\n\005input\030\003 \001("
+    "\0132\030.caffe_neural.InputParam\022)\n\006output\030\004 "
+    "\001(\0132\031.caffe_neural.OutputParam\0226\n\rfilter"
+    "_output\030\005 \001(\0132\037.caffe_neural.FilterOutpu"
+    "tParam\"&\n\025LabelConsolidateParam\022\r\n\005label"
+    "\030\001 \003(\005\";\n\021FilterOutputParam\022\026\n\016output_fi"
+    "lters\030\001 \001(\010\022\016\n\006output\030\002 \001(\t\"\315\001\n\nInputPar"
+    "am\022\024\n\014padding_size\030\001 \001(\005\022\022\n\npatch_size\030\002"
+    " \001(\005\022\020\n\010channels\030\003 \001(\005\022\016\n\006labels\030\004 \001(\005\022\022"
+    "\n\nbatch_size\030\005 \001(\005\0225\n\014preprocessor\030\006 \001(\013"
+    "2\037.caffe_neural.PreprocessorParam\022\022\n\nraw"
+    "_images\030\007 \001(\t\022\024\n\014label_images\030\010 \001(\t\"j\n\013O"
+    "utputParam\022\016\n\006output\030\001 \001(\t\022\027\n\010fp32_out\030\002"
+    " \001(\010:\005false\022\035\n\016out_all_labels\030\003 \001(\010:\005fal"
+    "se\022\023\n\006format\030\004 \001(\t:\003tif\"\201\003\n\021Preprocessor"
+    "Param\022\033\n\rnormalization\030\001 \001(\010:\004true\022)\n\004cr"
+    "op\030\002 \001(\0132\033.caffe_neural.PrepCropParam\022+\n"
+    "\005clahe\030\003 \001(\0132\034.caffe_neural.PrepClahePar"
+    "am\022\027\n\010rotation\030\004 \001(\010:\005false\022\025\n\006mirror\030\005 "
+    "\001(\010:\005false\022-\n\006histeq\030\006 \001(\0132\035.caffe_neura"
+    "l.PrepHistEqParam\022)\n\004blur\030\007 \001(\0132\033.caffe_"
+    "neural.PrepBlurParam\022-\n\006deform\030\010 \001(\0132\035.c"
+    "affe_neural.PrepDeformParam\022>\n\021label_con"
+    "solidate\030\t \001(\0132#.caffe_neural.LabelConso"
+    "lidateParam\"5\n\rPrepCropParam\022\021\n\timagecro"
+    "p\030\001 \001(\005\022\021\n\tlabelcrop\030\002 \001(\005\"D\n\rPrepBlurPa"
+    "ram\022\017\n\004mean\030\001 \001(\002:\0010\022\020\n\003std\030\002 \001(\002:\0030.1\022\020"
+    "\n\005ksize\030\003 \001(\005:\0015\"_\n\017PrepDeformParam\022\021\n\006m"
+    "ean_x\030\001 \001(\002:\0010\022\021\n\006mean_y\030\002 \001(\002:\0010\022\022\n\005std"
+    "_x\030\003 \001(\002:\0030.1\022\022\n\005std_y\030\004 \001(\002:\0030.1\"!\n\016Pre"
+    "pClaheParam\022\017\n\004clip\030\001 \001(\002:\0014\"r\n\017PrepHist"
+    "EqParam\022\031\n\013patch_prior\030\001 \001(\010:\004true\022\026\n\007ma"
+    "sking\030\002 \001(\010:\005false\022\023\n\013label_boost\030\003 \003(\002\022"
+    "\027\n\014border_boost\030\004 \001(\002:\0011", 1824);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "caffetool.proto", &protobuf_RegisterTypes);
   ToolParam::default_instance_ = new ToolParam();
@@ -1166,6 +1168,7 @@ void BenchmarkParam::Swap(BenchmarkParam* other) {
 const int TrainParam::kSolverFieldNumber;
 const int TrainParam::kSolverstateFieldNumber;
 const int TrainParam::kInputFieldNumber;
+const int TrainParam::kFilterOutputFieldNumber;
 #endif  // !_MSC_VER
 
 TrainParam::TrainParam()
@@ -1175,6 +1178,7 @@ TrainParam::TrainParam()
 
 void TrainParam::InitAsDefaultInstance() {
   input_ = const_cast< ::caffe_neural::InputParam*>(&::caffe_neural::InputParam::default_instance());
+  filter_output_ = const_cast< ::caffe_neural::FilterOutputParam*>(&::caffe_neural::FilterOutputParam::default_instance());
 }
 
 TrainParam::TrainParam(const TrainParam& from)
@@ -1188,6 +1192,7 @@ void TrainParam::SharedCtor() {
   solver_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   solverstate_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   input_ = NULL;
+  filter_output_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1204,6 +1209,7 @@ void TrainParam::SharedDtor() {
   }
   if (this != default_instance_) {
     delete input_;
+    delete filter_output_;
   }
 }
 
@@ -1242,6 +1248,9 @@ void TrainParam::Clear() {
     }
     if (has_input()) {
       if (input_ != NULL) input_->::caffe_neural::InputParam::Clear();
+    }
+    if (has_filter_output()) {
+      if (filter_output_ != NULL) filter_output_->::caffe_neural::FilterOutputParam::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -1297,6 +1306,20 @@ bool TrainParam::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(42)) goto parse_filter_output;
+        break;
+      }
+
+      // optional .caffe_neural.FilterOutputParam filter_output = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_filter_output:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_filter_output()));
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1343,6 +1366,12 @@ void TrainParam::SerializeWithCachedSizes(
       3, this->input(), output);
   }
 
+  // optional .caffe_neural.FilterOutputParam filter_output = 5;
+  if (has_filter_output()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, this->filter_output(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1378,6 +1407,13 @@ void TrainParam::SerializeWithCachedSizes(
         3, this->input(), target);
   }
 
+  // optional .caffe_neural.FilterOutputParam filter_output = 5;
+  if (has_filter_output()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        5, this->filter_output(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1408,6 +1444,13 @@ int TrainParam::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->input());
+    }
+
+    // optional .caffe_neural.FilterOutputParam filter_output = 5;
+    if (has_filter_output()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->filter_output());
     }
 
   }
@@ -1446,6 +1489,9 @@ void TrainParam::MergeFrom(const TrainParam& from) {
     if (from.has_input()) {
       mutable_input()->::caffe_neural::InputParam::MergeFrom(from.input());
     }
+    if (from.has_filter_output()) {
+      mutable_filter_output()->::caffe_neural::FilterOutputParam::MergeFrom(from.filter_output());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1472,6 +1518,7 @@ void TrainParam::Swap(TrainParam* other) {
     std::swap(solver_, other->solver_);
     std::swap(solverstate_, other->solverstate_);
     std::swap(input_, other->input_);
+    std::swap(filter_output_, other->filter_output_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

@@ -5,6 +5,7 @@
  *      Author: Fabian Tschopp
  */
 
+#include "process.hpp"
 #include "train.hpp"
 #include "filesystem_utils.hpp"
 #include "utils.hpp"
@@ -245,6 +246,13 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
         train_net->layers()[1])->AddMatVector(images, imlabels);
 
     solver->Step(1L);
+
+    if (train_param.has_filter_output()) {
+      FilterOutputParam filter_param = train_param.filter_output();
+      if (filter_param.has_output_filters() && filter_param.output_filters() && filter_param.has_output()) {
+        ExportFilters(solver->net().get(), filter_param.output(), bofs::path("train"), 0, 0, 0);
+      }
+    }
 
     if(test_interval > -1 && i % test_interval == 0) {
       // TODO: Run tests with the testset and testnet
