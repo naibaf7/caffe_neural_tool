@@ -9,6 +9,8 @@
 #include "train.hpp"
 #include "filesystem_utils.hpp"
 #include "utils.hpp"
+#include "caffe/layers/memory_data_layer.hpp"
+
 
 namespace caffe_neural {
 
@@ -250,7 +252,7 @@ int Train(ToolParam &tool_param, CommonSettings &settings) {
     if (train_param.has_filter_output()) {
       FilterOutputParam filter_param = train_param.filter_output();
       if (filter_param.has_output_filters() && filter_param.output_filters() && filter_param.has_output()) {
-        ExportFilters(solver->net().get(), filter_param.output(), bofs::path("train"), 0, 0, 0);
+        ExportFilters(solver->net().get(), filter_param.output(), bofs::path("train"), 0, 0, 0, true);
       }
     }
 

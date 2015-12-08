@@ -14,7 +14,7 @@
 #include <cassert>
 #include "filesystem_utils.hpp"
 #include "utils.hpp"
-#include "caffe/vision_layers.hpp"
+#include "caffe/layers/memory_data_layer.hpp"
 
 namespace caffe_neural {
 

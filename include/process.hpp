@@ -16,7 +16,7 @@ namespace caffe_neural {
 int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings);
 
 int ExportFilters(Net<float> *net, std::string output_folder,
-                  bofs::path input_name, int st, int y, int x);
+                  bofs::path input_name, int st, int y, int x, bool store_diff);
 
 }
 

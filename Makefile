@@ -131,3 +131,7 @@ $(BUILD):
 # Clean target
 clean:
 	rm -r -f $(BUILD)
+	rm -r -f $(PROTO)/caffetool.pb.cc
+	rm -r -f $(PROTO)/caffetool.pb.h
+	rm -r -f $(SRC)/caffetool.pb.cpp
+	rm -r -f $(INC)/caffetool.pb.h

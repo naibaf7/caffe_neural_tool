@@ -8,11 +8,12 @@
 #include "process.hpp"
 #include "filesystem_utils.hpp"
 #include "utils.hpp"
+#include "caffe/layers/memory_data_layer.hpp"
 
 namespace caffe_neural {
 
 int ExportFilters(Net<float> *net, std::string output_folder,
-                  bofs::path input_name, int st, int y, int x) {
+                  bofs::path input_name, int st, int y, int x, bool store_diff) {
   std::vector<std::string> names = net->blob_names();
   std::vector<boost::shared_ptr<Blob<float>>>blobs = net->blobs();
 
@@ -21,16 +22,34 @@ int ExportFilters(Net<float> *net, std::string output_folder,
     shared_ptr<Blob<float>> blob = blobs[i];
 
     const float* cpu_ptr = blob->cpu_data();
+    const float* cpu_diff_ptr = nullptr;
+    if (store_diff) {
+      cpu_diff_ptr = blob->cpu_diff();
+    }
 
     for (int n = 0; n < blob->num(); ++n) {
       for (int c = 0; c < blob->channels(); ++c) {
+
         cv::Mat mat(blob->height(), blob->width(), CV_32FC1);
+        cv::Mat matd(blob->height(), blob->width(), CV_32FC1);
+
+
         for (int h = 0; h < blob->height(); ++h) {
 #pragma omp parallel for
           for (int w = 0; w < blob->width(); ++w) {
             mat.at<float>(h, w) = *(cpu_ptr + w);
           }
           cpu_ptr += blob->width();
+        }
+
+        if (store_diff) {
+          for (int h = 0; h < blob->height(); ++h) {
+  #pragma omp parallel for
+            for (int w = 0; w < blob->width(); ++w) {
+              matd.at<float>(h, w) = *(cpu_diff_ptr + w);
+            }
+            cpu_diff_ptr += blob->width();
+          }
         }
 
         bofs::path outp(output_folder);
@@ -46,23 +65,44 @@ int ExportFilters(Net<float> *net, std::string output_folder,
         ssf << "_" << n << "_" << c;
         ssf << ".png";
 
+        std::stringstream ssfd;
+        ssfd << "/";
+        ssfd << name;
+        ssfd << "_" << n << "_" << c << "_diff";
+        ssfd << ".png";
+
         bofs::path outpl = outp;
         outpl /= (ssp.str());
         bofs::create_directories(outpl);
         bofs::path filep = outpl;
         filep /= (ssf.str());
 
+        bofs::path filepd = outpl;
+        filepd /= (ssfd.str());
+
         cv::Mat outfc;
         cv::Mat outuc;
 
-        double minVal, maxVal;
-        cv::minMaxLoc(mat, &minVal, &maxVal);
+        {
+          double minVal, maxVal;
+          cv::minMaxLoc(mat, &minVal, &maxVal);
 
-        mat.convertTo(outfc, CV_32FC1, 1.0 / (maxVal - minVal),
-                  -minVal * 1.0 / (maxVal - minVal));
-        outfc.convertTo(outuc, CV_8UC1, 255.0, 0.0);
+          mat.convertTo(outfc, CV_32FC1, 1.0 / (maxVal - minVal),
+                    -minVal * 1.0 / (maxVal - minVal));
+          outfc.convertTo(outuc, CV_8UC1, 255.0, 0.0);
 
-        cv::imwrite(filep.string(), outuc);
+          cv::imwrite(filep.string(), outuc);
+        }
+        if (store_diff) {
+          double minVal, maxVal;
+          cv::minMaxLoc(matd, &minVal, &maxVal);
+
+          matd.convertTo(outfc, CV_32FC1, 1.0 / (maxVal - minVal),
+                    -minVal * 1.0 / (maxVal - minVal));
+          outfc.convertTo(outuc, CV_8UC1, 255.0, 0.0);
+
+          cv::imwrite(filepd.string(), outuc);
+        }
       }
     }
   }
@@ -232,7 +272,7 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
           if(process_param.has_filter_output()) {
             FilterOutputParam filter_param = process_param.filter_output();
             if(filter_param.has_output_filters() && filter_param.output_filters() && filter_param.has_output()) {
-              ExportFilters(&net, filter_param.output(), process_set[i], st, yoff, xoff);
+              ExportFilters(&net, filter_param.output(), process_set[i], st, yoff, xoff, false);
             }
           }
 
