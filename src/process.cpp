@@ -149,7 +149,7 @@ int Process(caffe_neural::ToolParam &tool_param, CommonSettings &settings) {
 
   std::string process_net = process_param.process_net();
 
-  Net<float> net(process_net, caffe::TEST);
+  Net<float> net(process_net, caffe::TEST, Caffe::GetDefaultDevice());
 
   if(process_param.has_caffemodel()) {
     std::string caffe_model = process_param.caffemodel();
