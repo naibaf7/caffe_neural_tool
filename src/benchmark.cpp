@@ -23,7 +23,7 @@ void FillNet(shared_ptr< Layer<float> > data_layer,
              shared_ptr< Layer<float> > label_layer, int num_output) {
 
   std::function<float()> rfu = GetRandomUniform<float>(-1.0, 1.0);
-  std::function<float()> riu = GetRandomUniform(0, num_output);
+  std::function<float()> riu = GetRandomUniform(0, num_output - 1);
 
   if (data_layer != NULL) {
     std::vector<cv::Mat> images;
