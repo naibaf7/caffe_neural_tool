@@ -1,5 +1,8 @@
 # GreenTea (ViennaCL/OpenCL) backend switch
 
+# 32 bit / 64 bit indexing
+# USE_INDEX_64 := 1
+
 # Enable the CUDA backend and CUDNN
 USE_CUDA := 1
 USE_CUDNN := 0

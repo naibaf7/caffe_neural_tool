@@ -52,6 +52,10 @@ else
 				-lboost_system -lboost_thread -lboost_program_options -lboost_filesystem -lboost_python -lpython2.7
 endif
 
+ifeq ($(USE_INDEX_64),1)
+	CXXFLAGS += -DUSE_INDEX_64
+endif
+
 ifeq ($(USE_GREENTEA), 1)
 	# Find a valid OpenCL library
 	ifdef OPENCL_INC
