@@ -94,7 +94,7 @@ endif
 ifeq ($(USE_CUDA), 1)
 	CXXFLAGS += -DUSE_CUDA
 	INCLUDE += -I$(CUDA_DIR)/include
-	LIBRARY += -L$(CUDA_DIR)/lib64/ -lcudart -lcublas -lcurand
+	LIBRARY += -L$(CUDA_DIR)/lib64/ -L$(CUDA_DIR)/lib64/stubs -lcudart -lcublas -lcurand -lnvrtc -lcuda
 	ifeq ($(USE_CUDNN), 1)
 		LIBRARY += -lcudnn
 	endif
